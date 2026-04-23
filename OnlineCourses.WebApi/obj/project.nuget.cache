@@ -1,9 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "Hshde3W2LLc=",
+  "dgSpecHash": "vAU4W3go1TE=",
   "success": true,
   "projectFilePath": "C:\\Users\\Ismoil\\OneDrive\\Desktop\\Programming\\.Net\\month2\\week2\\OnlineCourses\\OnlineCourses.WebApi\\OnlineCourses.WebApi.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Ismoil\\.nuget\\packages\\asp.versioning.abstractions\\10.0.0\\asp.versioning.abstractions.10.0.0.nupkg.sha512",
+    "C:\\Users\\Ismoil\\.nuget\\packages\\asp.versioning.http\\10.0.0\\asp.versioning.http.10.0.0.nupkg.sha512",
+    "C:\\Users\\Ismoil\\.nuget\\packages\\asp.versioning.mvc\\10.0.0\\asp.versioning.mvc.10.0.0.nupkg.sha512",
     "C:\\Users\\Ismoil\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\Ismoil\\.nuget\\packages\\dapper.aot\\1.0.48\\dapper.aot.1.0.48.nupkg.sha512",
     "C:\\Users\\Ismoil\\.nuget\\packages\\hangfire.aspnetcore\\1.8.23\\hangfire.aspnetcore.1.8.23.nupkg.sha512",

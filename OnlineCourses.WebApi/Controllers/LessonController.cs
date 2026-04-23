@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCourses.Application.DTOs.Lessons.Request;
@@ -7,6 +8,7 @@ namespace OnlineCourses.WebApi.Controllers;
 
 [ApiController]
 [Route("api/courses/{courseId:guid}/lessons")]
+[ApiVersion("1.0")]
 [Authorize]
 public class LessonController : BaseController
 {

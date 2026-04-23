@@ -1,4 +1,5 @@
 using System;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCourses.Application.Interfaces.Services;
@@ -7,6 +8,7 @@ namespace OnlineCourses.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[ApiVersion("1.0")]
 [Authorize(Roles = "Admin")]
 public class DashboardController : BaseController
 {

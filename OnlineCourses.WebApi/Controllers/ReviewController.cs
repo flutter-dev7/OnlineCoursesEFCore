@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCourses.Application.DTOs.Reviews.Request;
@@ -8,6 +9,7 @@ namespace OnlineCourses.WebApi.Controllers;
 
 [ApiController]
 [Route("api/courses/{courseId:guid}/reviews")]
+[ApiVersion("1.0")]
 [Authorize]
 public class ReviewController : BaseController
 {

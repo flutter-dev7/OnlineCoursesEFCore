@@ -1,5 +1,6 @@
 using System;
 using System.Security.Claims;
+using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCourses.Application.DTOs.Auth.Request;
@@ -9,6 +10,7 @@ namespace OnlineCourses.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[ApiVersion("1.0")]
 public class AuthController : BaseController
 {
     private readonly IAuthService _service;

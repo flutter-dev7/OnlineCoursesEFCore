@@ -74,9 +74,7 @@ public class CourseService : ICourseService
             CategoryName = course.Category.Name,
             InstructorName = course.Instructor.FullName,
             LessonCount = course.Lessons.Count,
-            AverageRating = course.Reviews?.Any() == true
-                ? course.Reviews.Average(r => r.Rating)
-                : 0
+            AverageRating = course.Reviews.Average(r => r.Rating)
         };
 
         await _cacheService.SetAsync($"course_{id}", dto, TimeSpan.FromMinutes(10));
@@ -95,8 +93,8 @@ public class CourseService : ICourseService
                 Price = request.Price,
                 Level = request.Level,
                 CategoryId = request.CategoryId,
-                InstructorId = instructorId,  
-                IsPublished = false, 
+                InstructorId = instructorId,
+                IsPublished = false,
                 CreatedAt = DateTime.UtcNow
             };
 

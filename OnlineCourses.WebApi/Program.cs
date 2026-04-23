@@ -1,4 +1,5 @@
 using System.Text;
+using Asp.Versioning;
 using Hangfire;
 using Hangfire.PostgreSql;
 using JwtAuthProject.Infrastructure.Repositories;
@@ -81,6 +82,13 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowCredentials();        
     });
+});
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
 });
 
 builder.Services.AddHangfireServer();

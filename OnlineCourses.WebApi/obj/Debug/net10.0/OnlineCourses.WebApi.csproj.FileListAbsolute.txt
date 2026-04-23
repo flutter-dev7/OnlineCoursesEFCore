@@ -160,3 +160,6 @@ C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\Onl
 C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\OnlineCourses.WebApi\obj\Debug\net10.0\OnlineCourses.WebApi.genruntimeconfig.cache
 C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\OnlineCourses.WebApi\obj\Debug\net10.0\ref\OnlineCourses.WebApi.dll
 C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\OnlineCourses.WebApi\obj\Debug\net10.0\OnlineCourses.WebApi.sourcelink.json
+C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\OnlineCourses.WebApi\bin\Debug\net10.0\Asp.Versioning.Abstractions.dll
+C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\OnlineCourses.WebApi\bin\Debug\net10.0\Asp.Versioning.Http.dll
+C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\OnlineCourses.WebApi\bin\Debug\net10.0\Asp.Versioning.Mvc.dll
