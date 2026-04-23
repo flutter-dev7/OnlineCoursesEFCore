@@ -13,3 +13,4 @@ C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\Onl
 C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\OnlineCourses.Application\obj\Debug\net10.0\refint\OnlineCourses.Application.dll
 C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\OnlineCourses.Application\obj\Debug\net10.0\OnlineCourses.Application.pdb
 C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\OnlineCourses.Application\obj\Debug\net10.0\ref\OnlineCourses.Application.dll
+C:\Users\Ismoil\OneDrive\Desktop\Programming\.Net\month2\week2\OnlineCourses\OnlineCourses.Application\obj\Debug\net10.0\OnlineCourses.Application.sourcelink.json

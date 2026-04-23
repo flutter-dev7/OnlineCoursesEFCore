@@ -68,6 +68,21 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
 builder.Services.AddHangfire(config =>
     config.UsePostgreSqlStorage(options => options.UseNpgsqlConnection(connectionString)));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:3000", 
+                "http://localhost:5173"    
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();        
+    });
+});
+
 builder.Services.AddHangfireServer();
 builder.Services.AddMemoryCache();
 
@@ -89,6 +104,8 @@ builder.Services.AddScoped<ILessonRepository, LessonRepository>();
 builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IDashboardSummaryRepository, DashboardSummaryRepository>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var secretKey = jwtSettings["Key"]!;
@@ -145,6 +162,7 @@ app.UseHttpsRedirection();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseHangfireDashboard();
 app.UseStaticFiles();
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

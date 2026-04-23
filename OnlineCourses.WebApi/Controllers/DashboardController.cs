@@ -1,0 +1,27 @@
+using System;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OnlineCourses.Application.Interfaces.Services;
+
+namespace OnlineCourses.WebApi.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[Authorize(Roles = "Admin")]
+public class DashboardController : BaseController
+{
+    private readonly IDashboardService _service;
+
+    public DashboardController(IDashboardService service)
+    {
+        _service = service;
+    }
+
+    [HttpGet("summary")]
+    public async Task<IActionResult> GetSummaryAsync()
+    {
+        var result = await _service.GetSummaryAsync();
+
+        return !result.IsSuccess ? HandleError(result) : Ok(result);
+    }
+}
