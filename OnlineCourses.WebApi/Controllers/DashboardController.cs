@@ -24,4 +24,20 @@ public class DashboardController : BaseController
 
         return !result.IsSuccess ? HandleError(result) : Ok(result);
     }
+
+    [HttpGet("top-courses")]
+    public async Task<IActionResult> GetTopCoursesAsync()
+    {
+        var result = await _service.GetTopCoursesAsync();
+
+        return !result.IsSuccess ? HandleError(result) : Ok(result);
+    }
+
+    [HttpGet("enrollments-by-month")]
+    public async Task<IActionResult> GetEnrollmentsByMonthAsync()
+    {
+        var result = await _service.GetEnrollmentsByMonthAsync();
+
+        return !result.IsSuccess ? HandleError(result) : Ok(result);
+    }
 }

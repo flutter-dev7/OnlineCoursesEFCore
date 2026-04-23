@@ -42,4 +42,25 @@ public class DashboardService : IDashboardService
 
         return Result<DashboardSummaryDto>.Ok(result);
     }
+
+    public async Task<Result<List<TopCourseDto>>> GetTopCoursesAsync()
+    {
+        const string cacheKey = "dashboard:top_courses";
+        var cached = await _cacheService.GetAsync<List<TopCourseDto>>(cacheKey);
+        if (cached != null)
+            return Result<List<TopCourseDto>>.Ok(cached);
+
+        var result = await _dashboardRepository.GetTopCoursesAsync(10);
+
+        await _cacheService.SetAsync(cacheKey, result, TimeSpan.FromMinutes(30));
+
+        return Result<List<TopCourseDto>>.Ok(result);
+    }
+
+    public async Task<Result<List<MonthlyEnrollmentDto>>> GetEnrollmentsByMonthAsync()
+    {
+        var result = await _dashboardRepository.GetEnrollmentsByMonthAsync();
+
+        return Result<List<MonthlyEnrollmentDto>>.Ok(result);
+    }
 }

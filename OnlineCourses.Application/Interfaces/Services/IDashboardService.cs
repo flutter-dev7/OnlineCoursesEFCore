@@ -7,4 +7,6 @@ namespace OnlineCourses.Application.Interfaces.Services;
 public interface IDashboardService
 {
     Task<Result<DashboardSummaryDto>> GetSummaryAsync();
+    Task<Result<List<TopCourseDto>>> GetTopCoursesAsync();
+    Task<Result<List<MonthlyEnrollmentDto>>> GetEnrollmentsByMonthAsync();
 }

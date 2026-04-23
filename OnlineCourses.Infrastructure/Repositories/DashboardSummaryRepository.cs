@@ -1,5 +1,6 @@
 using System;
 using Microsoft.EntityFrameworkCore;
+using OnlineCourses.Application.DTOs.Dashboards;
 using OnlineCourses.Application.Interfaces.Repositories;
 using OnlineCourses.Domain.Enums;
 using OnlineCourses.Infrastructure.Data;
@@ -58,4 +59,61 @@ public class DashboardSummaryRepository : IDashboardSummaryRepository
         await _context.Reviews.AnyAsync()
             ? await _context.Reviews.AverageAsync(r => (double)r.Rating)
             : 0;
+
+    public async Task<List<TopCourseDto>> GetTopCoursesAsync(int count) =>
+        await _context.Enrollments
+            .GroupBy(e => new
+            {
+                e.CourseId,
+                e.Course.Title,
+                e.Course.Price,
+                InstructorName = e.Course.Instructor.FullName
+            })
+            .Select(g => new TopCourseDto
+            {
+                CourseId = g.Key.CourseId,
+                Title = g.Key.Title,
+                InstructorName = g.Key.InstructorName,
+                EnrollmentCount = g.Count(),
+                CompletedCount = g.Count(e => e.Status == EnrollmentStatus.Completed),
+                CompletionRate = g.Count() == 0 ? 0 :
+                    (double)g.Count(e => e.Status == EnrollmentStatus.Completed) / g.Count() * 100,
+                AverageRating = _context.Reviews
+                    .Where(r => r.CourseId == g.Key.CourseId)
+                    .Average(r => (double?)r.Rating) ?? 0,
+                Revenue = g.Count() * g.Key.Price
+            })
+            .OrderByDescending(x => x.EnrollmentCount)
+            .Take(count)
+            .ToListAsync();
+
+    public async Task<List<MonthlyEnrollmentDto>> GetEnrollmentsByMonthAsync()
+    {
+        var data = await _context.Enrollments
+            .Where(e => e.EnrolledAt >= DateTime.UtcNow.AddMonths(-12))
+            .GroupBy(e => new { e.EnrolledAt.Year, e.EnrolledAt.Month })
+            .Select(g => new MonthlyEnrollmentDto
+            {
+                Year = g.Key.Year,
+                Month = g.Key.Month,
+                NewEnrollments = g.Count(),
+                Completions = g.Count(e => e.Status == EnrollmentStatus.Completed),
+                Revenue = g.Sum(e => e.Course.Price)
+            })
+            .OrderBy(x => x.Year)
+            .ThenBy(x => x.Month)
+            .ToListAsync();
+
+        var monthNames = new[]
+        {
+        "Январь", "Февраль", "Март", "Апрель",
+        "Май", "Июнь", "Июль", "Август",
+        "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+    };
+
+        foreach (var item in data)
+            item.MonthName = monthNames[item.Month - 1];
+
+        return data;
+    }
 }

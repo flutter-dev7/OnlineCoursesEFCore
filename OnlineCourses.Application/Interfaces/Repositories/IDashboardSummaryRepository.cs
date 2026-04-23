@@ -1,4 +1,5 @@
 using System;
+using OnlineCourses.Application.DTOs.Dashboards;
 
 namespace OnlineCourses.Application.Interfaces.Repositories;
 
@@ -14,4 +15,6 @@ public interface IDashboardSummaryRepository
     Task<decimal> GetTotalRevenueAsync();
     Task<int> GetTotalReviewsAsync();
     Task<double> GetAverageRatingAsync();
+    Task<List<TopCourseDto>> GetTopCoursesAsync(int count);
+    Task<List<MonthlyEnrollmentDto>> GetEnrollmentsByMonthAsync();
 }
