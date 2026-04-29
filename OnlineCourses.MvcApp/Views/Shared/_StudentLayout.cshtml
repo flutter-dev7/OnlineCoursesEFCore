@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Student Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        /* Переопределяем основной цвет только для этого лейаута */
+        :root {
+            --student-accent: #00ACCF; 
+        }
+        /* Меняем цвет иконок и активных элементов под студента */
+        .logo-icon, .btn-login-sidebar { color: var(--student-accent) !important; }
+        .btn-login-sidebar { background: var(--student-accent) !important; }
+        .menu-item:hover, .menu-item.active {
+            background: var(--student-accent) !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="brand">MyAcademy</span>
+                    <span class="version">Student Mode</span>
+                </div>
+            </div>
+        
+            <nav class="menu flex-grow-1">
+                <a asp-controller="Home" asp-action="Index" class="menu-item @(IsActive("Home", "Index"))">
+                    <i class="bi bi-grid-1x2-fill"></i> <span>Home</span>
+                </a>
+                <a asp-controller="Courses" asp-action="Index" class="menu-item @(IsActive("Courses"))">
+                    <i class="bi bi-search"></i> <span>Explore Courses</span>
+                </a>
+                <a asp-controller="MyLearning" asp-action="Index" class="menu-item">
+                    <i class="bi bi-play-circle-fill"></i> <span>My Learning</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer mt-auto">
+                @if (Context.Request.Cookies["jwt"] != null)
+                {
+                    <div class="user-profile-card dropdown">
+                        <div class="d-flex align-items-center w-100" data-bs-toggle="dropdown" style="cursor: pointer;">
+                            <div class="avatar-wrapper">
+                                <img src="https://ui-avatars.com/api/?name=@(Context.Request.Cookies["user_name"] ?? "U")&background=00ACCF&color=fff"
+                                     alt="User">
+                            </div>
+                            <div class="user-info ms-2">
+                                <p class="user-name">@Context.Request.Cookies["user_name"]</p>
+                                <p class="user-role">Student</p>
+                            </div>
+                            <i class="bi bi-chevron-expand ms-auto text-muted"></i>
+                        </div>
+                        <ul class="dropdown-menu shadow-lg border-0 mb-2">
+                            <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item py-2 text-danger fw-medium" asp-controller="Account" asp-action="Logout">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Sign Out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+            </div>
+        </aside>
+
+        <main class="main-content">
+            @RenderBody()
+        </main>
+    </div>
+
+@functions {
+    string IsActive(string controller, string? action = null)
+    {
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+        if (action == null) return currentController == controller ? "active" : "";
+        return (currentController == controller && currentAction == action) ? "active" : "";
+    }
+}
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -66,7 +66,7 @@ public class CourseController : BaseController
     }
 
     [HttpPut("{id}/publish")]
-    [Authorize(Roles = "Instructor")]
+    [Authorize(Roles = "Instructor, Admin")]
     public async Task<IActionResult> TogglePublishAsync(Guid id)
     {
         var course = await _service.TogglePublishAsync(id);

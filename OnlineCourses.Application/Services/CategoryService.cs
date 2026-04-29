@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using OnlineCourses.Application.Common;
 using OnlineCourses.Application.DTOs.Categories.Request;
 using OnlineCourses.Application.DTOs.Categories.Response;
@@ -13,6 +16,9 @@ public class CategoryService : ICategoryService
 {
     private readonly ICategoryRepository _categoryRepository;
     private readonly ICacheService _cacheService;
+    
+    // Используем константу, чтобы не ошибиться в буквах
+    private const string CacheKey = "all_categories";
 
     public CategoryService(ICategoryRepository categoryRepository, ICacheService cacheService)
     {
@@ -22,11 +28,13 @@ public class CategoryService : ICategoryService
 
     public async Task<Result<List<GetCategoryDto>>> GetAllCategoriesAsync()
     {
-        var cached = await _cacheService.GetAsync<List<GetCategoryDto>>("all_categories");
+        // Пытаемся взять из кэша
+        var cached = await _cacheService.GetAsync<List<GetCategoryDto>>(CacheKey);
 
         if (cached != null)
             return Result<List<GetCategoryDto>>.Ok(cached);
 
+        // Если в кэше пусто — идем в базу
         var categories = await _categoryRepository.GetAllAsync();
 
         var result = categories.Select(c => new GetCategoryDto
@@ -36,14 +44,17 @@ public class CategoryService : ICategoryService
             Description = c.Description
         }).ToList();
 
-        await _cacheService.SetAsync("all_categories", result, TimeSpan.FromMinutes(10));
+        // Сохраняем в кэш на 10 минут
+        await _cacheService.SetAsync(CacheKey, result, TimeSpan.FromMinutes(10));
 
         return Result<List<GetCategoryDto>>.Ok(result);
     }
 
     public async Task<Result<GetCategoryDto?>> GetCategoryByIdAsync(Guid id)
     {
-        var cached = await _cacheService.GetAsync<GetCategoryDto>($"category_{id}");
+        string singleCacheKey = $"category_{id}";
+        var cached = await _cacheService.GetAsync<GetCategoryDto>(singleCacheKey);
+        
         if (cached != null)
             return Result<GetCategoryDto?>.Ok(cached);
 
@@ -59,7 +70,7 @@ public class CategoryService : ICategoryService
             Description = category.Description
         };
 
-        await _cacheService.SetAsync($"category_{id}", dto, TimeSpan.FromMinutes(10));
+        await _cacheService.SetAsync(singleCacheKey, dto, TimeSpan.FromMinutes(10));
 
         return Result<GetCategoryDto?>.Ok(dto);
     }
@@ -76,7 +87,8 @@ public class CategoryService : ICategoryService
 
             await _categoryRepository.AddAsync(category);
 
-            await _cacheService.RemoveAsync("categories_all");
+            // ОБЯЗАТЕЛЬНО: Очищаем общий список в кэше, чтобы новая категория появилась сразу
+            await _cacheService.RemoveAsync(CacheKey);
 
             return Result<CreateCategoryResponseDto>.Ok(new CreateCategoryResponseDto
             {
@@ -85,7 +97,7 @@ public class CategoryService : ICategoryService
                 Description = category.Description
             });
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             return Result<CreateCategoryResponseDto>.Fail($"Error: {ex.Message}", ErrorType.Unknown);
         }
@@ -105,7 +117,8 @@ public class CategoryService : ICategoryService
 
             await _categoryRepository.UpdateAsync(category);
 
-            await _cacheService.RemoveAsync("categories_all");
+            // Очищаем и список, и конкретную категорию
+            await _cacheService.RemoveAsync(CacheKey);
             await _cacheService.RemoveAsync($"category_{id}");
 
             return Result<UpdateCategoryResponseDto>.Ok(new UpdateCategoryResponseDto
@@ -115,7 +128,7 @@ public class CategoryService : ICategoryService
                 Description = category.Description
             });
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             return Result<UpdateCategoryResponseDto>.Fail($"Error: {ex.Message}", ErrorType.Unknown);
         }
@@ -132,7 +145,8 @@ public class CategoryService : ICategoryService
 
             await _categoryRepository.DeleteAsync(category);
 
-            await _cacheService.RemoveAsync("categories_all");
+            // Очищаем кэш после удаления
+            await _cacheService.RemoveAsync(CacheKey);
             await _cacheService.RemoveAsync($"category_{id}");
 
             return Result<DeleteCategoryResponseDto>.Ok(new DeleteCategoryResponseDto
@@ -142,7 +156,7 @@ public class CategoryService : ICategoryService
                 Description = category.Description
             });
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             return Result<DeleteCategoryResponseDto>.Fail($"Error: {ex.Message}", ErrorType.Unknown);
         }

@@ -1,0 +1,112 @@
+﻿/* Переменные для быстрой смены темы */
+:root {
+    --primary-color: #5932EA; /* Admin */
+    --student-color: #00ACCF; /* Student */
+    --text-muted: #9197B3;
+    --bg-color: #FAFBFF;
+}
+
+/* Динамическая смена цвета в зависимости от класса на body */
+body.role-student { --active-accent: var(--student-color); }
+body:not(.role-student) { --active-accent: var(--primary-color); }
+
+* {
+    margin: 0; padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body { background-color: var(--bg-color); }
+
+.dashboard-container { display: flex; min-height: 100vh; }
+
+.sidebar {
+    width: 300px;
+    background: #ffffff;
+    padding: 35px 28px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    border-right: 1px solid #F0F0F0;
+    box-shadow: 10px 0 40px rgba(226, 236, 249, 0.2);
+}
+
+.logo-section {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 50px; padding-left: 5px;
+}
+
+.logo-icon {
+    font-size: 28px;
+    color: var(--active-accent);
+    display: flex; align-items: center;
+}
+
+.brand {
+    font-size: 22px; font-weight: 600;
+    color: #292D32; display: block; line-height: 1;
+}
+
+.version { font-size: 10px; color: #ACACAC; font-weight: 500; }
+
+.menu-item {
+    display: flex; align-items: center;
+    padding: 14px 18px; color: #9197B3;
+    text-decoration: none; border-radius: 12px;
+    margin-bottom: 10px; font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.menu-item i:first-child { font-size: 20px; margin-right: 14px; }
+
+.menu-item:hover {
+    background: #F9FBFF;
+    color: var(--active-accent);
+}
+
+.menu-item.active {
+    background: var(--active-accent) !important;
+    color: #ffffff !important;
+}
+
+.sidebar-footer {
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.user-profile-card {
+    padding: 12px;
+    border-radius: 16px;
+    background: #F9FBFF;
+    transition: 0.3s;
+}
+
+.user-profile-card:hover { background: #F0F4FF; }
+
+.avatar-wrapper img {
+    width: 42px; height: 42px;
+    border-radius: 12px; /* Квадратные со скруглением выглядят дороже */
+    object-fit: cover;
+}
+
+.user-name { font-size: 14px; font-weight: 600; color: #292D32; margin: 0; }
+.user-role { font-size: 11px; color: #757575; margin: 0; }
+
+.main-content {
+    flex-grow: 1;
+    padding: 40px 50px;
+}
+
+/* Кнопки входа */
+.btn-login-sidebar {
+    background: var(--active-accent);
+    color: white !important;
+    text-align: center;
+    padding: 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 10px;
+}

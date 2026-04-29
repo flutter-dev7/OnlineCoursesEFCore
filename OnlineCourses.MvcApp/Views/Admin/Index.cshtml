@@ -1,0 +1,182 @@
+﻿@model OnlineCourses.MvcApp.Models.DashboardSummaryDto
+
+<div class="container-fluid p-4" style="background-color: #FAFBFF; min-height: 100vh; font-family: 'Poppins', sans-serif;">
+    
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold text-dark m-0">Analytics Dashboard</h2>
+            <p class="text-muted">Hello Admin, here's what's happening on your platform today.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-white shadow-sm rounded-pill px-4"><i class="bi bi-calendar3 me-2"></i> Oct 2023 - Mar 2024</button>
+            <button class="btn btn-primary shadow rounded-pill px-4" style="background: #5932EA; border:none;">Generate Report</button>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3" style="border-radius: 20px;">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; background: #E0E7FF; color: #4F46E5;">
+                        <i class="bi bi-currency-dollar fs-3"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted small mb-0">Total Revenue</p>
+                        <h3 class="fw-bold mb-0">$@Model.TotalRevenue.ToString("N0")</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3" style="border-radius: 20px;">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; background: #D3FFE7; color: #00AC4F;">
+                        <i class="bi bi-people fs-3"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted small mb-0">Total Students</p>
+                        <h3 class="fw-bold mb-0">@Model.TotalStudents</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3" style="border-radius: 20px;">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; background: #FFEDD5; color: #F97316;">
+                        <i class="bi bi-journal-text fs-3"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted small mb-0">Total Courses</p>
+                        <h3 class="fw-bold mb-0">@Model.TotalCourses</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm p-3" style="border-radius: 20px;">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; background: #FEE2E2; color: #EF4444;">
+                        <i class="bi bi-star-fill fs-3"></i>
+                    </div>
+                    <div>
+                        <p class="text-muted small mb-0">Avg Rating</p>
+                        <h3 class="fw-bold mb-0">@Model.AveragePlatformRating.ToString("0.0")</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 30px;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold">Revenue Dynamics</h5>
+                    <span class="badge bg-light text-success">+12.5% from last month</span>
+                </div>
+                <canvas id="mainChart" style="max-height: 350px;"></canvas>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 30px; background: linear-gradient(135deg, #5932EA 0%, #7148FF 100%); color: white;">
+                <h5 class="fw-bold mb-4">Course Statistics</h5>
+                <div class="text-center mb-4">
+                    <canvas id="coursePie" style="max-height: 180px;"></canvas>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Published</span>
+                    <span class="fw-bold">@Model.PublishedCourses</span>
+                </div>
+                <div class="progress mb-4" style="height: 6px; background: rgba(255,255,255,0.2);">
+                    <div class="progress-bar bg-white" style="width: @(Model.TotalCourses > 0 ? (Model.PublishedCourses * 100 / Model.TotalCourses) : 0)%"></div>
+                </div>
+                <p class="small opacity-75">Out of @Model.TotalCourses total courses created by @Model.TotalInstructors instructors.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4" style="border-radius: 20px;">
+                <h6 class="text-muted mb-3">Enrollment Activity</h6>
+                <div class="d-flex align-items-center mb-3">
+                    <h2 class="fw-bold m-0">@Model.ActiveEnrollments</h2>
+                    <span class="ms-2 text-primary small">Active Now</span>
+                </div>
+                <div class="d-flex justify-content-between small border-top pt-3">
+                    <span>Completed: <b class="text-dark">@Model.CompletedEnrollments</b></span>
+                    <span>Total: <b class="text-dark">@Model.TotalEnrollments</b></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 text-center" style="border-radius: 20px;">
+                <h6 class="text-muted mb-2">Platform Reviews</h6>
+                <h1 class="fw-bold text-warning mb-1">@Model.TotalReviews</h1>
+                <p class="small text-muted">Total feedback received</p>
+                <div class="d-flex justify-content-center gap-1 text-warning">
+                    @for(int i=0; i<5; i++) { <i class="bi bi-star-fill"></i> }
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 d-flex flex-row align-items-center" style="border-radius: 20px; background: #1a1a1a; color: white;">
+                <div class="me-3">
+                    <i class="bi bi-person-badge-fill" style="font-size: 3rem; color: #5932EA;"></i>
+                </div>
+                <div>
+                    <h4 class="fw-bold m-0">@Model.TotalInstructors</h4>
+                    <p class="m-0 opacity-75">Verified Instructors</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // ЛИНЕЙНЫЙ ГРАФИК
+        const ctxMain = document.getElementById('mainChart').getContext('2d');
+        new Chart(ctxMain, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [500, 1200, 800, 1800, 1100, @Model.TotalRevenue],
+                    borderColor: '#5932EA',
+                    tension: 0.4,
+                    borderWidth: 4,
+                    fill: true,
+                    backgroundColor: (context) => {
+                        const gradient = ctxMain.createLinearGradient(0, 0, 0, 400);
+                        gradient.addColorStop(0, 'rgba(89, 50, 234, 0.2)');
+                        gradient.addColorStop(1, 'rgba(89, 50, 234, 0)');
+                        return gradient;
+                    },
+                    pointRadius: 5,
+                    pointBackgroundColor: '#5932EA'
+                }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
+        });
+
+        // КРУГОВОЙ ГРАФИК
+        const ctxPie = document.getElementById('coursePie').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'doughnut',
+            data: {
+                labels: ['Published', 'Draft'],
+                datasets: [{
+                    data: [@Model.PublishedCourses, @(Model.TotalCourses - Model.PublishedCourses)],
+                    backgroundColor: ['#ffffff', 'rgba(255,255,255,0.3)'],
+                    borderWidth: 0,
+                    cutout: '80%'
+                }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
+    </script>
+}

@@ -1,0 +1,17 @@
+﻿@{
+    // Достаем роль из куки
+    var userRole = Context.Request.Cookies["user_role"];
+
+    if (userRole == "Instructor" || userRole == "Admin")
+    {
+        Layout = "_Layout";
+    }
+    else if (userRole == "Student")
+    {
+        Layout = "_StudentLayout";
+    }
+    else
+    {
+        Layout = null; 
+    }
+}

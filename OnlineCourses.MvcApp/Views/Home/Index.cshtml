@@ -1,0 +1,96 @@
+﻿@model IEnumerable<CourseViewModel>
+@{
+    ViewData["Title"] = "Главная";
+    var userName = Context.Request.Cookies["user_name"] ?? "Студент";
+}
+
+<div class="container-fluid p-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="welcome-card p-5 text-white" 
+                 style="background: linear-gradient(135deg, #5932EA 0%, #7B52FF 100%); border-radius: 30px; position: relative; overflow: hidden;">
+                <div style="position: relative; z-index: 2;">
+                    <h1 class="fw-bold mb-2">С возвращением, @userName! 👋</h1>
+                    <p class="fs-5 opacity-75 mb-4">Готов продолжить обучение? Твои знания — это твоя сила.</p>
+                    <a asp-controller="Courses" asp-action="Index" class="btn btn-light rounded-pill px-4 py-2 fw-bold text-primary shadow-sm">Смотреть все курсы</a>
+                </div>
+                <i class="bi bi-mortarboard position-absolute" style="font-size: 12rem; right: 30px; bottom: -30px; opacity: 0.1; transform: rotate(-15deg);"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold m-0" style="color: #292D32;">Мои курсы</h3>
+        <span class="badge rounded-pill bg-primary-subtle text-primary px-3 py-2">Активные</span>
+    </div>
+
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var course in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100 p-4" style="border-radius: 25px; transition: 0.3s; background: white;">
+                        <div class="d-flex align-items-start justify-content-between mb-4">
+                            <div class="course-icon-box" style="background: #F0EDFF; color: #5932EA; width: 60px; height: 60px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
+                                <i class="bi bi-journal-code"></i>
+                            </div>
+                            <div class="dropdown">
+                                <i class="bi bi-three-dots-vertical text-muted cursor-pointer" data-bs-toggle="dropdown"></i>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <span class="text-primary small fw-bold text-uppercase tracking-wider">@course.CategoryName</span>
+                            <h5 class="fw-bold text-dark mt-1" style="line-height: 1.4;">@course.Title</h5>
+                            <p class="text-muted small">Преподаватель: <span class="fw-medium text-dark">@course.InstructorName</span></p>
+                        </div>
+
+                        <div class="mt-auto pt-3 border-top d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-play-circle-fill text-primary me-2"></i>
+                                <span class="small fw-bold text-dark">Учиться</span>
+                            </div>
+                            <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.Id" class="btn btn-link p-0 text-decoration-none fw-bold small" style="color: #5932EA;">Открыть <i class="bi bi-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <div class="p-5" style="background: #f8f9fa; border-radius: 30px; border: 2px dashed #dee2e6;">
+                    <i class="bi bi-plus-circle text-muted mb-3" style="font-size: 3rem;"></i>
+                    <h4 class="fw-bold">Список пуст</h4>
+                    <p class="text-muted mb-4">Вы еще не записались ни на один курс. Самое время начать!</p>
+                    <a asp-controller="Courses" asp-action="Index" class="btn btn-primary rounded-pill px-5" style="background: #5932EA; border: none;">Перейти в каталог</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    /* Плавный эффект при наведении */
+    .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(89, 50, 234, 0.1) !important;
+    }
+
+    .tracking-wider {
+        letter-spacing: 0.05em;
+    }
+
+    .course-icon-box i {
+        transition: 0.3s;
+    }
+
+    .card:hover .course-icon-box i {
+        transform: scale(1.1);
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+</style>

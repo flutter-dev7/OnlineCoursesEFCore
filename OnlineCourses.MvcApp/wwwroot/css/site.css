@@ -1,0 +1,205 @@
+/* Общие настройки */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: #FAFBFF;
+}
+
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 300px;
+    background: #ffffff;
+    padding: 35px 28px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    border-right: 1px solid #F0F0F0;
+}
+
+/* Логотип */
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 50px;
+    padding-left: 5px;
+}
+
+.logo-icon {
+    font-size: 28px;
+    color: #5932EA;
+    display: flex;
+    align-items: center;
+}
+
+.brand {
+    font-size: 22px;
+    font-weight: 600;
+    color: #292D32;
+    display: block;
+    line-height: 1;
+}
+
+.version {
+    font-size: 10px;
+    color: #ACACAC;
+    font-weight: 500;
+}
+
+/* Меню */
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    color: #9197B3;
+    text-decoration: none;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.menu-item i:first-child {
+    font-size: 20px;
+    margin-right: 14px;
+}
+
+.menu-item .arrow {
+    font-size: 12px;
+}
+
+.menu-item:hover, .menu-item.active {
+    background: #5932EA;
+    color: #ffffff !important;
+}
+
+/* Карточка профиля */
+.user-profile-card {
+    margin-top: auto;
+    padding: 15px;
+    border-radius: 16px;
+    background: #F9FBFF;
+}
+
+.avatar-wrapper img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #292D32;
+    margin-bottom: 0;
+}
+
+.user-role {
+    font-size: 12px;
+    color: #757575;
+    margin-bottom: 0;
+}
+
+/* --- CONTENT AREA --- */
+.main-content {
+    flex-grow: 1;
+    padding: 40px 50px;
+}
+
+/* Шапка с поиском на страницах */
+.top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.search-box {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+/* Карточка таблицы */
+.table-card {
+    background: #ffffff;
+    border-radius: 30px;
+    padding: 35px;
+    box-shadow: 0 10px 60px rgba(226, 236, 249, 0.5);
+}
+
+/* Стили для выпадающего меню (Bootstrap Override) */
+.dropdown-menu {
+    width: 100%;
+    border-radius: 15px;
+    padding: 10px;
+}
+
+/* Блок кнопок входа в сайдбаре */
+.auth-buttons-minimal {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+
+.btn-login-sidebar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #5932EA;
+    color: white !important;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.btn-login-sidebar:hover {
+    background: #4a29c4;
+    transform: translateY(-2px);
+}
+
+.btn-register-sidebar {
+    text-align: center;
+    color: #9197B3 !important;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px;
+    transition: 0.3s;
+}
+
+.btn-register-sidebar:hover {
+    color: #5932EA !important;
+}
+
+/* Фикс для футера сайдбара */
+.sidebar-footer {
+    padding-top: 20px;
+    border-top: 1px solid #f0f0f0;
+}

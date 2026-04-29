@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnlineCourses</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+
+<body>
+
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <i class="bi bi-hexagon-fill"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="brand">OnlineCourses</span>
+                    <span class="version">v.01</span>
+                </div>
+            </div>
+        
+            <nav class="menu flex-grow-1">
+                @* Dashboard: ТОЛЬКО для Админа *@
+                @if (Context.Request.Cookies["user_role"] == "Admin")
+                {
+                    <a asp-controller="Admin" asp-action="Index" class="menu-item @(IsActive("Admin", "Index"))">
+                        <i class="bi bi-grid-1x2-fill"></i> <span>Dashboard</span>
+                    </a>
+                }
+
+                @* Courses: Видят ВСЕ (Админ, Инструктор) *@
+                <a asp-controller="Courses" asp-action="Index" class="menu-item @(IsActive("Courses"))">
+                    <i class="bi bi-journal-bookmark-fill"></i> <span>Courses</span>
+                    <i class="bi bi-chevron-right ms-auto arrow"></i>
+                </a>
+
+                <a asp-controller="Categories" asp-action="Index" class="menu-item @(IsActive("Categories"))">
+                    <i class="bi bi-tags-fill"></i> <span>Categories</span>
+                    <i class="bi bi-chevron-right ms-auto arrow"></i>
+                </a>
+
+                @* Students: Теперь видят и Админ, и Инструктор *@
+                @if (Context.Request.Cookies["user_role"] == "Admin" || Context.Request.Cookies["user_role"] ==
+                           "Instructor")
+                {
+                    <a asp-controller="Students" asp-action="Index" class="menu-item @(IsActive("Students"))">
+                        <i class="bi bi-people-fill"></i> <span>Students</span>
+                        <i class="bi bi-chevron-right ms-auto arrow"></i>
+                    </a>
+                }
+
+                @* Income: Оставляем ТОЛЬКО Админу (или добавь Инструктора, если он должен видеть свои деньги) *@
+                @if (Context.Request.Cookies["user_role"] == "Admin")
+                {
+                    <a asp-controller="Income" asp-action="Index" class="menu-item @(IsActive("Income"))">
+                        <i class="bi bi-wallet2"></i> <span>Income</span>
+                        <i class="bi bi-chevron-right ms-auto arrow"></i>
+                    </a>
+                }
+            </nav>
+
+            <div class="sidebar-footer mt-auto">
+                @if (Context.Request.Cookies["jwt"] != null)
+                {
+                    <div class="user-profile-card dropdown">
+                        <div class="d-flex align-items-center w-100" data-bs-toggle="dropdown" style="cursor: pointer;">
+                            <div class="avatar-wrapper">
+                                <img src="https://ui-avatars.com/api/?name=@(Context.Request.Cookies["user_name"] ?? "U")&background=5932EA&color=fff"
+                                     alt="User">
+                            </div>
+                            <div class="user-info ms-2">
+                                <p class="user-name">@Context.Request.Cookies["user_name"]</p>
+                                <p class="user-role">@Context.Request.Cookies["user_role"]</p>
+                            </div>
+                            <i class="bi bi-chevron-expand ms-auto text-muted"></i>
+                        </div>
+                        <ul class="dropdown-menu shadow-lg border-0 mb-2">
+                            <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person me-2"></i> My Profile</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item py-2 text-danger fw-medium" asp-controller="Account"
+                                       asp-action="Logout">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Sign Out
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                else
+                {
+                    <div class="auth-buttons-minimal">
+                        <a asp-controller="Account" asp-action="Login" class="btn-login-sidebar">
+                            <i class="bi bi-box-arrow-in-right"></i> Sign In
+                        </a>
+                        <a asp-controller="Account" asp-action="Register" class="btn-register-sidebar">
+                            Create Account
+                        </a>
+                    </div>
+                }
+            </div>
+        </aside>
+
+        <main class="main-content">
+            @RenderBody()
+        </main>
+    </div>
+
+@functions {
+    string IsActive(string controller, string? action = null)
+    {
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+        if (action == null) return currentController == controller ? "active" : "";
+        return (currentController == controller && currentAction == action) ? "active" : "";
+    }
+}
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

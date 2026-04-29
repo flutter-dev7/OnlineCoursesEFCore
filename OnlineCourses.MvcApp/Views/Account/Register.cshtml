@@ -1,0 +1,141 @@
+﻿@model RegisterViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Create Account";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnlineCourses</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            background-color: #FAFBFF;
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .register-card {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 60px rgba(226, 236, 249, 0.5);
+            width: 100%;
+            max-width: 500px;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .logo-area i { font-size: 28px; color: #5932EA; }
+        .logo-area span { font-size: 20px; font-weight: 600; color: #292D32; }
+
+        .form-label { font-size: 13px; font-weight: 500; color: #292D32; }
+        .form-control {
+            border-radius: 12px;
+            padding: 10px 15px;
+            background: #F9FBFF;
+            border: 1px solid #F0F0F0;
+            font-size: 14px;
+        }
+        .btn-auth {
+            background: #5932EA;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-weight: 600;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+        .btn-auth:hover { background: #4a29c4; transform: translateY(-2px); color: white; }
+        .login-link { font-size: 13px; color: #ACACAC; text-decoration: none; }
+        .login-link span { color: #5932EA; font-weight: 600; }
+.input-validation-error {
+    border-color: #ffa8a8 !important;
+    background-color: #fffafb !important;
+}
+
+.input-validation-error:focus {
+    box-shadow: 0 0 0 3px rgba(224, 49, 49, 0.1) !important;
+}
+
+div[asp-validation-summary="ModelOnly"] ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+    </style>
+</head>
+<body>
+
+<div class="register-card">
+    <div class="logo-area">
+        <i class="bi bi-hexagon-fill"></i>
+        <span>OnlineCourses</span>
+    </div>
+
+    <h4 class="text-center fw-bold mb-1">Join Us!</h4>
+    <p class="text-center text-muted small mb-4">Create your account to start learning</p>
+
+    <form asp-action="Register" asp-controller="Account" method="post">
+        @Html.AntiForgeryToken()
+        
+ @if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger border-0 shadow-sm d-flex align-items-center mb-4" role="alert" style="border-radius: 12px; background-color: #fff5f5; color: #e03131;">
+        <i class="bi bi-exclamation-circle-fill me-2 fs-5"></i>
+        <div asp-validation-summary="ModelOnly" class="small fw-medium"></div>
+    </div>
+}
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label asp-for="FullName" class="form-label">Full Name</label>
+                <input asp-for="FullName" class="form-control" placeholder="John Doe" required />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email Address</label>
+            <input asp-for="Email" class="form-control" placeholder="example@mail.com" required />
+        </div>
+
+        <div class="mb-3">
+    <label asp-for="UserName" class="form-label">User Name</label>
+    <input asp-for="UserName" class="form-control" placeholder="johnny123" required />
+    <span asp-validation-for="UserName" class="text-danger small"></span>
+</div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">Password</label>
+            <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" required />
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" class="btn btn-auth w-100">Create Account</button>
+    </form>
+
+    <div class="text-center mt-4">
+        <a asp-action="Login" class="login-link">Already have an account? <span>Sign In</span></a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -38,7 +38,6 @@ public class StudentController : BaseController
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin,Instructor")]
     public async Task<IActionResult> UpdateUserAsync([FromRoute] string id, UpdateStudentDto updateUserDto)
     {
         var res = await _service.UpdateStudentAsync(id, updateUserDto);

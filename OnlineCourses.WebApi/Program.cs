@@ -15,7 +15,8 @@ using OnlineCourses.Application.Services;
 using OnlineCourses.Domain.Identity;
 using OnlineCourses.Infrastructure.BackgroundJobs;
 using OnlineCourses.Infrastructure.Data;
-using OnlineCourses.Infrastructure.Repositories;
+using OnlineCourses.Infrastructure.
+Repositories;
 using OnlineCourses.Infrastructure.Seeds;
 using OnlineCourses.Infrastructure.Services;
 using OnlineCourses.WebApi.Middleware;
@@ -75,8 +76,8 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-                "http://localhost:3000", 
-                "http://localhost:5173"    
+               "http://localhost:58478",
+               "http://localhost:5147"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
