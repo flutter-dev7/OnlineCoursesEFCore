@@ -20,6 +20,96 @@
         .menu-item:hover, .menu-item.active {
             background: var(--student-accent) !important;
         }
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.sidebar {
+    /* Сайдбар теперь всегда 280px и никогда не сжимается */
+    width: 280px; 
+    min-width: 280px; 
+    max-width: 280px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: #fff;
+    border-right: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+
+.main-content {
+    flex-grow: 1;
+    /* Margin строго равен ширине сайдбара */
+    margin-left: 280px; 
+    padding: 40px; /* Больше пространства для контента */
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* --- STUDENT CARD IMPROVEMENTS --- */
+.student-course-card {
+    border-radius: 28px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    overflow: hidden;
+    /* Убираем жесткую высоту, пусть карточка растет под текст */
+    height: 100%; 
+}
+
+/* Возвращаем нормальный текст (убираем принудительную обрезку) */
+.text-truncate-2 {
+    display: block; /* Вместо -webkit-box */
+    overflow: visible;
+    color: #6c757d;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Красивая шапка карточки */
+.card-header-visual {
+    height: 160px; /* Чуть выше для солидности */
+    background: linear-gradient(135deg, #5932EA 0%, #7B52FF 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.course-category-tag {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-learn-more {
+    background: #F0EDFF;
+    color: #5932EA;
+    border-radius: 14px;
+    padding: 10px 20px;
+    font-weight: 700;
+    transition: 0.3s;
+    border: none;
+}
+
+.btn-learn-more:hover {
+    background: #5932EA !important;
+    color: white !important;
+}
     </style>
 </head>
 
@@ -44,7 +134,7 @@
                 <a asp-controller="Courses" asp-action="Index" class="menu-item @(IsActive("Courses"))">
                     <i class="bi bi-search"></i> <span>Explore Courses</span>
                 </a>
-                <a asp-controller="MyLearning" asp-action="Index" class="menu-item">
+                <a asp-controller="Enrollments" asp-action="MyLearning" class="menu-item">
                     <i class="bi bi-play-circle-fill"></i> <span>My Learning</span>
                 </a>
             </nav>

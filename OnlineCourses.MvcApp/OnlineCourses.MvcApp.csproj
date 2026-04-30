@@ -13,6 +13,9 @@
     <Folder Include="Views\Admin\" />
     <Folder Include="Views\Categories\" />
     <Folder Include="Views\Courses\" />
+    <Folder Include="Views\Enrollments\" />
+    <Folder Include="Views\Lessons\" />
+    <Folder Include="Views\Students\" />
   </ItemGroup>
 
 </Project>

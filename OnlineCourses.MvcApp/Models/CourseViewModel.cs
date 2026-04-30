@@ -13,6 +13,7 @@ public class CourseViewModel
     public string CategoryName { get; set; } = string.Empty;
     public string InstructorName { get; set; } = string.Empty;
     public bool IsPublished { get; set; }
+    public bool IsEnrolled { get; set; }
 }
 
 public class CourseCreateViewModel

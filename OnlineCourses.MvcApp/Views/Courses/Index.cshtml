@@ -5,6 +5,24 @@
     var userName = Context.Request.Cookies["user_name"] ?? "User";
 }
 
+@* --- NOTIFICATIONS --- *@
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1060;">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm auto-close" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show rounded-4 border-0 shadow-sm auto-close" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+</div>
+
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
@@ -22,7 +40,7 @@
 
         @if (!isStudent)
         {
-            <button type="button" class="btn btn-primary px-4 py-2 d-inline-flex align-items-center shadow-sm create-btn" 
+            <button type="button" class="btn btn-primary px-4 py-2 d-inline-flex align-items-center shadow-sm create-btn"
                     data-bs-toggle="modal" data-bs-target="#createCourseModal">
                 <i class="bi bi-plus-lg me-2"></i> Add New Course
             </button>
@@ -42,27 +60,46 @@
                                 <i class="bi bi-code-square display-4 text-white opacity-25"></i>
                             </div>
                         </div>
-                        
+
                         <div class="card-body p-4 d-flex flex-column">
                             <h5 class="fw-bold text-dark mb-2 lh-base">@course.Title</h5>
-                            
+
                             <div class="d-flex align-items-center mb-3">
-                                <img src="https://ui-avatars.com/api/?name=@course.InstructorName&background=random" class="rounded-circle me-2" width="24">
+                                <img src="https://ui-avatars.com/api/?name=@course.InstructorName&background=random"
+                                     class="rounded-circle me-2" width="24" alt="@course.InstructorName">
                                 <span class="text-muted small">@course.InstructorName</span>
                             </div>
 
                             <p class="text-muted small text-truncate-2 mb-4">
-                                @(string.IsNullOrEmpty(course.Description) ? "Master in-demand skills from scratch with guidance from industry experts." : course.Description)
+                                @(string.IsNullOrEmpty(course.Description)
+                                    ? "Master in-demand skills from scratch with guidance from industry experts."
+                                    : course.Description)
                             </p>
-                            
+
                             <div class="mt-auto d-flex justify-content-between align-items-center pt-3 border-top">
                                 <div>
                                     <span class="text-muted d-block" style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;">Price</span>
                                     <span class="fw-bold fs-5 text-dark">@(course.Price == 0 ? "Free" : $"${course.Price}")</span>
                                 </div>
-                                <a asp-action="Details" asp-route-id="@course.Id" class="btn btn-learn-more px-3">
-                                    Details <i class="bi bi-arrow-right ms-1"></i>
-                                </a>
+
+                                @if (course.IsEnrolled)
+                                {
+                                    <div class="d-flex align-items-center text-success fw-bold" style="font-size: 13px;">
+                                        <i class="bi bi-patch-check-fill me-1"></i> Enrolled
+                                    </div>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Enrollments" asp-action="Enroll" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="courseId" value="@course.Id" />
+                                        <button type="submit"
+                                                class="btn btn-primary px-3 rounded-pill fw-bold shadow-sm"
+                                                style="background: #5932EA; border: none; font-size: 13px;">
+                                            Enroll Now <i class="bi bi-plus-lg ms-1"></i>
+                                        </button>
+                                    </form>
+                                }
                             </div>
                         </div>
                     </div>
@@ -112,9 +149,24 @@
                                             <i class="bi bi-three-dots-vertical cursor-pointer fs-5" data-bs-toggle="dropdown"></i>
                                             <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg" style="border-radius: 15px;">
                                                 <li>
-                                                    <a class="dropdown-item fw-medium edit-course-btn" href="#" 
-                                                       data-id="@course.Id" data-title="@course.Title" data-price="@course.Price" 
-                                                       data-desc="@course.Description" data-catid="@Model.Categories.FirstOrDefault(c => c.Text == course.CategoryName)?.Value"
+    <a class="dropdown-item fw-medium" 
+       asp-controller="Lessons" asp-action="Details" 
+       asp-route-courseId="@course.Id">
+        <i class="bi bi-play-btn me-2 text-success"></i> View Lessons
+    </a>
+</li>
+                                                <li>
+                                                    @*
+                                                        КЛЮЧЕВОЙ ФИХ: ищем Guid категории в Model.Categories
+                                                        по имени (Text == CategoryName) прямо в Razor на сервере.
+                                                        JS просто берёт готовый Guid и ставит его в select.
+                                                    *@
+                                                    <a class="dropdown-item fw-medium edit-course-btn" href="#"
+                                                       data-id="@course.Id"
+                                                       data-title="@course.Title"
+                                                       data-price="@course.Price"
+                                                       data-desc="@course.Description"
+                                                       data-catid="@Model.Categories.FirstOrDefault(c => c.Text == course.CategoryName)?.Value"
                                                        data-published="@course.IsPublished.ToString().ToLower()">
                                                         <i class="bi bi-pencil-square me-2 text-primary"></i> Edit
                                                     </a>
@@ -123,14 +175,20 @@
                                                     <form asp-action="TogglePublish" method="post">
                                                         <input type="hidden" name="id" value="@course.Id" />
                                                         <button type="submit" class="dropdown-item fw-medium">
-                                                            @if (course.IsPublished) { <span class="text-warning"><i class="bi bi-eye-slash me-2"></i> Unpublish</span> }
-                                                            else { <span class="text-success"><i class="bi bi-eye me-2"></i> Publish</span> }
+                                                            @if (course.IsPublished)
+                                                            {
+                                                                <span class="text-warning"><i class="bi bi-eye-slash me-2"></i> Unpublish</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="text-success"><i class="bi bi-eye me-2"></i> Publish</span>
+                                                            }
                                                         </button>
                                                     </form>
                                                 </li>
                                                 <li><hr class="dropdown-divider"></li>
                                                 <li>
-                                                    <a class="dropdown-item text-danger fw-medium delete-course-btn" href="#" 
+                                                    <a class="dropdown-item text-danger fw-medium delete-course-btn" href="#"
                                                        data-id="@course.Id" data-title="@course.Title">
                                                         <i class="bi bi-trash3 me-2"></i> Delete
                                                     </a>
@@ -254,8 +312,7 @@
 
 <style>
     .cursor-pointer { cursor: pointer; }
-    
-    /* STUDENT UI STYLES */
+
     .student-course-card {
         border-radius: 28px;
         background: #ffffff;
@@ -306,13 +363,11 @@
         overflow: hidden;
     }
 
-    /* ADMIN UI STYLES */
     .create-btn { background: #5932EA; border-radius: 12px; border: none; font-weight: 600; transition: 0.3s; color: white; }
     .create-btn:hover { background: #4726c2; transform: scale(1.02); color: white; }
     .custom-table thead th { letter-spacing: 0.5px; font-size: 11px; padding-bottom: 15px; }
     .custom-table tbody td { border-bottom: 1px solid #f8f9fa; }
-    
-    /* INPUTS */
+
     .custom-input {
         background-color: #f8f9fa !important;
         border: 2px solid #f1f3f5 !important;
@@ -329,26 +384,32 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function() {
-            $('.edit-course-btn').on('click', function(e) {
+        $(document).ready(function () {
+
+            setTimeout(function () {
+                $('.auto-close').fadeOut('slow');
+            }, 4000);
+
+            $('.edit-course-btn').on('click', function (e) {
                 e.preventDefault();
                 const btn = $(this);
                 $('#edit-course-id').val(btn.data('id'));
                 $('#edit-course-title').val(btn.data('title'));
                 $('#edit-course-desc').val(btn.data('desc'));
                 $('#edit-course-price').val(btn.data('price').toString().replace(',', '.'));
+
+                // data-catid уже содержит готовый Guid (Razor нашёл его по имени категории)
                 $('#edit-course-cat').val(btn.data('catid'));
+
                 const isPublished = btn.data('published');
                 $('#edit-course-published').prop('checked', isPublished === true || isPublished === "true");
                 $('#editCourseModal').modal('show');
             });
 
-            $('.delete-course-btn').on('click', function(e) {
+            $('.delete-course-btn').on('click', function (e) {
                 e.preventDefault();
-                const id = $(this).data('id');
-                const title = $(this).data('title');
-                $('#del-id').val(id);
-                $('#del-title').text(title);
+                $('#del-id').val($(this).data('id'));
+                $('#del-title').text($(this).data('title'));
                 $('#deleteCourseModal').modal('show');
             });
         });

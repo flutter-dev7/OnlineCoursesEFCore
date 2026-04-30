@@ -1,0 +1,128 @@
+﻿@model List<OnlineCourses.MvcApp.Models.EnrollmentViewModel>
+
+<div class="container-fluid px-4 py-5"> @* Увеличили отступ сверху и снизу (py-5) *@
+    
+    <div class="mb-5"> @* Отступ между заголовком и таблицей *@
+        <h3 class="fw-bold m-0" style="color: #1A202C;">All Enrollments</h3>
+        <p class="text-muted small">List of all active and completed course participations</p>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr class="text-muted small">
+                            <th class="ps-4 py-3" style="width: 30%;">STUDENT</th>
+                            <th class="py-3" style="width: 25%;">COURSE</th>
+                            <th class="py-3" style="width: 20%;">ENROLLED DATE</th>
+                            <th class="py-3" style="width: 15%;">PROGRESS</th>
+                            <th class="py-3 text-center" style="width: 10%;">STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    @* Студент *@
+                                    <td class="ps-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-circle me-3">
+                                                @(string.IsNullOrEmpty(item.StudentName) ? "S" : item.StudentName.Substring(0, 1))
+                                            </div>
+                                            <div>
+                                                <div class="fw-bold text-dark">@item.StudentName</div>
+                                                <div class="text-muted" style="font-size: 11px;">ID: @item.Id.ToString().Substring(0, 8)</div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    @* Курс *@
+                                    <td>
+                                        <div class="fw-medium text-dark">@item.CourseTitle</div>
+                                    </td>
+
+                                    @* Дата *@
+                                    <td class="text-muted small">
+                                        @item.EnrolledAt.ToString("dd MMM yyyy")
+                                    </td>
+
+                                    @* Прогресс *@
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="progress flex-grow-1 me-2" style="height: 6px; background-color: #EEE;">
+                                                <div class="progress-bar" style="width: @item.ProgressPercent%; background-color: #5932EA;"></div>
+                                            </div>
+                                            <span class="small text-muted">@item.ProgressPercent%</span>
+                                        </div>
+                                    </td>
+
+                                    @* Статус *@
+                                    <td class="text-center">
+                                        <span class="badge rounded-pill @(item.Status == 0 ? "status-active" : "status-completed")">
+                                            @(item.Status == 0 ? "Active" : "Completed")
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5 text-muted">
+                                    No enrollment data found.
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-circle {
+        width: 38px;
+        height: 38px;
+        background-color: #5932EA;
+        color: white;
+        border-radius: 10px; /* Сделал чуть квадратнее, как на скрине */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .table thead th {
+        border: none;
+        color: #8E92BC;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 11px;
+        letter-spacing: 0.5px;
+    }
+
+    .table tbody td {
+        padding-top: 18px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #F1F4F9;
+    }
+
+    /* Стили для статусов */
+    .status-active {
+        background-color: #EBF4FF;
+        color: #3182CE;
+        padding: 6px 12px;
+        font-weight: 500;
+    }
+
+    .status-completed {
+        background-color: #F0FFF4;
+        color: #38A169;
+        padding: 6px 12px;
+        font-weight: 500;
+    }
+</style>

@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
@@ -9,6 +9,67 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+            /* Фиксируем сайдбар, чтобы не сжимался */
+            .dashboard-container {
+                display: flex;
+                min-height: 100vh;
+                width: 100%;
+            }
+
+            .sidebar {
+                width: 280px;
+                min-width: 280px;
+                /* Это не даст ему уменьшаться */
+                max-width: 280px;
+                flex-shrink: 0;
+                /* Запрещает flex-контейнеру сжимать этот блок */
+                background-color: #fff;
+                border-right: 1px solid #edf2f7;
+                display: flex;
+                flex-direction: column;
+                padding: 24px;
+                height: 100vh;
+                position: sticky;
+                top: 0;
+            }
+
+            .main-content {
+                flex-grow: 1;
+                background-color: #F8F9FD;
+                overflow-x: hidden;
+            }
+
+            /* Исправляем цвета Hover */
+            .menu-item {
+                display: flex;
+                align-items: center;
+                padding: 12px 15px;
+                border-radius: 12px;
+                color: #9197B3 !important;
+                /* Серый текст по умолчанию */
+                text-decoration: none;
+                margin-bottom: 5px;
+                transition: all 0.2s;
+            }
+
+            .menu-item:hover {
+                background-color: #F0EDFF;
+                color: #5932EA !important;
+                /* Фиолетовый текст при наведении (теперь будет видно) */
+            }
+
+            .menu-item.active {
+                background-color: #5932EA;
+                color: #fff !important;
+                /* Белый текст для активного пункта */
+            }
+
+            .menu-item i {
+                font-size: 1.2rem;
+                margin-right: 12px;
+            }
+    </style>
 </head>
 
 <body>
@@ -26,40 +87,51 @@
             </div>
         
             <nav class="menu flex-grow-1">
-                @* Dashboard: ТОЛЬКО для Админа *@
+                @* Dashboard: Admin & Instructor *@
                 @if (Context.Request.Cookies["user_role"] == "Admin")
                 {
                     <a asp-controller="Admin" asp-action="Index" class="menu-item @(IsActive("Admin", "Index"))">
                         <i class="bi bi-grid-1x2-fill"></i> <span>Dashboard</span>
+                        <i class="bi bi-chevron-right ms-auto arrow"></i>
                     </a>
                 }
 
-                @* Courses: Видят ВСЕ (Админ, Инструктор) *@
+                @* Enrollments: Видят и Админ, и Инструктор *@
+                @if (Context.Request.Cookies["user_role"] == "Admin")
+                {
+                    <a asp-controller="Enrollments" asp-action="Index"
+                           class="menu-item @(IsActive("Enrollments", "Index"))">
+                        <i class="bi bi-clipboard-check-fill"></i> <span>All Enrollments</span>
+                        <i class="bi bi-chevron-right ms-auto arrow"></i>
+                    </a>
+                }
+
+                @* Courses: Все *@
                 <a asp-controller="Courses" asp-action="Index" class="menu-item @(IsActive("Courses"))">
                     <i class="bi bi-journal-bookmark-fill"></i> <span>Courses</span>
                     <i class="bi bi-chevron-right ms-auto arrow"></i>
                 </a>
+
+                @* My Learning: Студент *@
+                @if (Context.Request.Cookies["user_role"] == "Student")
+                {
+                    <a asp-controller="Enrollments" asp-action="MyCourses"
+                           class="menu-item @(IsActive("Enrollments", "MyCourses"))">
+                        <i class="bi bi-play-circle-fill"></i> <span>My Learning</span>
+                        <i class="bi bi-chevron-right ms-auto arrow"></i>
+                    </a>
+                }
 
                 <a asp-controller="Categories" asp-action="Index" class="menu-item @(IsActive("Categories"))">
                     <i class="bi bi-tags-fill"></i> <span>Categories</span>
                     <i class="bi bi-chevron-right ms-auto arrow"></i>
                 </a>
 
-                @* Students: Теперь видят и Админ, и Инструктор *@
                 @if (Context.Request.Cookies["user_role"] == "Admin" || Context.Request.Cookies["user_role"] ==
-                           "Instructor")
+                         "Instructor")
                 {
                     <a asp-controller="Students" asp-action="Index" class="menu-item @(IsActive("Students"))">
                         <i class="bi bi-people-fill"></i> <span>Students</span>
-                        <i class="bi bi-chevron-right ms-auto arrow"></i>
-                    </a>
-                }
-
-                @* Income: Оставляем ТОЛЬКО Админу (или добавь Инструктора, если он должен видеть свои деньги) *@
-                @if (Context.Request.Cookies["user_role"] == "Admin")
-                {
-                    <a asp-controller="Income" asp-action="Index" class="menu-item @(IsActive("Income"))">
-                        <i class="bi bi-wallet2"></i> <span>Income</span>
                         <i class="bi bi-chevron-right ms-auto arrow"></i>
                     </a>
                 }
@@ -81,7 +153,7 @@
                             <i class="bi bi-chevron-expand ms-auto text-muted"></i>
                         </div>
                         <ul class="dropdown-menu shadow-lg border-0 mb-2">
-                            <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person me-2"></i> My Profile</a></li>
+                            <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person me-2"></i> Profile</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -92,17 +164,6 @@
                                 </a>
                             </li>
                         </ul>
-                    </div>
-                }
-                else
-                {
-                    <div class="auth-buttons-minimal">
-                        <a asp-controller="Account" asp-action="Login" class="btn-login-sidebar">
-                            <i class="bi bi-box-arrow-in-right"></i> Sign In
-                        </a>
-                        <a asp-controller="Account" asp-action="Register" class="btn-register-sidebar">
-                            Create Account
-                        </a>
                     </div>
                 }
             </div>

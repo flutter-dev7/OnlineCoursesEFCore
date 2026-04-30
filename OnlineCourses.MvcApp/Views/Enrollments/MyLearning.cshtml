@@ -1,0 +1,211 @@
+﻿@model List<OnlineCourses.MvcApp.Models.EnrollmentViewModel>
+@{
+    ViewData["Title"] = "My Learning";
+    var userName = Context.Request.Cookies["user_name"] ?? "Student";
+}
+
+@* --- 1. Контейнер для уведомлений (теперь они всплывают сверху) --- *@
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1080;">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-lg auto-close" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+                <div>@TempData["Success"]</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show rounded-4 border-0 shadow-lg auto-close" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                <div>@TempData["Error"]</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+</div>
+
+<div class="container py-4">
+    @* --- 2. Заголовок --- *@
+    <div class="mb-5">
+        <h2 class="fw-bold m-0" style="color: #2D3748;">Welcome back, @userName! 👋</h2>
+        <p class="text-muted">You are mastering <b>@Model.Count</b> courses right now.</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5 shadow-sm rounded-5 bg-white border-0">
+            <i class="bi bi-book display-1 text-muted opacity-25"></i>
+            <h4 class="mt-3 fw-bold">Your shelf is empty</h4>
+            <p class="text-muted">Start your journey by enrolling in a course.</p>
+            <a asp-controller="Courses" asp-action="Index" class="btn btn-primary rounded-pill px-4"
+                   style="background: #5932EA; border: none;">
+                Find a Course
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var enrollment in Model)
+            {
+                <div class="col-12 col-xl-6">
+                    <div class="card border-0 learning-card shadow-sm h-100">
+                        <div class="row g-0 h-100">
+                            @* Визуальный блок слева *@
+                            <div
+                                class="col-sm-4 learning-card-aside d-flex flex-column align-items-center justify-content-center p-3 text-white">
+                                <div class="learning-icon-box mb-2">
+                                    <i class="bi bi-rocket-takeoff"></i>
+                                </div>
+                                <span class="badge rounded-pill bg-white text-primary px-3 py-2 fw-bold shadow-sm">
+                                    In Progress
+                                </span>
+                            </div>
+
+                            @* Контентная часть справа *@
+                            <div class="col-sm-8 p-4 d-flex flex-column">
+                                <div class="mb-3">
+                                    <h5 class="fw-bold text-dark mb-1 text-truncate">@enrollment.CourseTitle</h5>
+                                    <small class="text-muted">
+                                        <i class="bi bi-calendar-check me-1"></i>
+                                        Enrolled: @enrollment.EnrolledAt.ToString("dd MMM yyyy")
+                                    </small>
+                                </div>
+
+                                <div class="mt-auto">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="small fw-bold text-muted">My Progress</span>
+                                        <span class="small fw-bold text-primary">0%</span>
+                                    </div>
+                                    <div class="progress mb-4" style="height: 8px; border-radius: 10px; background: #EDF2F7;">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar"
+                                             style="width: 5%; background: linear-gradient(90deg, #5932EA, #7B52FF); border-radius: 10px;">
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex align-items-center gap-2">
+                                        @* Главная кнопка *@
+                                        <a asp-controller="Lessons" asp-action="Details"
+                                               asp-route-courseId="@enrollment.CourseId"
+                                               class="btn btn-primary rounded-pill flex-grow-1 fw-bold py-2 shadow-sm"
+                                               style="background: #5932EA; border: none;">
+                                            Continue <i class="bi bi-play-fill ms-1"></i>
+                                        </a>
+                                        @* Кнопка УДАЛЕНИЯ (теперь заметная) *@
+                                        <button type="button"
+                                                class="btn btn-outline-danger rounded-circle d-flex align-items-center justify-content-center shadow-sm"
+                                                style="width: 42px; height: 42px; flex-shrink: 0;"
+                                                onclick="confirmUnenroll('@enrollment.Id', '@enrollment.CourseTitle')">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@* --- 3. МОДАЛЬНОЕ ОКНО (Modal) --- *@
+<div class="modal fade" id="unenrollModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
+            <div class="modal-body p-4 text-center">
+                <div class="mb-3 text-danger">
+                    <i class="bi bi-exclamation-octagon-fill" style="font-size: 3.5rem;"></i>
+                </div>
+                <h5 class="fw-bold">Leave Course?</h5>
+                <p class="text-muted small">
+                    Are you sure? You will lose access to <br>
+                    <b id="unenrollCourseTitle" class="text-dark"></b>
+                </p>
+                
+                <form asp-controller="Enrollments" asp-action="Unenroll" method="post">
+                    @Html.AntiForgeryToken()
+                    @* Важно: name="id" должен совпадать с параметром в контроллере! *@
+                    <input type="hidden" name="id" id="unenrollId" />
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-danger rounded-pill py-2 fw-bold shadow-sm">
+                            Yes, Unenroll
+                        </button>
+                        <button type="button" class="btn btn-light rounded-pill py-2 fw-bold text-muted"
+                                data-bs-dismiss="modal">
+                            Stay
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* --- 4. СТИЛИ (CSS) --- *@
+<style>
+    .learning-card {
+        border-radius: 24px;
+        transition: all 0.3s ease;
+        background: #ffffff;
+    }
+
+    .learning-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(89, 50, 234, 0.12) !important;
+    }
+
+    .learning-card-aside {
+        background: linear-gradient(135deg, #5932EA 0%, #3215a3 100%);
+        min-height: 160px;
+        border-radius: 24px 0 0 24px;
+    }
+
+    .learning-icon-box {
+        font-size: 2.5rem;
+        background: rgba(255, 255, 255, 0.15);
+        width: 70px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 20px;
+        backdrop-filter: blur(5px);
+    }
+
+    @@media (max-width: 576px) {
+        .learning-card-aside {
+            border-radius: 24px 24px 0 0;
+        }
+    }
+</style>
+
+@* --- 5. СКРИПТЫ (JS) --- *@
+@section Scripts {
+    <script>
+        // Функция открытия модалки
+        function confirmUnenroll(id, title) {
+            document.getElementById('unenrollId').value = id;
+            document.getElementById('unenrollCourseTitle').innerText = title;
+            
+            var myModal = new bootstrap.Modal(document.getElementById('unenrollModal'));
+            myModal.show();
+        }
+
+        // Авто-скрытие алертов через 3 секунды
+        document.addEventListener("DOMContentLoaded", function () {
+            const alerts = document.querySelectorAll('.auto-close');
+            alerts.forEach(function (alert) {
+                setTimeout(function () {
+                    let bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 3000);
+            });
+        });
+    </script>
+}

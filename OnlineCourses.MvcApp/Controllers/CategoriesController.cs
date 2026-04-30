@@ -13,7 +13,6 @@ public class CategoriesController : Controller
         _apiService = apiService;
     }
 
-    // Список всех категорий
     public async Task<IActionResult> Index()
     {
         var result = await _apiService.GetAsync<ApiResponse<List<CategoryViewModel>>>("api/Category");
@@ -56,7 +55,7 @@ public class CategoriesController : Controller
         if (!ModelState.IsValid) return RedirectToAction(nameof(Index));
 
         var dto = new { Name = model.Name, Description = model.Description };
-        // Путь к твоему API: api/Category/{id}
+
         var response = await _apiService.PutAsync($"api/Category/{model.Id}", dto);
 
         return RedirectToAction(nameof(Index));

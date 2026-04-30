@@ -1,0 +1,107 @@
+﻿@model List<OnlineCourses.MvcApp.Models.StudentViewModel>
+
+@{
+    ViewData["Title"] = "Students";
+    // Выносим базовый путь в переменную, чтобы было удобно менять
+    string apiBaseUrl = "http://localhost:5062/";
+}
+
+<div class="container-fluid p-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold m-0" style="color: #292D32;">Students Management</h3>
+            <p class="text-muted small">Manage your platform members</p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="border-radius: 25px;">
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table align-middle custom-table">
+                    <thead>
+                        <tr class="small text-muted">
+                            <th class="ps-3 border-0 fw-bold">STUDENT</th>
+                            <th class="border-0 fw-bold">USERNAME</th>
+                            <th class="border-0 fw-bold">EMAIL</th>
+                            <th class="border-0 fw-bold">ROLE</th>
+                            <th class="text-end pe-4 border-0 fw-bold">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var student in Model)
+                        {
+                            <tr>
+                                <td class="ps-3 py-3">
+                                    <div class="d-flex align-items-center">
+                                        @* Проверка: если ImageUrl пустой, рисуем аватарку, если нет — склеиваем путь *@
+                                        <img src="@(string.IsNullOrEmpty(student.ImageUrl) 
+                                                     ? $"https://ui-avatars.com/api/?name={student.FullName}&background=random" 
+                                                     : apiBaseUrl + student.ImageUrl)" 
+                                             class="rounded-circle me-3" 
+                                             width="38" 
+                                             height="38" 
+                                             style="object-fit: cover; border: 1px solid #eee;">
+                                        
+                                        <div>
+                                            <div class="fw-bold text-dark">@student.FullName</div>
+                                            <div class="text-muted" style="font-size: 10px;">ID: @student.Id.Substring(0, 8)</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-secondary">@@@student.Username</td>
+                                <td class="text-secondary">@student.Email</td>
+                                <td>
+                                    <span class="badge bg-info-subtle text-info px-3 py-2 rounded-pill">@student.Role</span>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <button class="btn btn-light btn-sm rounded-circle delete-btn" 
+                                            data-id="@student.Id" data-name="@student.FullName"
+                                            style="width: 35px; height: 35px;">
+                                        <i class="bi bi-trash3 text-danger"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* Модальное окно удаления *@
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+            <div class="modal-body p-4 text-center">
+                <div class="mb-3">
+                    <i class="bi bi-person-x text-danger" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="fw-bold">Delete Student?</h5>
+                <p id="studentNameDisplay" class="text-muted small"></p>
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" name="id" id="studentIdInput" />
+                    <button type="submit" class="btn btn-danger w-100 rounded-pill mb-2 py-2 fw-bold">Confirm</button>
+                    <button type="button" class="btn btn-light w-100 rounded-pill py-2" data-bs-dismiss="modal">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-table td { border-bottom: 1px solid #F8F9FA; padding: 15px 0; }
+    .custom-table thead th { color: #ADB5BD; font-size: 11px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .delete-btn { transition: 0.3s; border: 1px solid #f8f9fa; }
+    .delete-btn:hover { background-color: #fee2e2 !important; border-color: #fecaca; }
+</style>
+
+<script>
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.getElementById('studentIdInput').value = this.dataset.id;
+            document.getElementById('studentNameDisplay').innerText = "You are about to remove " + this.dataset.name;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        });
+    });
+</script>

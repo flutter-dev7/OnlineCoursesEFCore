@@ -17,22 +17,40 @@ namespace OnlineCourses.MvcApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // 1. Получаем курсы
             var courseResult = await _apiService.GetAsync<ApiResponse<List<CourseViewModel>>>("api/Course");
-            // 2. Получаем категории для Dropdown в модалке
-            var catResult = await _apiService.GetAsync<ApiResponse<List<CategoryViewModel>>>("api/Category");
+            var courses = courseResult?.Data ?? new List<CourseViewModel>();
+
+            var isStudent = HttpContext.Request.Cookies["user_role"] == "Student";
+
+            if (isStudent)
+            {
+                var myEnrolls = await _apiService.GetAsync<ApiResponse<List<EnrollmentViewModel>>>("api/Enrollment/my");
+
+                if (myEnrolls?.Data != null)
+                {
+                    var enrolledIds = myEnrolls.Data.Select(e => e.CourseId).ToHashSet();
+                    foreach (var course in courses)
+                        course.IsEnrolled = enrolledIds.Contains(course.Id);
+                }
+            }
 
             var viewModel = new CourseIndexViewModel
             {
-                Courses = courseResult?.Data ?? new List<CourseViewModel>(),
-                Categories = catResult?.Data?.Select(c => new SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                }).ToList() ?? new List<SelectListItem>()
+                Courses = courses,
+                Categories = (await _apiService.GetAsync<ApiResponse<List<CategoryViewModel>>>("api/Category"))
+                    ?.Data?.Select(c => new SelectListItem
+                    {
+                        Value = c.Id.ToString(),
+                        Text = c.Name
+                    }).ToList() ?? new List<SelectListItem>()
             };
 
             return View(viewModel);
+        }
+
+        public async Task<IActionResult> Details(Guid id)
+        {
+            return RedirectToAction("Details", "Lessons", new { courseId = id });
         }
 
         [HttpPost]
@@ -59,15 +77,12 @@ namespace OnlineCourses.MvcApp.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> TogglePublish(Guid id)
         {
-            // Вызываем твой API: [HttpPut("{id}/publish")]
             var response = await _apiService.PutAsync<object>($"api/Course/{id}/publish", null!);
 
             if (!response.IsSuccessStatusCode)
             {
-                // Можно добавить TempData для уведомления об ошибке
                 TempData["Error"] = "Failed to change status.";
             }
 

@@ -1,0 +1,325 @@
+﻿@model CourseDetailsViewModel
+@{
+    ViewData["Title"] = Model.CourseTitle;
+    var isAdmin = Context.Request.Cookies["user_role"] == "Admin" ||
+                  Context.Request.Cookies["user_role"] == "Instructor";
+}
+
+@* --- NOTIFICATIONS --- *@
+<div id="alert-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1060;">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show rounded-4 border-0 shadow-sm auto-close" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show rounded-4 border-0 shadow-sm auto-close" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+</div>
+
+<div class="container-fluid p-4">
+
+    @* --- BACK BUTTON + HEADER --- *@
+    <div class="mb-4">
+        @if (Context.Request.Cookies["user_role"] == "Student")
+        {
+            <a asp-controller="Enrollments" asp-action="MyLearning" class="btn btn-light rounded-pill px-3 mb-3 shadow-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to My Learning
+            </a>
+        }
+        else
+        {
+            <a asp-controller="Courses" asp-action="Index" class="btn btn-light rounded-pill px-3 mb-3 shadow-sm">
+                <i class="bi bi-arrow-left me-1"></i> Back to Courses
+            </a>
+        }
+
+        <div class="course-hero p-4 rounded-4 mb-4">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                <div>
+                    <span class="badge bg-white text-primary fw-bold px-3 py-2 mb-2 rounded-pill shadow-sm">
+                        @Model.CategoryName
+                    </span>
+                    <h2 class="fw-bold text-white mb-1">@Model.CourseTitle</h2>
+                    @if (!string.IsNullOrEmpty(Model.CourseDescription))
+                    {
+                        <p class="text-white opacity-75 mb-2">@Model.CourseDescription</p>
+                    }
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <span class="text-white opacity-75 small">
+                            <i class="bi bi-person-circle me-1"></i> @Model.InstructorName
+                        </span>
+                        <span class="text-white opacity-75 small">
+                            <i class="bi bi-book me-1"></i> @Model.Lessons.Count lessons
+                        </span>
+                        <span class="text-white fw-bold">
+                            @(Model.Price == 0 ? "Free" : $"${Model.Price}")
+                        </span>
+                    </div>
+                </div>
+
+                @if (isAdmin)
+                {
+                    <button type="button" class="btn btn-white px-4 py-2 fw-bold shadow-sm add-lesson-btn"
+                            data-bs-toggle="modal" data-bs-target="#createLessonModal">
+                        <i class="bi bi-plus-lg me-2"></i> Add Lesson
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
+    @* --- LESSONS LIST --- *@
+    @if (!Model.Lessons.Any())
+    {
+        <div class="text-center py-5">
+            <i class="bi bi-journal-x display-1 text-muted opacity-25"></i>
+            <h5 class="text-muted mt-3 fw-bold">No lessons yet</h5>
+            @if (isAdmin)
+            {
+                <p class="text-muted small">Click "Add Lesson" to create the first one.</p>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-3">
+            @foreach (var lesson in Model.Lessons.OrderBy(l => l.Order))
+            {
+                <div class="card border-0 shadow-sm lesson-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center gap-4">
+
+                            @* Order number badge *@
+                            <div class="lesson-number">@lesson.Order</div>
+
+                            @* Info *@
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-1 text-dark">@lesson.Title</h6>
+                                @if (!string.IsNullOrEmpty(lesson.Description))
+                                {
+                                    <p class="text-muted small mb-0">@lesson.Description</p>
+                                }
+                            </div>
+
+                            @* Actions *@
+                            <div class="d-flex align-items-center gap-2">
+                                @if (!string.IsNullOrEmpty(lesson.VideoUrl))
+                                {
+                                    <a href="@lesson.VideoUrl" target="_blank" class="btn btn-sm btn-light rounded-pill px-3">
+                                        <i class="bi bi-play-circle me-1 text-primary"></i> Watch
+                                    </a>
+                                }
+                                @if (!string.IsNullOrEmpty(lesson.MaterialPath))
+                                {
+                                    <a href="@lesson.MaterialPath" target="_blank" class="btn btn-sm btn-light rounded-pill px-3">
+                                        <i class="bi bi-file-earmark-arrow-down me-1 text-success"></i> Materials
+                                    </a>
+                                }
+                                @if (isAdmin)
+                                {
+                                    <button class="btn btn-sm btn-light rounded-pill px-3 edit-lesson-btn" data-id="@lesson.Id"
+                                            data-title="@lesson.Title" data-desc="@lesson.Description" data-video="@lesson.VideoUrl"
+                                            data-order="@lesson.Order" data-material="@lesson.MaterialPath">
+                                        <i class="bi bi-pencil text-primary"></i>
+                                    </button>
+                                    <form asp-controller="Lessons" asp-action="Delete" method="post" class="d-inline">
+                                        <input type="hidden" name="courseId" value="@Model.CourseId" />
+                                        <input type="hidden" name="id" value="@lesson.Id" />
+                                        <button type="submit" class="btn btn-sm btn-light rounded-pill px-3"
+                                                onclick="return confirm('Delete this lesson?')">
+                                            <i class="bi bi-trash text-danger"></i>
+                                        </button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@* --- MODALS (ADMIN/INSTRUCTOR ONLY) --- *@
+@if (isAdmin)
+{
+    @* CREATE LESSON MODAL *@
+    <div class="modal fade" id="createLessonModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
+                <div class="modal-header border-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold">Add New Lesson</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form asp-controller="Lessons" asp-action="Create" method="post">
+                    <input type="hidden" name="courseId" value="@Model.CourseId" />
+                    <div class="modal-body px-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">TITLE</label>
+                            <input name="Title" class="form-control custom-input" placeholder="e.g. Introduction to C#"
+                                   required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">DESCRIPTION</label>
+                            <textarea name="Description" class="form-control custom-input" rows="2"
+                                      placeholder="What will students learn?"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">VIDEO URL</label>
+                            <input name="VideoUrl" class="form-control custom-input"
+                                   placeholder="https://youtube.com/..." />
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label small fw-bold text-muted">ORDER</label>
+                                <input name="Order" type="number" class="form-control custom-input"
+                                       value="@(Model.Lessons.Count + 1)" min="1" required />
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label small fw-bold text-muted">MATERIAL URL</label>
+                                <input name="MaterialPath" class="form-control custom-input" placeholder="https://..." />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4"
+                                data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4"
+                                style="background: #5932EA; border: none;">Add Lesson</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @* EDIT LESSON MODAL *@
+    <div class="modal fade" id="editLessonModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 25px;">
+                <div class="modal-header border-0 px-4 pt-4">
+                    <h5 class="modal-title fw-bold">Edit Lesson</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form asp-controller="Lessons" asp-action="Edit" method="post">
+                    <input type="hidden" name="courseId" value="@Model.CourseId" />
+                    <input type="hidden" name="id" id="edit-lesson-id" />
+                    <div class="modal-body px-4">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">TITLE</label>
+                            <input name="Title" id="edit-lesson-title" class="form-control custom-input" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">DESCRIPTION</label>
+                            <textarea name="Description" id="edit-lesson-desc" class="form-control custom-input"
+                                      rows="2"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-muted">VIDEO URL</label>
+                            <input name="VideoUrl" id="edit-lesson-video" class="form-control custom-input" />
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label small fw-bold text-muted">ORDER</label>
+                                <input name="Order" id="edit-lesson-order" type="number" class="form-control custom-input"
+                                       min="1" required />
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label small fw-bold text-muted">MATERIAL URL</label>
+                                <input name="MaterialPath" id="edit-lesson-material" class="form-control custom-input" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 px-4 pb-4">
+                        <button type="button" class="btn btn-light rounded-pill px-4"
+                                data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary rounded-pill px-4"
+                                style="background: #5932EA; border: none;">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .course-hero {
+        background: linear-gradient(135deg, #5932EA 0%, #7B52FF 100%);
+    }
+
+    .btn-white {
+        background: white;
+        color: #5932EA;
+        border: none;
+        border-radius: 12px;
+        transition: 0.3s;
+    }
+
+    .btn-white:hover {
+        background: #f0edff;
+        color: #5932EA;
+    }
+
+    .lesson-card {
+        border-radius: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .lesson-card:hover {
+        transform: translateX(4px);
+        box-shadow: 0 8px 25px rgba(89, 50, 234, 0.1) !important;
+    }
+
+    .lesson-number {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: #f0edff;
+        color: #5932EA;
+        font-weight: 700;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .custom-input {
+        background-color: #f8f9fa !important;
+        border: 2px solid #f1f3f5 !important;
+        border-radius: 14px !important;
+        padding: 12px 15px !important;
+        transition: 0.2s;
+    }
+
+    .custom-input:focus {
+        border-color: #5932EA !important;
+        box-shadow: 0 0 0 4px rgba(89, 50, 234, 0.1) !important;
+        background-color: #fff !important;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            setTimeout(function () { $('.auto-close').fadeOut('slow'); }, 4000);
+
+            $('.edit-lesson-btn').on('click', function () {
+                const btn = $(this);
+                $('#edit-lesson-id').val(btn.data('id'));
+                $('#edit-lesson-title').val(btn.data('title'));
+                $('#edit-lesson-desc').val(btn.data('desc'));
+                $('#edit-lesson-video').val(btn.data('video'));
+                $('#edit-lesson-order').val(btn.data('order'));
+                $('#edit-lesson-material').val(btn.data('material'));
+                $('#editLessonModal').modal('show');
+            });
+        });
+    </script>
+}

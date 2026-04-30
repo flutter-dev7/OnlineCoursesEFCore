@@ -36,7 +36,7 @@ public class LessonController : BaseController
     }
 
     [HttpPost]
-    [Authorize(Roles = "Instructor")]
+    [Authorize(Roles = "Instructor, Admin")]
     public async Task<IActionResult> CreateAsync(Guid courseId, CreateLessonDto request)
     {
         var result = await _service.CreateLessonAsync(courseId, request);
@@ -45,7 +45,7 @@ public class LessonController : BaseController
     }
 
     [HttpPut("{id:guid}")]
-    [Authorize(Roles = "Instructor")]
+    [Authorize(Roles = "Instructor, Admin")]
     public async Task<IActionResult> UpdateAsync(Guid courseId, Guid id, UpdateLessonDto request)
     {
         var result = await _service.UpdateLessonAsync(id, request);

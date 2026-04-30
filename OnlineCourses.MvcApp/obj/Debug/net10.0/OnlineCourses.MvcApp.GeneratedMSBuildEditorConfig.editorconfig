@@ -42,12 +42,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ291cnNlc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.MvcApp/Views/Enrollments/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5yb2xsbWVudHNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.MvcApp/Views/Enrollments/MyLearning.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRW5yb2xsbWVudHNcTXlMZWFybmluZy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.MvcApp/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.MvcApp/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.MvcApp/Views/Lessons/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTGVzc29uc1xEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.MvcApp/Views/Shared/Error.cshtml]
@@ -60,6 +72,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.MvcApp/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.MvcApp/Views/Students/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3R1ZGVudHNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.MvcApp/Views/_ViewImports.cshtml]
