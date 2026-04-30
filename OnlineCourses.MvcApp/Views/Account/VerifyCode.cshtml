@@ -1,0 +1,196 @@
+﻿@model VerifyCodeViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Verify Code";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify Code - OnlineCourses</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <style>
+        body {
+            background-color: #FAFBFF;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+        .auth-card {
+            background: white;
+            padding: 45px;
+            border-radius: 30px;
+            box-shadow: 0 10px 60px rgba(226, 236, 249, 0.5);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        .logo-area i { font-size: 30px; color: #5932EA; }
+        .logo-area span { font-size: 22px; font-weight: 600; color: #292D32; }
+        .icon-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            background: #F0EDFF;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .icon-circle i { font-size: 28px; color: #5932EA; }
+        .otp-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 24px 0;
+        }
+        .otp-box {
+            width: 52px;
+            height: 58px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 14px;
+            border: 2px solid #F0F0F0;
+            background: #F9FBFF;
+            outline: none;
+            transition: 0.2s;
+            color: #292D32;
+        }
+        .otp-box:focus {
+            border-color: #5932EA;
+            box-shadow: 0 0 0 3px rgba(89, 50, 234, 0.1);
+            background: white;
+        }
+        .otp-box.filled {
+            border-color: #5932EA;
+            background: #F0EDFF;
+            color: #5932EA;
+        }
+        .btn-auth {
+            background: #5932EA;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-weight: 600;
+            transition: 0.3s;
+            width: 100%;
+        }
+        .btn-auth:hover { background: #4a29c4; transform: translateY(-2px); color: white; }
+        .back-link { font-size: 13px; color: #ACACAC; text-decoration: none; }
+        .back-link span { color: #5932EA; font-weight: 600; }
+        .email-badge {
+            display: inline-block;
+            background: #F0EDFF;
+            color: #5932EA;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-card">
+    <div class="logo-area">
+        <i class="bi bi-hexagon-fill"></i>
+        <span>OnlineCourses</span>
+    </div>
+
+    <div class="icon-circle">
+        <i class="bi bi-envelope-check"></i>
+    </div>
+
+    <h4 class="fw-bold mb-1">Check your email</h4>
+    <p class="text-muted small mb-1">We sent a 6-digit code to</p>
+    <div class="email-badge">@Model.Email</div>
+
+    <form asp-action="VerifyCode" asp-controller="Account" method="post">
+        @Html.AntiForgeryToken()
+        @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert-error mb-3">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+            <div asp-validation-summary="ModelOnly" class="d-inline small fw-medium"></div>
+        </div>
+    }
+        <input type="hidden" asp-for="Email" />
+        <input asp-for="Code" type="hidden" id="fullCode" />
+
+        <div class="otp-container">
+            <input class="otp-box" maxlength="1" inputmode="numeric" />
+            <input class="otp-box" maxlength="1" inputmode="numeric" />
+            <input class="otp-box" maxlength="1" inputmode="numeric" />
+            <input class="otp-box" maxlength="1" inputmode="numeric" />
+            <input class="otp-box" maxlength="1" inputmode="numeric" />
+            <input class="otp-box" maxlength="1" inputmode="numeric" />
+        </div>
+
+        <button type="submit" class="btn btn-auth">Verify Code</button>
+    </form>
+
+    <div class="text-center mt-4">
+        <a asp-controller="Account" asp-action="ForgotPassword" class="back-link">
+            Didn't receive it? <span>Resend</span>
+        </a>
+    </div>
+</div>
+
+<script>
+    const inputs = document.querySelectorAll(".otp-box");
+    const hidden = document.getElementById("fullCode");
+
+    inputs.forEach((input, index) => {
+        input.addEventListener("input", () => {
+            input.value = input.value.replace(/\D/g, '');
+            if (input.value) {
+                input.classList.add('filled');
+                if (index < inputs.length - 1) inputs[index + 1].focus();
+            } else {
+                input.classList.remove('filled');
+            }
+            hidden.value = Array.from(inputs).map(i => i.value).join('');
+        });
+
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Backspace" && !input.value && index > 0) {
+                inputs[index - 1].focus();
+                inputs[index - 1].classList.remove('filled');
+            }
+        });
+
+        input.addEventListener("paste", (e) => {
+            e.preventDefault();
+            const paste = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+            paste.split('').forEach((char, i) => {
+                if (inputs[i]) {
+                    inputs[i].value = char;
+                    inputs[i].classList.add('filled');
+                }
+            });
+            hidden.value = paste;
+            if (inputs[paste.length - 1]) inputs[paste.length - 1].focus();
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OnlineCourses.MvcApp.Models;
 using OnlineCourses.MvcApp.Services;
@@ -75,6 +76,124 @@ public class AccountController : Controller
             ModelState.AddModelError("", errorMessage);
         }
 
+        return View(model);
+    }
+
+    [HttpGet]
+    public IActionResult ChangePassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+    {
+        if (!ModelState.IsValid) return View(model);
+
+        var response = await _apiService.PutAsync("api/Auth/change-password", model);
+
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<bool>>();
+
+        if (response.IsSuccessStatusCode && result != null && result.IsSuccess)
+        {
+            TempData["success"] = "Пароль успешно изменён";
+            return RedirectToAction("Index", "Home");
+        }
+
+        var error = result?.Error ?? "Ошибка смены пароля";
+        ModelState.AddModelError("", error);
+
+        return View(model);
+    }
+
+    [HttpGet]
+    public IActionResult ForgotPassword()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+    {
+        if (!ModelState.IsValid) return View(model);
+
+        var response = await _apiService.PostAsync("api/Auth/send-email", model);
+
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<bool>>();
+
+        if (response.IsSuccessStatusCode && result != null && result.IsSuccess)
+        {
+            TempData["Email"] = model.Email;
+            return RedirectToAction("VerifyCode");
+        }
+
+        ModelState.AddModelError("", result?.Error ?? "Error sending email");
+        return View(model);
+    }
+
+    [HttpGet]
+    public IActionResult VerifyCode()
+    {
+        var email = TempData["Email"]?.ToString();
+
+        if (email == null)
+            return RedirectToAction("ForgotPassword");
+
+        return View(new VerifyCodeViewModel
+        {
+            Email = email
+        });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> VerifyCode(VerifyCodeViewModel model)
+    {
+        if (!ModelState.IsValid) return View(model);
+
+        var response = await _apiService.PostAsync("api/Auth/verify-code", model);
+
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<bool>>();
+
+        if (response.IsSuccessStatusCode && result != null && result.IsSuccess)
+        {
+            TempData["Email"] = model.Email;
+            return RedirectToAction("ResetPassword");
+        }
+
+        ModelState.AddModelError("", result?.Error ?? "Invalid code");
+        return View(model);
+    }
+
+    [HttpGet]
+    public IActionResult ResetPassword()
+    {
+        var email = TempData["Email"]?.ToString();
+
+        if (email == null)
+            return RedirectToAction("ForgotPassword");
+
+        return View(new ResetPasswordViewModel
+        {
+            Email = email 
+        });
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+    {
+        if (!ModelState.IsValid) return View(model);
+
+        var response = await _apiService.PostAsync("api/Auth/reset-password", model);
+
+        var result = await response.Content.ReadFromJsonAsync<ApiResponse<bool>>();
+
+        if (response.IsSuccessStatusCode && result != null && result.IsSuccess)
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        ModelState.AddModelError("", result?.Error ?? "Reset failed");
         return View(model);
     }
 

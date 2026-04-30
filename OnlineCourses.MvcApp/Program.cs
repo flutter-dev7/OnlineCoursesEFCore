@@ -21,6 +21,9 @@ app.Use(async (context, next) =>
     var path = context.Request.Path.Value?.ToLower();
     if (!context.Request.Cookies.ContainsKey("jwt") &&
         !path.Contains("/account/login") &&
+         !path.Contains("/account/forgotpassword") &&   
+        !path.Contains("/account/verifycode") &&   
+        !path.Contains("/account/resetpassword") &&
         !path.Contains("/account/register") &&
         !path.StartsWith("/css") &&
         !path.StartsWith("/lib"))
