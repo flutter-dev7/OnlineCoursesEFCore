@@ -1,3 +1,113 @@
+/* /Components/Banner/Banner.razor.rz.scp.css */
+.banner-container[b-y8v4a0cdf2] {
+    background-color: #E53935;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: 180px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.banner-content[b-y8v4a0cdf2] {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.banner-text[b-y8v4a0cdf2] {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+.banner-arrow[b-y8v4a0cdf2] {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 3rem;
+    cursor: pointer;
+    padding: 0 12px;
+    line-height: 1;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+    user-select: none;
+}
+
+.banner-arrow:hover[b-y8v4a0cdf2] {
+    opacity: 1;
+}
+/* /Components/Card/Card.razor.rz.scp.css */
+.card[b-nazn3f0nlt] {
+    background-color: #43A047;
+    border-radius: 10px;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 120px;
+    flex: 1;
+}
+
+.card-title[b-nazn3f0nlt] {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+/* /Components/Footer/Footer.razor.rz.scp.css */
+.main-footer[b-4bulzuo1t5] {
+    background-color: #5C6BC0; /* Синий/голубой фон футера */
+    padding: 15px 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    font-family: sans-serif;
+    margin-top: auto; /* Прижимает футер к низу, если контента мало */
+}
+
+.footer-cards-container[b-4bulzuo1t5] {
+    display: flex;
+    gap: 15px;
+}
+
+.footer-label[b-4bulzuo1t5] {
+    font-size: 1.5rem;
+    font-weight: normal;
+}
+/* /Components/Footer/FooterCard.razor.rz.scp.css */
+.footer-card[b-9zmqrjctte] {
+    background-color: #4CAF50; /* Зеленый цвет как на макете */
+    padding: 10px;
+    border-radius: 4px;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footer-card-title[b-9zmqrjctte] {
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.line[b-9zmqrjctte] {
+    height: 4px;
+    background-color: #FFD54F; /* Желтые полоски */
+    border-radius: 2px;
+    margin-bottom: 4px;
+}
+
+.line.long[b-9zmqrjctte] { width: 90%; }
+.line.medium[b-9zmqrjctte] { width: 70%; }
+.line.short[b-9zmqrjctte] { width: 50%; }
 /* /Layout/MainLayout.razor.rz.scp.css */
 .page[b-kc989pta5g] {
     position: relative;
@@ -36,7 +146,8 @@ main[b-kc989pta5g] {
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
+    
+    
 @media (max-width: 640.98px) {
     .top-row[b-kc989pta5g] {
         justify-content: space-between;

@@ -1,0 +1,27 @@
+.footer-card {
+    background-color: #4CAF50; /* Зеленый цвет как на макете */
+    padding: 10px;
+    border-radius: 4px;
+    min-width: 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footer-card-title {
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.line {
+    height: 4px;
+    background-color: #FFD54F; /* Желтые полоски */
+    border-radius: 2px;
+    margin-bottom: 4px;
+}
+
+.line.long { width: 90%; }
+.line.medium { width: 70%; }
+.line.short { width: 50%; }

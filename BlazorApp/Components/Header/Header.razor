@@ -1,0 +1,72 @@
+<header class="main-header">
+    @* Левая часть: Логотип *@
+    <div class="header-left">
+        <div class="logo-box">
+            <div class="logo-text-top">SOFT</div>
+            <div class="logo-text-bottom">CLUB</div>
+        </div>
+    </div>
+
+    @* Центральная часть: Название компонента *@
+    <div class="header-center">
+        <h1 class="header-title">Header</h1>
+    </div>
+
+    @* Правая часть: Наш новый компонент кнопки *@
+    <div class="header-right">
+        <OrangeButton OnClick="HandleSignIn">
+            Sign in
+        </OrangeButton>
+    </div>
+</header>
+
+@code {
+private void HandleSignIn()
+{
+// Логика при нажатии (например, переход на страницу логина)
+Console.WriteLine("Кнопка Sign In нажата!");
+}
+}
+
+<style>
+    .main-header {
+        background-color: #FFB74D; /* Оранжевый фон из примера */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        height: 70px;
+        color: white;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* Стили логотипа */
+    .logo-box {
+        display: flex;
+        flex-direction: column;
+        font-weight: 900;
+        line-height: 0.9;
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+
+    .logo-text-bottom {
+        opacity: 0.8;
+        font-weight: 400;
+        font-size: 0.8rem;
+    }
+
+    /* Стили заголовка */
+    .header-title {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 400;
+        letter-spacing: 1px;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+    }
+</style>

@@ -1,7 +1,29 @@
 ﻿@page "/"
+@using BlazorApp.Components.Aside
+@using BlazorApp.Components.Header
+@using BlazorApp.Components.Banner
+@using BlazorApp.Components.Card
+@using BlazorApp.Components.Footer
 
-<PageTitle>Home</PageTitle>
+<div style="display: flex; height: 100%; overflow: hidden; gap: 16px; padding: 16px; box-sizing: border-box;">
 
-<h1>Hello, world!</h1>
+    <AsideMenu />
 
-Welcome to your new app.
+    <div style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; gap: 16px;">
+
+        <Header />
+
+        <div style="flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;">
+
+            <Banner />
+            <div style="display: flex; gap: 12px;">
+                <Card Title="Card" />
+                <Card Title="Card" />
+                <Card Title="Card" />
+                <Card Title="Card" />
+                <Card Title="Card" />
+            </div>
+        </div>
+    </div>
+</div>
+    <Footer />

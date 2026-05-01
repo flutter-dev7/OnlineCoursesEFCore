@@ -1,0 +1,42 @@
+.banner-container {
+    background-color: #E53935;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+    height: 180px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.banner-content {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.banner-text {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+.banner-arrow {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 3rem;
+    cursor: pointer;
+    padding: 0 12px;
+    line-height: 1;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+    user-select: none;
+}
+
+.banner-arrow:hover {
+    opacity: 1;
+}

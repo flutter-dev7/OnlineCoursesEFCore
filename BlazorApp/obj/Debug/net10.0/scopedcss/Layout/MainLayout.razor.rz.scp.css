@@ -35,7 +35,8 @@ main[b-kc989pta5g] {
         overflow: hidden;
         text-overflow: ellipsis;
     }
-
+    
+    
 @media (max-width: 640.98px) {
     .top-row[b-kc989pta5g] {
         justify-content: space-between;
