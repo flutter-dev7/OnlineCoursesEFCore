@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineCourses.WebApi", "Onl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnlineCourses.MvcApp", "OnlineCourses.MvcApp\OnlineCourses.MvcApp.csproj", "{37FD4F75-40F4-4E8A-AA9B-AC873E8AC79E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp", "BlazorApp\BlazorApp.csproj", "{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{37FD4F75-40F4-4E8A-AA9B-AC873E8AC79E}.Release|x64.Build.0 = Release|Any CPU
 		{37FD4F75-40F4-4E8A-AA9B-AC873E8AC79E}.Release|x86.ActiveCfg = Release|Any CPU
 		{37FD4F75-40F4-4E8A-AA9B-AC873E8AC79E}.Release|x86.Build.0 = Release|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Debug|x64.Build.0 = Debug|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Debug|x86.Build.0 = Debug|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Release|x64.ActiveCfg = Release|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Release|x64.Build.0 = Release|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Release|x86.ActiveCfg = Release|Any CPU
+		{F5F494A5-F018-477E-AAFE-A3B185EEA9AB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
