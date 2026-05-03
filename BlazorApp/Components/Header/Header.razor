@@ -1,5 +1,4 @@
 <header class="main-header">
-    @* Левая часть: Логотип *@
     <div class="header-left">
         <div class="logo-box">
             <div class="logo-text-top">SOFT</div>
@@ -7,12 +6,10 @@
         </div>
     </div>
 
-    @* Центральная часть: Название компонента *@
     <div class="header-center">
         <h1 class="header-title">Header</h1>
     </div>
 
-    @* Правая часть: Наш новый компонент кнопки *@
     <div class="header-right">
         <OrangeButton OnClick="HandleSignIn">
             Sign in
@@ -23,14 +20,13 @@
 @code {
 private void HandleSignIn()
 {
-// Логика при нажатии (например, переход на страницу логина)
 Console.WriteLine("Кнопка Sign In нажата!");
 }
 }
 
 <style>
     .main-header {
-        background-color: #FFB74D; /* Оранжевый фон из примера */
+        background-color: #FFB74D; 
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -41,7 +37,6 @@ Console.WriteLine("Кнопка Sign In нажата!");
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
-    /* Стили логотипа */
     .logo-box {
         display: flex;
         flex-direction: column;
@@ -57,7 +52,6 @@ Console.WriteLine("Кнопка Sign In нажата!");
         font-size: 0.8rem;
     }
 
-    /* Стили заголовка */
     .header-title {
         margin: 0;
         font-size: 2rem;

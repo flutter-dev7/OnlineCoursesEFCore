@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OnlineCourses.WebApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f84d16b72bae2681f68faad3a4a29c32ea181edf")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3600c3cca79c689902cca72839f058ce2d9b9582")]
 [assembly: System.Reflection.AssemblyProductAttribute("OnlineCourses.WebApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OnlineCourses.WebApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

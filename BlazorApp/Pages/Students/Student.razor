@@ -1,0 +1,27 @@
+@page "/students"
+@using BlazorApp.ApiServices
+@inject StudentService StudentService
+<h3>Student</h3>
+
+@if (_students == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var s in _students)
+        {
+            <li>@s.FullName</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<GetStudentDto>? _students;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _students = await StudentService.GetAllStudents();
+    }
+}

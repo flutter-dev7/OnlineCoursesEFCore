@@ -1,0 +1,16 @@
+<div class="app-input-wrap">
+    <span class="app-input-icon">@Icon</span>
+    <InputText @bind-Value="Value"
+               class="app-input"
+               type="@Type"
+               placeholder="@Placeholder" />
+</div>
+
+@code {
+    [Parameter] public string Type        { get; set; } = "text";
+    [Parameter] public string Placeholder { get; set; } = "";
+    [Parameter] public RenderFragment?    Icon { get; set; }
+
+    [Parameter] public string Value { get; set; } = "";
+    [Parameter] public EventCallback<string> ValueChanged { get; set; }
+}

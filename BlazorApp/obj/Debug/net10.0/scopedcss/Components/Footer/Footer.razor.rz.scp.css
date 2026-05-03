@@ -1,12 +1,13 @@
 .main-footer[b-4bulzuo1t5] {
-    background-color: #5C6BC0; /* Синий/голубой фон футера */
+    background-color: #5C6BC0;
     padding: 15px 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     color: white;
     font-family: sans-serif;
-    margin-top: auto; /* Прижимает футер к низу, если контента мало */
+    border-radius: 10px;   
+    flex-grow: 1;         
 }
 
 .footer-cards-container[b-4bulzuo1t5] {
