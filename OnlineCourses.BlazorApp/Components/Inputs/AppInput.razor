@@ -1,16 +1,41 @@
-<div class="app-input-wrap">
-    <span class="app-input-icon">@Icon</span>
-    <InputText @bind-Value="Value"
-               class="app-input"
-               type="@Type"
-               placeholder="@Placeholder" />
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="input-container">
+    <div class="label-row">
+        <label class="label-text">@Label</label>
+        @LabelContent
+    </div>
+    
+    @* Добавляем динамический класс invalid *@
+    <input type="@Type" 
+           class="input-field @(IsInvalid ? "invalid" : "")" 
+           placeholder="@Placeholder" 
+           value="@Value" 
+           @oninput="HandleInput" />
+
+    @* Маленькое сообщение об ошибке под конкретным полем *@
+    <div class="field-error-msg">
+        <ValidationMessage For="@For" />
+    </div>
 </div>
 
 @code {
-    [Parameter] public string Type        { get; set; } = "text";
+    [Parameter] public string Label { get; set; } = "";
     [Parameter] public string Placeholder { get; set; } = "";
-    [Parameter] public RenderFragment?    Icon { get; set; }
-
+    [Parameter] public string Type { get; set; } = "text";
     [Parameter] public string Value { get; set; } = "";
     [Parameter] public EventCallback<string> ValueChanged { get; set; }
+    [Parameter] public RenderFragment? LabelContent { get; set; }
+    
+    // Для валидации
+    [CascadingParameter] private EditContext? EditContext { get; set; }
+    [Parameter] public System.Linq.Expressions.Expression<Func<string>>? For { get; set; }
+
+    private bool IsInvalid => EditContext != null && For != null && 
+                              EditContext.GetValidationMessages(FieldIdentifier.Create(For)).Any();
+
+    private async Task HandleInput(ChangeEventArgs e)
+    {
+        await ValueChanged.InvokeAsync(e.Value?.ToString());
+    }
 }

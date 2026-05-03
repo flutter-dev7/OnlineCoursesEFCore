@@ -1,0 +1,94 @@
+@page "/register"
+@layout EmptyLayout
+@using OnlineCourses.BlazorApp.Models.Auth
+@using OnlineCourses.BlazorApp.Services.Auth
+@using OnlineCourses.BlazorApp.Components.Inputs
+@using OnlineCourses.BlazorApp.Components.Buttons
+@inject AuthService AuthService
+@inject NavigationManager Nav
+@attribute [AllowAnonymous]  
+
+<div class="auth-container">
+    <div class="glass-card">
+        <div class="logo-wrapper">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+        </div>
+
+        <h1>Create Account</h1>
+        <p class="subtitle">Join our community of learners</p>
+
+        <EditForm Model="@model" OnValidSubmit="HandleRegister">
+            <DataAnnotationsValidator />
+            
+            <div class="form-grid">
+                <AppInput Label="Full Name" 
+                          Placeholder="John Doe" 
+                          @bind-Value="model.FullName" 
+                          For="@(() => model.FullName)" /> @* <--- Добавь это *@
+    
+                <AppInput Label="Username" 
+                          Placeholder="johndoe123" 
+                          @bind-Value="model.UserName" 
+                          For="@(() => model.UserName)" /> @* <--- И это *@
+
+                <AppInput Label="Email address" 
+                          Placeholder="you@example.com" 
+                          @bind-Value="model.Email" 
+                          For="@(() => model.Email)" />
+
+                <AppInput Label="Password" 
+                          Type="password" 
+                          Placeholder="••••••••" 
+                          @bind-Value="model.Password" 
+                          For="@(() => model.Password)" />
+
+                <AppInput Label="Confirm Password" 
+                          Type="password" 
+                          Placeholder="••••••••" 
+                          @bind-Value="model.ConfirmPassword" 
+                          For="@(() => model.ConfirmPassword)" />
+            </div>
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <div class="error-banner">
+                    @error
+                </div>
+            }
+            
+            <AppButton Type="submit" IsLoading="loading">
+                Create Account <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </AppButton>
+        </EditForm>
+        
+
+        <p class="footer-text">
+            Already have an account? <a href="/login">Sign In</a>
+        </p>
+    </div>
+</div>
+
+@code {
+    private RegisterRequest model = new();
+    private bool loading = false;
+    private string? error;
+
+    private async Task HandleRegister()
+    {
+        loading = true;
+        error = null;
+
+        var result = await AuthService.Register(model);
+
+        if (result.IsSuccess)
+        {
+            // После успешной регистрации отправляем на логин
+            Nav.NavigateTo("/login");
+        }
+        else
+        {
+            error = result.Error ?? result.Error ?? "Registration failed";
+        }
+
+        loading = false;
+    }
+}

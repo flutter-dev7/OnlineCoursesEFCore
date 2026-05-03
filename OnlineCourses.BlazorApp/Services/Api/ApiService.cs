@@ -1,15 +1,15 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Microsoft.JSInterop;
 using OnlineCourses.BlazorApp.Models.Response;
+using OnlineCourses.BlazorApp.Services.Token;
 
 namespace OnlineCourses.BlazorApp.Services.Api;
 
-public class ApiService(HttpClient httpClient, IJSRuntime js)
+public class ApiService(HttpClient httpClient, TokenService tokenService)
 {
     private async Task AddAuthHeaderAsync()
     {
-        var token = await js.InvokeAsync<string?>("localStorage.getItem", "jwt");
+        var token = await tokenService.GetToken();
         if (!string.IsNullOrEmpty(token))
         {
             httpClient.DefaultRequestHeaders.Authorization =

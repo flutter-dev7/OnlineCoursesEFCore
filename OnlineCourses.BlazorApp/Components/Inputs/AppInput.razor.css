@@ -1,0 +1,66 @@
+.input-container {
+    /* Уменьшаем отступ между блоками инпутов */
+    margin-bottom: 0.75rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    /* Уменьшаем отступ между текстом и полем */
+    margin-bottom: 4px;
+    width: 100%;
+}
+
+.label-text {
+    /* Чуть меньше шрифт, чтобы выглядело изящнее */
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+.input-field {
+    width: 100%;
+    /* Уменьшаем вертикальный padding (с 12px до 10px) */
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input-field:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); /* Уменьшили тень */
+}
+
+/* Состояние ошибки */
+.input-field.invalid {
+    border-color: #fda4af !important;
+    background: rgba(255, 241, 242, 0.5) !important; /* Сделали фон прозрачнее */
+}
+
+.field-error-msg {
+    font-size: 0.75rem;
+    color: #e11d48;
+    text-align: left;
+    margin-top: 2px;
+    font-weight: 500;
+    /* УБРАЛИ min-height: 18px; Теперь пустого места не будет */
+    min-height: 0;
+    line-height: 1.2;
+}
+
+/* Стилизация текста ошибки Blazor */
+::deep .validation-message {
+    color: #e11d48;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}

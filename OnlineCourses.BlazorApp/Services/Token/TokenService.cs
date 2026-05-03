@@ -2,7 +2,7 @@ using Microsoft.JSInterop;
 
 namespace OnlineCourses.BlazorApp.Services.Token;
 
-public abstract class TokenService(IJSRuntime js)
+public class TokenService(IJSRuntime js)
 {
     public async Task SetToken(string token)
     {
