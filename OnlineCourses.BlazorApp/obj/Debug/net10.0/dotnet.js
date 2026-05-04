@@ -5,7 +5,7 @@ var e=!1;const t=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,
   "mainAssemblyName": "OnlineCourses.BlazorApp",
   "applicationEnvironment": "Development",
   "resources": {
-    "hash": "sha256-tYfqSUD0hABPWTx/CWTfj41lvNaKlHENhzpRZbPTrwA=",
+    "hash": "sha256-cRVfRfSxjTeC15os4Y49YLabDa+nzeYzORXWgkoPuWI=",
     "jsModuleNative": [
       {
         "name": "dotnet.native.cs8mcre4gh.js"
@@ -1044,15 +1044,15 @@ var e=!1;const t=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,
       },
       {
         "virtualPath": "OnlineCourses.BlazorApp.wasm",
-        "name": "OnlineCourses.BlazorApp.206ttwqam1.wasm",
-        "integrity": "sha256-Xl/f23OU24CQo21LhxbqcRF6bzovT2/ZeDUoXBIfy8g="
+        "name": "OnlineCourses.BlazorApp.jkhy2y23wj.wasm",
+        "integrity": "sha256-c3c6MwLCdZNB49m8+eWFUPJmtLWhuVX0uMRRGAQ0ttY="
       }
     ],
     "pdb": [
       {
         "virtualPath": "OnlineCourses.BlazorApp.pdb",
-        "name": "OnlineCourses.BlazorApp.on5xkevrdx.pdb",
-        "integrity": "sha256-5NaxkjuZe6siM3iW2lt3OmazF4dAzJcCgj9ZC9CHrDI="
+        "name": "OnlineCourses.BlazorApp.yo4mx5iz34.pdb",
+        "integrity": "sha256-vmmYIQDf/L28AfHqT7qFpcCoHxCjdDOKClvROtB/R4k="
       }
     ],
     "libraryInitializers": [

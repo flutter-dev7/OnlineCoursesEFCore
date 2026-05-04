@@ -8,7 +8,7 @@ using OnlineCourses.Application.Interfaces.Services;
 namespace OnlineCourses.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/students")]
 [ApiVersion("1.0")]
 [Authorize]
 public class StudentController : BaseController

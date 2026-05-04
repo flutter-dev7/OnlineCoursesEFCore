@@ -1,4 +1,4 @@
-namespace OnlineCourses.BlazorApp.Models.Response;
+namespace OnlineCourses.BlazorApp.Models.ApiResponse;
 
 public class ApiResponse<T>
 {

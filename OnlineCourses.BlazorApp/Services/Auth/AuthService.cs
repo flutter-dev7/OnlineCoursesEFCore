@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
+using OnlineCourses.BlazorApp.Models.ApiResponse;
 using OnlineCourses.BlazorApp.Models.Auth;
-using OnlineCourses.BlazorApp.Models.Response;
 using OnlineCourses.BlazorApp.Services.Api;
 using OnlineCourses.BlazorApp.Services.Token;
 
@@ -9,7 +9,6 @@ namespace OnlineCourses.BlazorApp.Services.Auth;
 public class AuthService(ApiService api, TokenService tokenService, AuthenticationStateProvider authStateProvider)
 {
     private string? _resetEmail;
-    // LOGIN
     public async Task<ApiResponse<LoginResponse>> Login(LoginRequest request)
     {
         var result = await api.PostAsync<LoginResponse>("api/auth/login", request);
@@ -24,7 +23,6 @@ public class AuthService(ApiService api, TokenService tokenService, Authenticati
         return result!;
     }
 
-    // REGISTER
     public async Task<ApiResponse<RegisterResponseDto>> Register(RegisterRequest request)
     {
         var result = await api.PostAsync<RegisterResponseDto>("api/auth/register", request);
@@ -36,12 +34,11 @@ public class AuthService(ApiService api, TokenService tokenService, Authenticati
         return result!;
     }
     
-    // FORGOT PASSWORD
     public async Task<ApiResponse<bool>?> SendResetCode(SendEmailRequest model)
     {
         var result = await api.PostAsync<bool>("api/auth/send-email", model);
         
-        if (result != null && result.IsSuccess)
+        if (result.IsSuccess)
         {
             _resetEmail = model.Email;
         }
@@ -49,7 +46,6 @@ public class AuthService(ApiService api, TokenService tokenService, Authenticati
         return result;
     }
 
-    // VERIFY CODE
     public async Task<ApiResponse<bool>?> VerifyCode(string code)
     {
         if (string.IsNullOrEmpty(_resetEmail))
@@ -64,8 +60,7 @@ public class AuthService(ApiService api, TokenService tokenService, Authenticati
         return await api.PostAsync<bool>("api/auth/verify-code", model);
     }
 
-    // RESET PASSWORD
-    public async Task<ApiResponse<bool>> ResetPassword(string newPassword, string confirmPassword)
+    public async Task<ApiResponse<bool>?> ResetPassword(string newPassword, string confirmPassword)
     {
         if (string.IsNullOrEmpty(_resetEmail))
             return ApiResponse<bool>.Fail("Security violation. Email not verified.");
@@ -79,7 +74,7 @@ public class AuthService(ApiService api, TokenService tokenService, Authenticati
 
         var result = await api.PostAsync<bool>("api/auth/reset-password", model);
 
-        if (result != null && result.IsSuccess)
+        if (result.IsSuccess)
         {
             _resetEmail = null; // Очищаем данные после успеха
         }
@@ -87,10 +82,8 @@ public class AuthService(ApiService api, TokenService tokenService, Authenticati
         return result;
     }
 
-    // Позволяет UI узнать, на какой email мы ждем код
     public string? GetResetEmail() => _resetEmail;
 
-    // LOGOUT
     public async Task Logout()
     {
         await tokenService.RemoveToken();
@@ -98,7 +91,6 @@ public class AuthService(ApiService api, TokenService tokenService, Authenticati
         ((CustomAuthStateProvider)authStateProvider).NotifyUserLogout();
     }
 
-    //  Проверка авторизации
     public async Task<bool> IsAuthenticated()
     {
         var token = await tokenService.GetToken();

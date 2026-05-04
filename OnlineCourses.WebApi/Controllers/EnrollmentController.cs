@@ -8,7 +8,7 @@ using System.Security.Claims;
 namespace OnlineCourses.WebApi.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/enrollments")]
 [ApiVersion("1.0")]
 [Authorize]
 public class EnrollmentController : BaseController

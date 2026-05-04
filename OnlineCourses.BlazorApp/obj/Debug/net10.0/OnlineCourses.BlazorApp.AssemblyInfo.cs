@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OnlineCourses.BlazorApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+287f030c6c6ed4f6e69175eb99c24303993bd98c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f95b565ba11cf407614b442fa799b065e245dd1")]
 [assembly: System.Reflection.AssemblyProductAttribute("OnlineCourses.BlazorApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OnlineCourses.BlazorApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

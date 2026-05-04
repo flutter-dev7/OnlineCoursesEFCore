@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using Microsoft.AspNetCore.Components.Authorization;
 using OnlineCourses.BlazorApp.Services.Token;
 
@@ -9,29 +10,45 @@ public class CustomAuthStateProvider(TokenService tokenService) : Authentication
     public override async Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var token = await tokenService.GetToken();
-
         if (string.IsNullOrWhiteSpace(token))
-        {
-            // Если токена нет — пользователь аноним
             return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
-        }
 
-        // Если токен есть — создаем личность (в идеале тут надо парсить JWT для ролей)
-        var identity = new ClaimsIdentity(new[]
-        {
-            new Claim(ClaimTypes.Name, "User") 
-        }, "jwt");
+        return ConstructAuthState(token);
+    }
 
+    public void NotifyUserAuthentication(string token)
+    {
+        var authState = ConstructAuthState(token);
+        NotifyAuthenticationStateChanged(Task.FromResult(authState));
+    }
+
+    private AuthenticationState ConstructAuthState(string token)
+    {
+        // Парсим клеймы из реального JWT токена
+        var claims = ParseClaimsFromJwt(token);
+        var identity = new ClaimsIdentity(claims, "jwt");
         var user = new ClaimsPrincipal(identity);
         return new AuthenticationState(user);
     }
 
-    // Метод для уведомления системы, что статус изменился (вызываем при логине/выходе)
-    public void NotifyUserAuthentication(string token)
+    // Вспомогательный метод для расшифровки JWT
+    private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
     {
-        var identity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, "User") }, "jwt");
-        var user = new ClaimsPrincipal(identity);
-        NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
+        var payload = jwt.Split('.')[1];
+        var jsonBytes = ParseBase64WithoutPadding(payload);
+        var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
+        
+        return keyValuePairs!.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()!));
+    }
+
+    private byte[] ParseBase64WithoutPadding(string base64)
+    {
+        switch (base64.Length % 4)
+        {
+            case 2: base64 += "=="; break;
+            case 3: base64 += "="; break;
+        }
+        return Convert.FromBase64String(base64);
     }
 
     public void NotifyUserLogout()
