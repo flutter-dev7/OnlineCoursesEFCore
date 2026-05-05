@@ -1,18 +1,58 @@
-﻿@using BlazorApp.Pages
-@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
+﻿@inherits LayoutComponentBase
+@using Microsoft.AspNetCore.Components.Authorization
+
+<div class="app-shell">
+    <aside class="sidebar">
         <NavMenu />
-    </div>
+    </aside>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+    <div class="main-area">
+        <header class="topbar">
+            <div class="topbar-left">
+                <div class="system-status-widget shadow-sm" @onclick="HandleQuickSearch">
+                    <div class="status-indicator">
+                        <span class="status-dot pulse"></span>
+                        <span class="status-text">System Live</span>
+                    </div>
+                    <div class="search-trigger">
+                        <i class="bi bi-terminal"></i>
+                        <span class="shortcut">Press <span>Ctrl K</span> to search</span>
+                    </div>
+                </div>
+            </div>
 
-        <article class="content px-4">
+            <div class="topbar-right">
+                <div class="topbar-icon-btn notif-btn">
+                    <i class="bi bi-bell"></i>
+                    <span class="notif-badge">6</span>
+                </div>
+
+                <div class="topbar-divider"></div>
+
+                <AuthorizeView>
+                    <Authorized>
+                        <div class="topbar-user">
+                            <div class="user-texts d-none d-md-flex">
+                                <span class="user-fullname">@context.User.Identity?.Name</span>
+                                <span class="user-role-tag">Admin Access</span>
+                            </div>
+                            <div class="user-avatar-wrapper shadow-sm">
+                                <div class="user-avatar">
+                                    @(context.User.Identity?.Name?[..1].ToUpper() ?? "A")
+                                </div>
+                            </div>
+                        </div>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+        </header>
+
+        <main class="page-content">
             @Body
-            
-        </article>
-    </main>
+        </main>
+    </div>
 </div>
+
+@code {
+    private void HandleQuickSearch() => Console.WriteLine("Command Palette Triggered");
+}

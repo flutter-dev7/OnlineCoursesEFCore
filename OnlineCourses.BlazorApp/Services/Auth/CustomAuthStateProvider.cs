@@ -37,8 +37,34 @@ public class CustomAuthStateProvider(TokenService tokenService) : Authentication
         var payload = jwt.Split('.')[1];
         var jsonBytes = ParseBase64WithoutPadding(payload);
         var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-        
-        return keyValuePairs!.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString()!));
+    
+        var claims = new List<Claim>();
+        if (keyValuePairs != null)
+        {
+            foreach (var kvp in keyValuePairs)
+            {
+                // Маппинг для ролей и имен, чтобы Blazor их видел
+                var key = kvp.Key switch
+                {
+                    "role" => ClaimTypes.Role,
+                    "name" => ClaimTypes.Name,
+                    "unique_name" => ClaimTypes.Name,
+                    _ => kvp.Key
+                };
+            
+                // Если роль — это массив (несколько ролей)
+                if (kvp.Value is JsonElement element && element.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var item in element.EnumerateArray())
+                        claims.Add(new Claim(key, item.ToString()));
+                }
+                else
+                {
+                    claims.Add(new Claim(key, kvp.Value.ToString()!));
+                }
+            }
+        }
+        return claims;
     }
 
     private byte[] ParseBase64WithoutPadding(string base64)

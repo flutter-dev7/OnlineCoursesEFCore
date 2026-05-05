@@ -1,0 +1,103 @@
+@page "/shared/enrollments"
+@using OnlineCourses.BlazorApp.Models.Enrollments
+@using OnlineCourses.BlazorApp.Services.Enrollments
+@attribute [Authorize(Roles = "Admin, Instructor")] 
+@inject EnrollmentService EnrollmentService
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold m-0">Student Enrollments</h2>
+            <p class="text-muted">Manage and monitor all student course registrations</p>
+        </div>
+        <div class="stats-badge">
+            Total Registrations: <strong>@enrollments?.Count</strong>
+        </div>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="text-center my-5">
+            <div class="spinner-border text-primary" role="status"></div>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm custom-card">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Course</th>
+                        <th>Enrolled Date</th>
+                        <th>Progress</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in enrollments ?? new())
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-circle me-3">@item.StudentName[0]</div>
+                                    <div>
+                                        <div class="fw-bold">@item.StudentName</div>
+                                        <div class="small text-muted">ID: @item.StudentId.Substring(0, 8)...</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="fw-semibold">@item.CourseTitle</span>
+                                <div class="small text-primary">$@item.CoursePrice</div>
+                            </td>
+                            <td>@item.EnrolledAt.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <div class="d-flex align-items-center" style="width: 150px;">
+                                    <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                                        <div class="progress-bar bg-primary" style="width: @item.ProgressPercent%"></div>
+                                    </div>
+                                    <span class="small">@item.ProgressPercent%</span>
+                                </div>
+                            </td>
+                            <td>
+                                @if (item.ProgressPercent == 100)
+                                {
+                                    <span class="badge bg-success-soft text-success">Completed</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary-soft text-primary">In Progress</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<EnrollmentResponse>? enrollments;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAllEnrollments();
+    }
+
+    private async Task LoadAllEnrollments()
+    {
+        isLoading = true;
+        var result = await EnrollmentService.GetAll();
+        if (result.IsSuccess)
+        {
+            enrollments = result.Data;
+        }
+        isLoading = false;
+        StateHasChanged();
+    }
+}

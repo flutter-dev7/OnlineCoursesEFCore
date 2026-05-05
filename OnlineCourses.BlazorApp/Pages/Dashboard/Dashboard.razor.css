@@ -1,0 +1,41 @@
+.dash-wrapper {
+    padding: 20px 30px;
+    background: #F8F9FE;
+    height: 100vh; /* Фиксированная высота экрана */
+    width: 100%;
+    overflow: hidden; /* НИКАКОГО СКРОЛЛА */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+/* HEADER & CALENDAR */
+.calendar-widget { background: #fff; border-radius: 12px; display: flex; overflow: hidden; height: 45px; border: 1px solid #e0e4f0; }
+.cal-left { background: #5932EA; color: #fff; width: 40px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+.cal-right { padding: 0 12px; display: flex; align-items: center; gap: 8px; }
+.cal-day { font-size: 1.3rem; font-weight: 800; color: #1A1C1E; }
+.cal-month { font-size: 0.6rem; font-weight: 700; color: #5932EA; }
+.btn-report { background: #1A1C1E; color: #fff; border: none; padding: 0 15px; border-radius: 12px; height: 45px; font-weight: 600; font-size: 0.85rem; }
+
+/* GRIDS */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.main-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 20px; flex: 1; min-height: 0; }
+.bottom-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding-bottom: 10px; }
+
+/* SUCCESS RATE */
+.success-rate-card { background: white; padding: 20px; border-radius: 20px; }
+.trend-indicator.up { width: 35px; height: 35px; background: #E7F9ED; color: #22C55E; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.progress-mini-wrapper { height: 6px; background: #F1F5F9; border-radius: 10px; margin-top: 15px; overflow: hidden; }
+.progress-mini-bar { height: 100%; background: linear-gradient(90deg, #22C55E, #4ADE80); }
+
+/* DARK CARDS */
+.dark-card { background: #1A1C1E; color: white; padding: 20px; border-radius: 20px; display: flex; align-items: center; gap: 15px; }
+.db-status-card { background: #111214; }
+.ins-icon-box { width: 45px; height: 45px; background: rgba(255,255,255,0.05); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #5932EA; }
+
+/* REUSABLE STYLES */
+.activity-card { background: white; padding: 25px; border-radius: 24px; }
+.badge-live { background: #F0EFFF; color: #5932EA; padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; }
+.side-stats-card { background: #5932EA; color: white; padding: 25px; border-radius: 24px; display: flex; flex-direction: column; }
+.custom-progress { height: 8px; background: rgba(255,255,255,0.2); border-radius: 10px; overflow: hidden; }
+.fill { height: 100%; background: white; }

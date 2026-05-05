@@ -1,78 +1,191 @@
-.page[b-m7oq4vqpnu] {
-    position: relative;
+/* 1. ГЛАВНАЯ СТРУКТУРА (ФИКС СКРОЛЛА) */
+.app-shell[b-m7oq4vqpnu] {
     display: flex;
-    flex-direction: column;
-}
-
-main[b-m7oq4vqpnu] {
-    flex: 1;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden; /* Общий скролл запрещен */
+    background-color: #F8F9FE;
+    font-family: 'Poppins', sans-serif;
 }
 
 .sidebar[b-m7oq4vqpnu] {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    width: 260px;
+    background: #FFFFFF;
+    border-right: 1px solid #EBEBEE;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0; /* Чтобы сайдбар не сжимался */
 }
 
-.top-row[b-m7oq4vqpnu] {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
-    height: 3.5rem;
+.main-area[b-m7oq4vqpnu] {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    height: 100vh;
+}
+
+/* 2. TOPBAR (СТЕКЛЯННЫЙ ЭФФЕКТ) */
+.topbar[b-m7oq4vqpnu] {
+    height: 80px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    border-bottom: 1px solid #edf0f5;
+    z-index: 100;
+    flex-shrink: 0;
 }
 
-.top-row[b-m7oq4vqpnu]  a, .top-row[b-m7oq4vqpnu]  .btn-link {
-    white-space: nowrap;
-    margin-left: 1.5rem;
-    text-decoration: none;
+/* 3. SYSTEM WIDGET */
+.system-status-widget[b-m7oq4vqpnu] {
+    background: #ffffff;
+    border: 1px solid #eef0f7;
+    border-radius: 12px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.top-row[b-m7oq4vqpnu]  a:hover, .top-row[b-m7oq4vqpnu]  .btn-link:hover {
-    text-decoration: underline;
+.system-status-widget:hover[b-m7oq4vqpnu] {
+    border-color: #5932EA;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(89, 50, 234, 0.1);
 }
 
-.top-row[b-m7oq4vqpnu]  a:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
+.status-indicator[b-m7oq4vqpnu] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-right: 1px solid #eef0f7;
+    padding-right: 15px;
 }
 
-
-@media (max-width: 640.98px) {
-    .top-row[b-m7oq4vqpnu] {
-        justify-content: space-between;
-    }
-
-    .top-row[b-m7oq4vqpnu]  a, .top-row[b-m7oq4vqpnu]  .btn-link {
-        margin-left: 0;
-    }
+.status-dot[b-m7oq4vqpnu] {
+    width: 8px;
+    height: 8px;
+    background-color: #22C55E;
+    border-radius: 50%;
 }
 
-@media (min-width: 641px) {
-    .page[b-m7oq4vqpnu] {
-        flex-direction: row;
-    }
+.status-dot.pulse[b-m7oq4vqpnu] {
+    animation: pulse-green-b-m7oq4vqpnu 2s infinite;
+}
 
-    .sidebar[b-m7oq4vqpnu] {
-        width: 250px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
-    }
+@keyframes pulse-green-b-m7oq4vqpnu {
+    0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+    100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
 
-    .top-row[b-m7oq4vqpnu] {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
+.status-text[b-m7oq4vqpnu] {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+}
 
-    .top-row.auth[b-m7oq4vqpnu]  a:first-child {
-        flex: 1;
-        text-align: right;
-        width: 0;
-    }
+.search-trigger[b-m7oq4vqpnu] {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #94a3b8;
+    font-size: 0.85rem;
+}
 
-    .top-row[b-m7oq4vqpnu], article[b-m7oq4vqpnu] {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
-    }
+.shortcut span[b-m7oq4vqpnu] {
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    color: #5932EA;
+    border: 1px solid #e2e8f0;
+}
+
+/* 4. USER & UI ELEMENTS */
+.topbar-right[b-m7oq4vqpnu] {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.topbar-icon-btn[b-m7oq4vqpnu] {
+    width: 42px;
+    height: 42px;
+    background: white;
+    border: 1px solid #eef0f7;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    color: #64748b;
+}
+
+.notif-badge[b-m7oq4vqpnu] {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #EF4444;
+    color: white;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    border: 2px solid white;
+}
+
+.topbar-divider[b-m7oq4vqpnu] {
+    width: 1px;
+    height: 30px;
+    background: #eef0f7;
+}
+
+.topbar-user[b-m7oq4vqpnu] {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-texts[b-m7oq4vqpnu] {
+    display: flex;
+    flex-direction: column;
+    text-align: right;
+}
+
+.user-fullname[b-m7oq4vqpnu] { font-weight: 700; color: #1A1C1E; font-size: 0.85rem; }
+.user-role-tag[b-m7oq4vqpnu] { font-size: 0.7rem; color: #94a3b8; }
+
+.user-avatar-wrapper[b-m7oq4vqpnu] {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #5932EA 0%, #7B52FF 100%);
+    padding: 2px;
+}
+
+.user-avatar[b-m7oq4vqpnu] {
+    background: white;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5932EA;
+    font-weight: 800;
+}
+
+/* 5. PAGE CONTENT (ЕДИНСТВЕННЫЙ СКРОЛЛ ТУТ) */
+.page-content[b-m7oq4vqpnu] {
+    flex: 1;
+    overflow-y: auto; /* Разрешаем скролл контента */
+    padding: 30px;
+    background: #F8F9FE;
 }

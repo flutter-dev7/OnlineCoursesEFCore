@@ -1,0 +1,45 @@
+.custom-card {
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: #f8fafc;
+}
+
+thead th {
+    padding: 18px 24px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #64748b;
+    border: none;
+}
+
+tbody td {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    background: #5932EA;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.bg-success-soft { background-color: #e6fffa; }
+.bg-primary-soft { background-color: #f0eeff; }
+
+.stats-badge {
+    background: white;
+    padding: 10px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f1f5f9;
+}

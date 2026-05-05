@@ -10,18 +10,31 @@ public class StudentService(ApiService api)
 
     public async Task<ApiResponse<List<StudentResponse>>> GetAll()
     {
-        try
+        try { return await api.GetAsync<List<StudentResponse>>(Url); }
+        catch (Exception ex) { return ApiResponse<List<StudentResponse>>.Fail(ex.Message); }
+    }
+
+    public async Task<ApiResponse<List<StudentResponse>>> GetUsersForAdmin()
+    {
+        var response = await GetAll();
+        if (response.IsSuccess)
+            if (response.Data != null)
+                response.Data = response.Data.OrderBy(u => u.FullName).ToList();
+        return response;
+    }
+
+    public async Task<ApiResponse<List<StudentResponse>>> GetStudentsForInstructor()
+    {
+        var response = await GetAll();
+        if (response.IsSuccess)
         {
-            return await api.GetAsync<List<StudentResponse>>(Url);
+            if (response.Data != null)
+                response.Data = response.Data
+                    .Where(u => u.Role.Equals("Student", StringComparison.OrdinalIgnoreCase))
+                    .OrderBy(u => u.FullName)
+                    .ToList();
         }
-        catch (Exception ex)
-        {
-            return new ApiResponse<List<StudentResponse>>
-            {
-                IsSuccess = false,
-                Error = ex.Message
-            };
-        }
+        return response;
     }
 
     public async Task<ApiResponse<StudentResponse>> GetById(string id)

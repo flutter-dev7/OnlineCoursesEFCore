@@ -1,0 +1,149 @@
+.categories-page[b-kozjrehkwk] { padding: 35px; }
+
+/* ШАПКА */
+.page-header[b-kozjrehkwk] { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.btn-add-main[b-kozjrehkwk] {
+    background: #5932EA; color: white; border: none; padding: 12px 24px;
+    border-radius: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px;
+    box-shadow: 0 10px 20px rgba(89, 50, 234, 0.15);
+}
+
+/* ТАБЛИЦА (Row Style) */
+.category-table-container[b-kozjrehkwk] { background: white; border-radius: 28px; border: 1px solid #f1f5f9; overflow: hidden; }
+.table-head[b-kozjrehkwk] {
+    display: grid; grid-template-columns: 280px 1fr 140px; padding: 22px 35px;
+    background: #fafbfc; border-bottom: 1px solid #f1f5f9; color: #94a3b8; font-size: 0.75rem; font-weight: 800;
+}
+.table-row[b-kozjrehkwk] {
+    display: grid; grid-template-columns: 280px 1fr 140px; padding: 25px 35px;
+    align-items: center; border-bottom: 1px solid #f8faff; transition: 0.3s;
+}
+.table-row:hover[b-kozjrehkwk] { background: #f9faff; transform: translateX(5px); }
+
+/* КНОПКИ ДЕЙСТВИЙ */
+.col-actions[b-kozjrehkwk] { display: flex; gap: 10px; justify-content: flex-end; }
+.row-btn[b-kozjrehkwk] {
+    width: 40px; height: 40px; border-radius: 12px; border: none;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+}
+.row-btn.edit[b-kozjrehkwk] { background: #f0eeff; color: #5932EA; }
+.row-btn.delete[b-kozjrehkwk] { background: #fff1f1; color: #ef4444; }
+
+/* ОБЩИЕ МОДАЛКИ (FIXED) */
+.custom-modal-overlay[b-kozjrehkwk] {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(12px);
+    display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+
+.custom-modal-card[b-kozjrehkwk] {
+    background: white; width: 480px; padding: 45px; border-radius: 35px;
+    position: relative; box-shadow: 0 30px 80px rgba(0,0,0,0.1);
+}
+
+/* НОВЫЙ КРАСИВЫЙ КРЕСТИК */
+.btn-close-circle[b-kozjrehkwk] {
+    position: absolute; top: 25px; right: 25px; width: 36px; height: 36px;
+    background: #f1f5f9; border: none; border-radius: 50%; color: #64748b;
+    display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+}
+
+/* МОДАЛКА УДАЛЕНИЯ (БОЛЕЕ КОМПАКТНАЯ) */
+.delete-modal-card[b-kozjrehkwk] {
+    background: white; width: 360px; padding: 35px; border-radius: 35px;
+    text-align: center; box-shadow: 0 30px 80px rgba(0,0,0,0.1);
+}
+
+.delete-icon-box[b-kozjrehkwk] {
+    width: 65px; height: 65px; background: #fff1f1; color: #ef4444;
+    border-radius: 20px; display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; margin: 0 auto 15px;
+}
+
+/* ФУТЕРЫ И КНОПКИ */
+.modal-footer-custom[b-kozjrehkwk], .modal-footer-delete[b-kozjrehkwk] { display: flex; gap: 12px; margin-top: 30px; }
+
+.btn-cancel-flat[b-kozjrehkwk], .btn-keep[b-kozjrehkwk] {
+    flex: 1; background: #f1f5f9; color: #64748b; border: none;
+    padding: 14px; border-radius: 16px; font-weight: 700;
+}
+
+.btn-confirm-action[b-kozjrehkwk] { flex: 2; background: #5932EA; color: white; border: none; padding: 14px; border-radius: 16px; font-weight: 700; }
+.btn-delete-final[b-kozjrehkwk] { flex: 2; background: #ef4444; color: white; border: none; padding: 14px; border-radius: 16px; font-weight: 700; }
+
+/* ИНПУТЫ */
+.input-group-custom label[b-kozjrehkwk] { display: block; font-size: 0.7rem; font-weight: 800; color: #94a3b8; margin-bottom: 8px; }
+.input-group-custom input[b-kozjrehkwk], .input-group-custom textarea[b-kozjrehkwk] {
+    width: 100%; padding: 16px 20px; border-radius: 16px; border: 1px solid #f1f5f9;
+    background: #fcfdfe; margin-bottom: 15px; transition: 0.2s;
+}
+.input-group-custom input:focus[b-kozjrehkwk], .input-group-custom textarea:focus[b-kozjrehkwk] { border-color: #5932EA; outline: none; background: white; }
+
+/* ЭФФЕКТЫ */
+.active-scale:active[b-kozjrehkwk] { transform: scale(0.96); }
+.active-scale[b-kozjrehkwk] { transition: 0.2s; cursor: pointer; }
+.pulse-red[b-kozjrehkwk] { animation: pulse-shadow-b-kozjrehkwk 2s infinite; }
+@keyframes pulse-shadow-b-kozjrehkwk { 0% { box-shadow: 0 0 0 0px rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0px rgba(239, 68, 68, 0); } }
+
+/* КАРТОЧКА МОДАЛКИ УДАЛЕНИЯ */
+.delete-modal-card[b-kozjrehkwk] {
+    background: white;
+    width: 380px;
+    padding: 40px 20px;
+    border-radius: 40px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    border: none;
+}
+
+/* КРУГЛАЯ ИКОНКА КОРЗИНЫ */
+.delete-icon-box-alt[b-kozjrehkwk] {
+    width: 80px;
+    height: 80px;
+    background: #fff1f1; /* Светло-красный фон */
+    color: #ef4444;    /* Ярко-красная иконка */
+    border-radius: 25px; /* Скругленные углы (squircle) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    margin: 0 auto;
+}
+
+/* ФУТЕР С КНОПКАМИ */
+.modal-footer-delete-alt[b-kozjrehkwk] {
+    display: flex;
+    gap: 15px;
+    margin-top: 35px;
+    padding: 0 20px;
+}
+
+/* КНОПКА CANCEL (Светлая) */
+.btn-cancel-light[b-kozjrehkwk] {
+    flex: 1;
+    background: #f0f4f8;
+    color: #64748b;
+    border: none;
+    padding: 15px;
+    border-radius: 20px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+/* КНОПКА DELETE (Красная солидная) */
+.btn-delete-solid[b-kozjrehkwk] {
+    flex: 1;
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 20px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.btn-delete-solid:hover[b-kozjrehkwk] { background: #dc2626; }
+.btn-cancel-light:hover[b-kozjrehkwk] { background: #e2e8f0; }
+
+/* АНИМАЦИЯ НАЖАТИЯ */
+.active-scale:active[b-kozjrehkwk] { transform: scale(0.95); }

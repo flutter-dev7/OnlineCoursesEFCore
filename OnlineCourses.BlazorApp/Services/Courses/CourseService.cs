@@ -56,15 +56,15 @@ public class CourseService(ApiService api)
         }
     }
 
-    public async Task<ApiResponse<CourseResponse>> Update(Guid id, CourseRequest model)
+    public async Task<ApiResponse<UpdateCourseResponseDto>> Update(Guid id, CourseRequest model)
     {
         try
         {
-            return await api.PutAsync<CourseResponse>($"{Url}/{id}", model);
+            return await api.PutAsync<UpdateCourseResponseDto>($"{Url}/{id}", model);
         }
         catch (Exception ex)
         {
-            return new ApiResponse<CourseResponse>
+            return new ApiResponse<UpdateCourseResponseDto>
             {
                 IsSuccess = false,
                 Error = ex.Message

@@ -1,0 +1,159 @@
+@page "/my-enrollments"
+@using OnlineCourses.BlazorApp.Models.Enrollments
+@using OnlineCourses.BlazorApp.Services.Enrollments
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Student")]
+@inject EnrollmentService EnrollmentService
+@inject NavigationManager Nav
+
+<div class="container py-4">
+    @* Заголовок стал меньше и аккуратнее *@
+    <div class="header-section mb-4">
+        <h3 class="fw-bold m-0">My Learning Journey</h3>
+        <p class="text-muted small">Pick up where you left off and reach your goals.</p>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="d-flex justify-content-center my-5">
+            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+        </div>
+    }
+    else if (enrollments == null || !enrollments.Any())
+    {
+        <div class="empty-state text-center p-5 rounded-4 shadow-sm">
+            <i class="bi bi-rocket-takeoff fs-1 text-muted mb-3 d-block"></i>
+            <h5 class="fw-bold">Ready to start?</h5>
+            <p class="text-muted small">You haven't enrolled in any courses yet.</p>
+            <a href="/courses" class="btn btn-primary btn-sm px-4 rounded-pill">Explore Courses</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var item in enrollments)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="enrollment-card h-100 shadow-sm">
+                        <div class="card-body p-3 d-flex flex-column">
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge status-pill @(item.ProgressPercent == 100 ? "completed" : "active")">
+                                    @(item.ProgressPercent == 100 ? "Finished" : "In Progress")
+                                </span>
+                                
+                                @* Яркая кнопка удаления *@
+                                <button class="btn-delete-highlighted" 
+                                        @onclick="() => ShowDeleteModal(item.Id, item.CourseTitle)"
+                                        title="Unenroll">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+                            </div>
+
+                            <h5 class="course-title-compact">@item.CourseTitle</h5>
+                            
+                            <div class="text-muted mb-3" style="font-size: 0.75rem;">
+                                <i class="bi bi-calendar3 me-1"></i> Enrolled: @item.EnrolledAt.ToString("dd.MM.yyyy")
+                            </div>
+
+                            <div class="progress-box mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="fw-bold text-dark" style="font-size: 0.7rem;">Progress</span>
+                                    <span class="fw-bold text-primary" style="font-size: 0.7rem;">@item.ProgressPercent%</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar @(item.ProgressPercent == 100 ? "bg-success" : "bg-primary")" 
+                                         role="progressbar" 
+                                         style="width: @item.ProgressPercent%" 
+                                         aria-valuenow="@item.ProgressPercent" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100"></div>
+                                </div>
+                            </div>
+
+                            @* Кнопка Продолжить вместо Add Progress *@
+                            <button class="btn btn-continue-slim w-100 mt-auto" 
+                                    @onclick='() => Nav.NavigateTo($"/course/view/{item.CourseId}")'>
+                                <span>Continue Learning</span>
+                                <i class="bi bi-play-fill"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@* --- Модальное окно подтверждения удаления --- *@
+@if (isDeleteModalVisible)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-body p-4 text-center">
+                    <div class="warning-icon mb-3">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                    </div>
+                    <h5 class="fw-bold">Are you sure?</h5>
+                    <p class="text-muted small mb-4">
+                        Do you really want to unenroll from <br/><strong>@courseTitleToDelete</strong>?
+                    </p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-light btn-sm px-3 rounded-pill" @onclick="CloseDeleteModal">Cancel</button>
+                        <button type="button" class="btn btn-danger btn-sm px-3 rounded-pill" @onclick="HandleDelete">Unenroll</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<EnrollmentResponse>? enrollments;
+    private bool isLoading = true;
+
+    // Состояние модалки
+    private bool isDeleteModalVisible = false;
+    private Guid selectedId;
+    private string courseTitleToDelete = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEnrollments();
+    }
+
+    private async Task LoadEnrollments()
+    {
+        isLoading = true;
+        var result = await EnrollmentService.GetMy();
+        if (result.IsSuccess)
+        {
+            enrollments = result.Data;
+        }
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    // Показать модалку
+    private void ShowDeleteModal(Guid id, string title)
+    {
+        selectedId = id;
+        courseTitleToDelete = title;
+        isDeleteModalVisible = true;
+    }
+
+    // Закрыть модалку
+    private void CloseDeleteModal() => isDeleteModalVisible = false;
+
+    // Выполнить удаление
+    private async Task HandleDelete()
+    {
+        isDeleteModalVisible = false;
+        var result = await EnrollmentService.Delete(selectedId);
+        if (result.IsSuccess)
+        {
+            await LoadEnrollments();
+        }
+    }
+}

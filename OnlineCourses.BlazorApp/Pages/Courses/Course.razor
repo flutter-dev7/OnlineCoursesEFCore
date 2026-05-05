@@ -1,0 +1,203 @@
+@page "/shared/courses"
+@using OnlineCourses.BlazorApp.Components.Cards
+@using OnlineCourses.BlazorApp.Models.Courses
+@using OnlineCourses.BlazorApp.Models.Categories
+@using OnlineCourses.BlazorApp.Services.Courses
+@using OnlineCourses.BlazorApp.Services.Categories
+@using OnlineCourses.BlazorApp.Enums
+@inject CourseService CourseService
+@inject CategoryService CategoryService
+
+<div class="courses-page animate__animated animate__fadeIn">
+    <div class="page-header">
+        <div class="header-titles">
+            <h2 class="fw-bold">My Courses</h2>
+            <p class="text-muted">Manage your catalog (@courses?.Count items)</p>
+        </div>
+        <button class="btn-create-course active-scale" @onclick="() => OpenModal()">
+            <i class="bi bi-plus-lg"></i>
+            <span>New Course</span>
+        </button>
+    </div>
+
+    @if (courses == null)
+    {
+        <div class="loader-wrap"><div class="spinner-border text-primary"></div></div>
+    }
+    else
+    {
+        <div class="courses-grid">
+            @foreach (var course in courses)
+            {
+                <CourseCard 
+                    Course="course" 
+                    OnEdit="OpenModal" 
+                    OnDelete="AskDelete" 
+                    OnTogglePublish="HandleTogglePublish" />
+            }
+        </div>
+    }
+</div>
+
+@* MODAL: CREATE / EDIT *@
+@if (isEditing)
+{
+    <div class="custom-modal-overlay">
+        <div class="edit-modal-card animate__animated animate__zoomIn">
+            <button class="btn-close-circle active-scale" @onclick="CloseModal"><i class="bi bi-x"></i></button>
+            <h3 class="fw-bold mb-4">@(isNew ? "New Course" : "Edit Course")</h3>
+            
+            <div class="form-stack">
+                <div class="input-unit">
+                    <label>COURSE TITLE</label>
+                    <input type="text" @bind="editModel.Title" placeholder="e.g. Master C# 2026" />
+                </div>
+
+                <div class="input-unit">
+                    <label>DESCRIPTION</label>
+                    <textarea @bind="editModel.Description" rows="2" placeholder="Tell students about this course..."></textarea>
+                </div>
+                
+                <div class="input-row">
+                    <div class="input-unit half">
+                        <label>PRICE ($)</label>
+                        <input type="number" @bind="editModel.Price" step="0.01" />
+                    </div>
+                    <div class="input-unit half">
+                        <label>DIFFICULTY</label>
+                        <select @bind="editModel.Level">
+                            <option value="0">Beginner</option>
+                            <option value="1">Intermediate</option>
+                            <option value="2">Advanced</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-unit">
+                    <label>CATEGORY</label>
+                    <select @bind="editModel.CategoryId">
+                        <option value="@Guid.Empty">Choose Category...</option>
+                        @foreach (var cat in categories ?? new()) {
+                            <option value="@cat.Id">@cat.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            
+            <div class="modal-btns">
+                <button class="btn-dismiss active-scale" @onclick="CloseModal">Cancel</button>
+                <button class="btn-confirm active-scale" @onclick="Save">Confirm changes</button>
+            </div>
+        </div>
+    </div>
+}
+
+@* MODAL: DELETE *@
+@if (isDeleting)
+{
+    <div class="custom-modal-overlay">
+        <div class="delete-modal-card animate__animated animate__fadeInUp">
+            <div class="del-icon-box"><i class="bi bi-trash3-fill"></i></div>
+            <h4 class="fw-bold mt-3">Delete Course?</h4>
+            <p class="text-muted small px-3">Are you sure you want to remove <b>@targetCourse?.Title</b>? This action is permanent.</p>
+            <div class="del-btns">
+                <button class="btn-no active-scale" @onclick="() => isDeleting = false">Cancel</button>
+                <button class="btn-yes active-scale" @onclick="ConfirmDelete">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<CourseResponse>? courses;
+    private List<CategoryResponse>? categories;
+    private CourseRequest editModel = new();
+    private CourseResponse? targetCourse;
+    private bool isEditing, isDeleting, isNew;
+
+    protected override async Task OnInitializedAsync() {
+        await LoadData();
+        var catRes = await CategoryService.GetAll();
+        if (catRes?.IsSuccess == true) categories = catRes.Data;
+    }
+
+    private async Task LoadData() {
+        var res = await CourseService.GetAll();
+        if (res?.IsSuccess == true) {
+            courses = res.Data;
+            StateHasChanged();
+        }
+    }
+
+    private void OpenModal(CourseResponse? course = null) {
+        if (course == null) {
+            isNew = true;
+            targetCourse = null;
+            editModel = new CourseRequest { Level = 0, Description = "" };
+        } else {
+            isNew = false;
+            targetCourse = course;
+            editModel = new CourseRequest { 
+                Title = course.Title, 
+                Price = course.Price, 
+                Level = (int)course.Level, 
+                CategoryId = categories?.FirstOrDefault(c => c.Name == course.CategoryName)?.Id ?? Guid.Empty,
+                Description = course.Description ?? ""
+            };
+        }
+        isEditing = true;
+    }
+
+    private void CloseModal() => isEditing = false;
+
+    private async Task Save() {
+        if (string.IsNullOrWhiteSpace(editModel.Title)) return;
+
+        if (isNew) {
+            // Логика создания
+            var res = await CourseService.Create(editModel);
+            if (res?.IsSuccess == true) {
+                isEditing = false;
+                await LoadData(); 
+            }
+        } else {
+            // Логика обновления (теперь типы не конфликтуют)
+            var res = await CourseService.Update(targetCourse!.Id, editModel);
+            if (res?.IsSuccess == true) {
+                isEditing = false;
+            
+                // Находим курс в списке и обновляем его данными из DTO
+                var index = courses!.FindIndex(x => x.Id == targetCourse.Id);
+                if (index != -1) {
+                    courses[index].Title = res.Data.Title;
+                    courses[index].Price = res.Data.Price;
+                    courses[index].Level = res.Data.Level;
+                    courses[index].CategoryId = res.Data.CategoryId;
+                }
+                StateHasChanged();
+            } else {
+                // Если здесь возникнет ошибка 500, ты увидишь её в консоли
+                Console.WriteLine($"Error: {res?.Error}"); 
+            }
+        }
+    }
+
+    private async Task HandleTogglePublish(CourseResponse course) {
+        var res = await CourseService.TogglePublish(course.Id);
+        if (res?.IsSuccess == true) {
+            course.IsPublished = res.Data;
+            StateHasChanged();
+        }
+    }
+
+    private void AskDelete(CourseResponse course) { targetCourse = course; isDeleting = true; }
+
+    private async Task ConfirmDelete() {
+        if (targetCourse == null) return;
+        var res = await CourseService.Delete(targetCourse.Id);
+        if (res?.IsSuccess == true) {
+            courses?.RemoveAll(x => x.Id == targetCourse.Id);
+            isDeleting = false;
+        }
+    }
+}

@@ -21,7 +21,7 @@ public class EnrollmentController : BaseController
     }
 
     [HttpGet]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Instructor")]
     public async Task<IActionResult> GetAllAsync()
     {
         var result = await _service.GetAllEnrollmentsAsync();

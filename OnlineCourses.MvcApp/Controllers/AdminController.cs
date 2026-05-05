@@ -16,7 +16,7 @@ namespace OnlineCourses.MvcApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var response = await _apiService.GetAsync<ApiResponse<DashboardSummaryDto>>("api/Dashboard/summary");
+            var response = await _apiService.GetAsync<ApiResponse<DashboardSummaryDto>>("api/dashboards/summary");
 
             if (response != null && response.IsSuccess)
             {

@@ -1,0 +1,16 @@
+<div class="kpi-glass-card @ColorClass shadow-sm">
+    <div class="glass-icon">
+        <i class="bi @Icon"></i>
+    </div>
+    <div class="glass-info">
+        <span class="text-muted small">@Title</span>
+        <h3 class="fw-bold m-0">@Value</h3>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string Title { get; set; } = "";
+    [Parameter] public string Value { get; set; } = "";
+    [Parameter] public string Icon { get; set; } = "";
+    [Parameter] public string ColorClass { get; set; } = "purple"; // purple, green, yellow, red
+}

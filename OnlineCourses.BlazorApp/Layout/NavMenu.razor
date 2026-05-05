@@ -1,39 +1,121 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorApp</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Nav
+@inject OnlineCourses.BlazorApp.Services.Auth.AuthService AuthService
+
+<div class="sidebar-inner">
+    <div class="sidebar-logo">
+        <div class="logo-icon-wrap">
+            <i class="bi bi-mortarboard-fill"></i>
+        </div>
+        <div class="logo-text">
+            <span class="logo-name">OnlineCourses</span>
+            <span class="logo-version">v.01</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        
+        @* --- СЕКЦИЯ АДМИНИСТРАТОРА --- *@
+        <AuthorizeView Roles="Admin">
+            <Authorized>
+                <div class="nav-section-label">ADMIN PANEL</div>
+                <ul class="nav-list">
+                    <li class="nav-item @GetActiveClass("admin/dashboard")" @onclick='() => GoTo("admin/dashboard")'>
+                        <i class="bi bi-grid-1x2-fill"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li class="nav-item @GetActiveClass("admin/students")" @onclick='() => GoTo("admin/students")'>
+                        <i class="bi bi-person-badge-fill"></i>
+                        <span>User Directory</span>
+                    </li>
+                </ul>
+            </Authorized>
+        </AuthorizeView>
+
+        @* --- СЕКЦИЯ ИНСТРУКТОРА --- *@
+        <AuthorizeView Roles="Instructor">
+            <Authorized>
+                <div class="nav-section-label">INSTRUCTOR PANEL</div>
+                <ul class="nav-list">
+                    @* Инструктор видит студентов как "My Students" *@
+                    <li class="nav-item @GetActiveClass("admin/students")" @onclick='() => GoTo("admin/students")'>
+                        <i class="bi bi-people-fill"></i>
+                        <span>My Students</span>
+                    </li>
+                </ul>
+            </Authorized>
+        </AuthorizeView>
+
+        @* --- ОБЩАЯ УПРАВЛЕНЧЕСКАЯ СЕКЦИЯ (Admin + Instructor) --- *@
+        <AuthorizeView Roles="Admin, Instructor">
+            <Authorized>
+                <div class="nav-section-label">MANAGEMENT</div>
+                <ul class="nav-list">
+                    <li class="nav-item @GetActiveClass("shared/courses")" @onclick='() => GoTo("shared/courses")'>
+                        <i class="bi bi-journal-bookmark-fill"></i>
+                        <span>Courses</span>
+                    </li>
+                    @* Добавлен пункт Categories согласно запросу *@
+                    <li class="nav-item @GetActiveClass("shared/categories")" @onclick='() => GoTo("shared/categories")'>
+                        <i class="bi bi-tags-fill"></i>
+                        <span>Categories</span>
+                    </li>
+                    <li class="nav-item @GetActiveClass("shared/enrollments")" @onclick='() => GoTo("shared/enrollments")'>
+                        <i class="bi bi-clipboard-check-fill"></i>
+                        <span>All Enrollments</span>
+                    </li>
+                </ul>
+            </Authorized>
+        </AuthorizeView>
+
+        @* --- ПАНЕЛЬ СТУДЕНТА --- *@
+        <AuthorizeView Roles="Student">
+            <Authorized>
+                <div class="nav-section-label">STUDENT AREA</div>
+                <ul class="nav-list">
+                    <li class="nav-item @GetActiveClass("student/home")" @onclick='() => GoTo("student/home")'>
+                        <i class="bi bi-house-door-fill"></i>
+                        <span>Home Page</span>
+                    </li>
+            
+                    <li class="nav-item @GetActiveClass("student/all-courses")" @onclick='() => GoTo("student/all-courses")'>
+                        <i class="bi bi-search"></i>
+                        <span>All Courses</span>
+                    </li>
+
+                    @* --- ВОТ СЮДА ДОБАВЛЯЕМ MY ENROLLMENTS --- *@
+                    <li class="nav-item @GetActiveClass("my-enrollments")" @onclick='() => GoTo("my-enrollments")'>
+                        <i class="bi bi-journal-bookmark-fill"></i>
+                        <span>My Courses</span> @* Назвал "My Courses", так студенту понятнее, чем "Enrollments" *@
+                    </li>
+                </ul>
+            </Authorized>
+        </AuthorizeView>
+
+    </nav>
+
+    <div class="sidebar-footer">
+        <button class="logout-btn" @onclick="HandleLogout">
+            <i class="bi bi-box-arrow-left"></i>
+            <span>Logout</span>
         </button>
     </div>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
-
 @code {
-    private bool collapseNavMenu = true;
+    private void GoTo(string url) => Nav.NavigateTo(url);
 
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
-
-    private void ToggleNavMenu()
+    private string GetActiveClass(string page) 
     {
-        collapseNavMenu = !collapseNavMenu;
+        var relativePath = Nav.ToBaseRelativePath(Nav.Uri);
+        return relativePath.ToLower().StartsWith(page.ToLower()) ? "active" : "";
     }
+
+    private async Task HandleLogout()
+    {
+        await AuthService.Logout();
+        Nav.NavigateTo("/login");
+    }
+
+    protected override void OnInitialized() => Nav.LocationChanged += (s, e) => StateHasChanged();
 }

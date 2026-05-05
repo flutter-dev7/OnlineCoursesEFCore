@@ -1,0 +1,31 @@
+.timeline-item[b-3ln1m1a9oj] {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.tl-icon[b-3ln1m1a9oj] {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+/* Фон иконки */
+.bg-light-primary[b-3ln1m1a9oj] { background: #f0f7ff; color: #5932EA; }
+.bg-light-success[b-3ln1m1a9oj] { background: #e8f9ee; color: #22C55E; }
+.bg-light-warning[b-3ln1m1a9oj] { background: #fff9e6; color: #FACC15; }
+.bg-light-info[b-3ln1m1a9oj] { background: #eef2ff; color: #0dcaf0; }
+
+.tl-content p[b-3ln1m1a9oj] {
+    font-size: 0.9rem;
+}
+
+.tl-content small[b-3ln1m1a9oj] {
+    font-size: 0.75rem;
+}

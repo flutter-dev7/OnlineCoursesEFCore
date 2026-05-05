@@ -1,0 +1,43 @@
+@using OnlineCourses.BlazorApp.Models.Students
+
+<div class="student-card shadow-sm">
+    <div class="card-actions">
+        <button class="action-btn edit" @onclick="OnEditClick">
+            <i class="bi bi-pencil-fill"></i>
+        </button>
+        <button class="action-btn delete" @onclick="OnDeleteClick">
+            <i class="bi bi-trash3-fill"></i>
+        </button>
+    </div>
+
+    <div class="card-content">
+        <div class="avatar-wrapper">
+            @if (!string.IsNullOrEmpty(Student.ImageUrl))
+            {
+                @* Используем твой порт 5062 из настроек *@
+                <img src="@($"http://localhost:5062{Student.ImageUrl}")" alt="avatar" class="avatar-img" />
+            }
+            else
+            {
+                <div class="avatar-placeholder">@Student.FullName[0]</div>
+            }
+            <span class="status-indicator online"></span>
+        </div>
+
+        <h5 class="student-name">@Student.FullName</h5>
+        <p class="student-email">@Student.Email</p>
+        
+        <div class="role-badge @Student.Role.ToLower()">
+            @Student.Role
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public StudentResponse Student { get; set; } = null!;
+    [Parameter] public EventCallback<StudentResponse> OnEdit { get; set; }
+    [Parameter] public EventCallback<string> OnDelete { get; set; }
+
+    private Task OnEditClick() => OnEdit.InvokeAsync(Student);
+    private Task OnDeleteClick() => OnDelete.InvokeAsync(Student.Id);
+}

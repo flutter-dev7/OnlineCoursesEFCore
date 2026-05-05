@@ -15,13 +15,13 @@ public class EnrollmentsController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var result = await _apiService.GetAsync<ApiResponse<List<EnrollmentViewModel>>>("api/Enrollment");
+        var result = await _apiService.GetAsync<ApiResponse<List<EnrollmentViewModel>>>("api/enrollments");
         return View(result?.Data ?? new List<EnrollmentViewModel>());
     }
 
     public async Task<IActionResult> MyLearning()
     {
-        var result = await _apiService.GetAsync<ApiResponse<List<EnrollmentViewModel>>>("api/Enrollment/my");
+        var result = await _apiService.GetAsync<ApiResponse<List<EnrollmentViewModel>>>("api/enrollments/my");
         return View(result?.Data ?? new List<EnrollmentViewModel>());
     }
 
@@ -32,7 +32,7 @@ public class EnrollmentsController : Controller
         {
             var dto = new { CourseId = courseId };
 
-            var response = await _apiService.PostAsync("api/Enrollment", dto);
+            var response = await _apiService.PostAsync("api/enrollments", dto);
 
             TempData["Success"] = "You are enrolled ✔";
         }
@@ -48,7 +48,7 @@ public class EnrollmentsController : Controller
     [ValidateAntiForgeryToken] 
     public async Task<IActionResult> Unenroll(Guid id) 
     {
-        var response = await _apiService.DeleteAsync($"api/Enrollment/{id}");
+        var response = await _apiService.DeleteAsync($"api/enrollments/{id}");
 
         if (response.IsSuccessStatusCode)
         {

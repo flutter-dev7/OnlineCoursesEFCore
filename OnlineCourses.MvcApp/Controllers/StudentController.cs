@@ -15,7 +15,7 @@ public class StudentsController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var result = await _apiService.GetAsync<ApiResponse<List<StudentViewModel>>>("api/Student");
+        var result = await _apiService.GetAsync<ApiResponse<List<StudentViewModel>>>("api/students");
 
         var onlyStudents = result?.Data?
             .Where(u => u.Role.Equals("Student", StringComparison.OrdinalIgnoreCase))
@@ -27,7 +27,7 @@ public class StudentsController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(string id)
     {
-        var response = await _apiService.DeleteAsync($"api/Student/{id}");
+        var response = await _apiService.DeleteAsync($"api/students/{id}");
 
         if (response.IsSuccessStatusCode)
         {

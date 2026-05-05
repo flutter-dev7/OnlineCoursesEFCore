@@ -1,0 +1,176 @@
+@page "/shared/categories"
+@using OnlineCourses.BlazorApp.Models.Categories
+@using OnlineCourses.BlazorApp.Services.Categories
+@inject CategoryService CategoryService
+
+<div class="categories-page animate__animated animate__fadeIn">
+    <div class="page-header">
+        <div class="header-titles">
+            <h2 class="fw-bold">Categories</h2>
+            <p class="text-muted">Manage your learning paths (@categories?.Count)</p>
+        </div>
+        <button class="btn-add-main active-scale" @onclick="() => OpenModal()">
+            <i class="bi bi-plus-lg"></i>
+            <span>Add Category</span>
+        </button>
+    </div>
+
+    @if (categories == null)
+    {
+        <div class="loader-wrap"><div class="spinner-border text-primary"></div></div>
+    }
+    else
+    {
+        <div class="category-table-container shadow-sm">
+            <div class="table-head">
+                <div class="col-name">NAME</div>
+                <div class="col-desc">DESCRIPTION</div>
+                <div class="col-actions">ACTIONS</div>
+            </div>
+            
+            <div class="table-body">
+                @foreach (var cat in categories)
+                {
+                    <div class="table-row">
+                        <div class="col-name fw-bold">@cat.Name</div>
+                        <div class="col-desc text-muted">@cat.Description</div>
+                        <div class="col-actions">
+                            <button class="row-btn edit active-scale" @onclick="() => OpenModal(cat)">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button class="row-btn delete active-scale" @onclick="() => AskDelete(cat)">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@* МОДАЛКА: ADD / EDIT *@
+@if (isEditing)
+{
+    <div class="custom-modal-overlay">
+        <div class="custom-modal-card animate__animated animate__zoomIn">
+            <button class="btn-close-circle active-scale" @onclick="CloseModal">
+                <i class="bi bi-x"></i>
+            </button>
+            
+            <h4 class="modal-title-main">@(isNew ? "Create Category" : "Edit Category")</h4>
+            
+            <div class="modal-body-custom">
+                <div class="input-group-custom">
+                    <label>TITLE</label>
+                    <input type="text" @bind="editModel.Name" placeholder="e.g. Graphic Design" />
+                </div>
+                <div class="input-group-custom">
+                    <label>DESCRIPTION</label>
+                    <textarea @bind="editModel.Description" rows="3" placeholder="Brief description..."></textarea>
+                </div>
+            </div>
+            
+            <div class="modal-footer-custom">
+                <button class="btn-cancel-flat active-scale" @onclick="CloseModal">Cancel</button>
+                <button class="btn-confirm-action active-scale" @onclick="Save">Confirm</button>
+            </div>
+        </div>
+    </div>
+}
+
+@* МОДАЛКА: DELETE (КОМПАКТНАЯ) *@
+@if (isDeleting)
+{
+    <div class="custom-modal-overlay">
+        <div class="delete-modal-card animate__animated animate__fadeInUp">
+            <div class="delete-icon-box-alt">
+                <i class="bi bi-trash3"></i>
+            </div>
+            
+            <h4 class="fw-bold mt-4">Delete Category?</h4>
+            <p class="text-muted small px-4">
+                You're deleting <span class="text-dark fw-bold">@targetCat?.Name</span>. 
+                This cannot be undone.
+            </p>
+            
+            <div class="modal-footer-delete-alt">
+                <button class="btn-cancel-light active-scale" @onclick="() => isDeleting = false">
+                    Cancel
+                </button>
+                <button class="btn-delete-solid active-scale" @onclick="ConfirmDelete">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<CategoryResponse>? categories;
+    private CategoryRequest editModel = new();
+    private CategoryResponse? targetCat;
+    private bool isEditing, isDeleting, isNew;
+
+    protected override async Task OnInitializedAsync() => await Load();
+
+    private async Task Load() {
+        var res = await CategoryService.GetAll();
+        if (res?.IsSuccess == true) categories = res.Data;
+    }
+
+    private void OpenModal(CategoryResponse? cat = null) {
+        targetCat = cat;
+        isNew = cat == null;
+        editModel = isNew ? new() : new() { Name = cat!.Name, Description = cat.Description };
+        isEditing = true;
+    }
+
+    private void CloseModal() => isEditing = false;
+
+    private async Task Save() {
+        if (string.IsNullOrWhiteSpace(editModel.Name)) return;
+        var res = isNew ? await CategoryService.Create(editModel) : await CategoryService.Update(targetCat!.Id, editModel);
+        if (res?.IsSuccess == true) { isEditing = false; await Load(); }
+    }
+
+    private void AskDelete(CategoryResponse cat) {
+        targetCat = cat;
+        isDeleting = true;
+    }
+
+    private async Task ConfirmDelete()
+    {
+        if (targetCat == null) return;
+
+        try
+        {
+            var res = await CategoryService.Delete(targetCat.Id);
+        
+            if (res != null && res.IsSuccess)
+            {
+                // 1. Удаляем из локального списка вручную, чтобы строка исчезла сразу
+                categories?.RemoveAll(x => x.Id == targetCat.Id);
+            
+                // 2. Закрываем модалку
+                isDeleting = false;
+            
+                // 3. Сбрасываем выбранную категорию
+                targetCat = null;
+            
+                // 4. Принудительно перерисовываем интерфейс
+                StateHasChanged();
+            }
+            else
+            {
+                // Если API вернул ошибку, просто закрываем
+                isDeleting = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+            isDeleting = false;
+        }
+    }
+}

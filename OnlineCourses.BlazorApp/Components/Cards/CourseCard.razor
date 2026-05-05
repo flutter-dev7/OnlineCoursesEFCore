@@ -1,0 +1,69 @@
+@using OnlineCourses.BlazorApp.Models.Courses
+
+<div class="course-card-wrapper">
+    @* Динамический класс is-draft для визуального отличия неопубликованных курсов *@
+    <div class="course-card @(Course.IsPublished ? "" : "is-draft") animate__animated animate__fadeIn">
+        
+        @* Скрытая панель действий, которая плавно выплывает при hover *@
+        <div class="card-actions-overlay">
+            <button class="btn-action publish @(Course.IsPublished ? "active" : "")" 
+                    @onclick="() => OnTogglePublish.InvokeAsync(Course)"
+                    title="@(Course.IsPublished ? "Unpublish" : "Publish")">
+                <i class="bi @(Course.IsPublished ? "bi-eye-fill" : "bi-eye-slash-fill")"></i>
+            </button>
+            <button class="btn-action edit" @onclick="() => OnEdit.InvokeAsync(Course)" title="Edit">
+                <i class="bi bi-pencil-square"></i>
+            </button>
+            <button class="btn-action delete" @onclick="() => OnDelete.InvokeAsync(Course)" title="Delete">
+                <i class="bi bi-trash3-fill"></i>
+            </button>
+        </div>
+
+        <div class="card-main-content">
+            <div class="badge-container">
+                <span class="badge-level @Course.Level.ToString().ToLower()">@Course.Level</span>
+                @if (!Course.IsPublished)
+                {
+                    <span class="badge-status-draft">Draft</span>
+                }
+            </div>
+
+            <h4 class="course-title">@Course.Title</h4>
+            
+            <p class="course-desc">
+                @(string.IsNullOrWhiteSpace(Course.Description) ? "No description available for this course." : Course.Description)
+            </p>
+
+            <div class="meta-info">
+                <div class="meta-item">
+                    <i class="bi bi-person-circle"></i>
+                    <span>@Course.InstructorName</span>
+                </div>
+                @* Добавлен счетчик уроков как на макете *@
+                <div class="meta-item">
+                    <i class="bi bi-play-circle"></i>
+                    <span>@(Course.LessonCount) Lessons</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer-stats">
+            <div class="price-container">
+                <span class="currency">$</span>
+                <span class="amount">@Course.Price</span>
+            </div>
+            <div class="rating-container">
+                <i class="bi bi-star-fill"></i>
+                @* Форматирование рейтинга до одного знака *@
+                <span>@Course.AverageRating.ToString("F1")</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public CourseResponse Course { get; set; } = null!;
+    [Parameter] public EventCallback<CourseResponse> OnEdit { get; set; }
+    [Parameter] public EventCallback<CourseResponse> OnDelete { get; set; }
+    [Parameter] public EventCallback<CourseResponse> OnTogglePublish { get; set; }
+}

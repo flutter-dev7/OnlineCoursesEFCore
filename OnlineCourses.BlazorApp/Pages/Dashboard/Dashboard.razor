@@ -1,0 +1,135 @@
+@page "/admin/dashboard"
+@using OnlineCourses.BlazorApp.Components.Cards
+@using OnlineCourses.BlazorApp.Models.Dashboard
+@using OnlineCourses.BlazorApp.Services.Dashboard
+@using System.Globalization
+@inject DashboardService DashboardService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+
+<div class="dash-wrapper">
+    @if (summary == null)
+    {
+        <div class="loader-container">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Loading database...</p>
+        </div>
+    }
+    else
+    {
+        @* HEADER: Заголовок и Календарь *@
+        <div class="dash-header d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold m-0">Dashboard Overview</h2>
+                <p class="text-muted small m-0">Platform status for @DateTime.Now.ToString("MMMM yyyy", CultureInfo.InvariantCulture)</p>
+            </div>
+            
+            <div class="d-flex align-items-center gap-3">
+                <div class="calendar-widget shadow-sm">
+                    <div class="cal-left"><i class="bi bi-calendar3"></i></div>
+                    <div class="cal-right">
+                        <span class="cal-day">@DateTime.Now.ToString("dd")</span>
+                        <div class="cal-meta">
+                            <span class="cal-month">@DateTime.Now.ToString("MMM", CultureInfo.InvariantCulture).ToUpper()</span>
+                            <span class="cal-year">@DateTime.Now.Year</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button @onclick="DownloadReport" class="btn-report shadow-sm">
+                    <i class="bi bi-cloud-arrow-down"></i>
+                    <span>Download Report</span>
+                </button>
+            </div>
+        </div>
+
+        @* KPI ROW: Стеклянные карточки *@
+        <div class="stats-row mb-4">
+            <KPICard Title="Total Students" Value="@summary.TotalStudents.ToString()" Icon="bi-people" ColorClass="purple" />
+            <KPICard Title="Revenue" Value='@($"{summary.TotalRevenue:N0} ₽")' Icon="bi-wallet2" ColorClass="green" />
+            <KPICard Title="Published" Value="@summary.PublishedCourses.ToString()" Icon="bi-journal-check" ColorClass="yellow" />
+            <KPICard Title="Avg Rating" Value="@summary.AveragePlatformRating.ToString("0.0")" Icon="bi-star" ColorClass="red" />
+        </div>
+
+        @* MAIN GRID: Инсайты и Прогресс *@
+        <div class="main-grid mb-4">
+            <div class="activity-card shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold m-0">Real-time Insights</h5>
+                    <span class="badge-live">LIVE DATA</span>
+                </div>
+                <div class="modern-timeline">
+                    <ActivityItem Title="Registration Flow" Description='@($"Total {summary.TotalStudents} students in system.")' Icon="bi-person-plus" IconBgClass="bg-light-primary" />
+                    <ActivityItem Title="Active Study" Description='@($"{summary.ActiveEnrollments} students currently active.")' Icon="bi-play-circle" IconBgClass="bg-light-success" />
+                    <ActivityItem Title="Completed" Description='@($"{summary.CompletedEnrollments} courses finished.")' Icon="bi-patch-check" IconBgClass="bg-light-warning" />
+                    <ActivityItem Title="Reviews" Description='@($"{summary.TotalReviews} platform reviews.")' Icon="bi-chat-left-heart" IconBgClass="bg-light-info" />
+                </div>
+            </div>
+
+            <div class="side-stats-card shadow-sm">
+                <h5 class="fw-bold mb-4">Course Status</h5>
+                <div class="dist-stat mb-4">
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span>Production Ready</span>
+                        <span>@CalculatePercent(summary.PublishedCourses, summary.TotalCourses)%</span>
+                    </div>
+                    <div class="custom-progress">
+                        <div class="fill" style="width: @CalculatePercent(summary.PublishedCourses, summary.TotalCourses)%"></div>
+                    </div>
+                </div>
+                <div class="info-box-mini mt-auto">
+                    <i class="bi bi-database-check me-2"></i>
+                    <span class="small">System: @summary.TotalCourses courses synced.</span>
+                </div>
+            </div>
+        </div>
+
+        @* BOTTOM GRID: Улучшенный Success Rate и Инструкторы *@
+        <div class="bottom-grid">
+            <div class="mini-card success-rate-card shadow-sm">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="text-muted small mb-1">Success Rate</h6>
+                        <h3 class="fw-bold m-0">@CalculatePercent(summary.CompletedEnrollments, summary.TotalEnrollments)%</h3>
+                    </div>
+                    <div class="trend-indicator up shadow-sm">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
+                </div>
+                <div class="progress-mini-wrapper mt-3">
+                    <div class="progress-mini-bar" style="width: @CalculatePercent(summary.CompletedEnrollments, summary.TotalEnrollments)%"></div>
+                </div>
+            </div>
+            
+            <div class="dark-card shadow-sm">
+                <div class="ins-icon-box"><i class="bi bi-person-badge"></i></div>
+                <div>
+                    <h5 class="fw-bold m-0">@summary.TotalInstructors</h5>
+                    <p class="m-0 small opacity-50">Verified Instructors</p>
+                </div>
+            </div>
+
+            <div class="dark-card shadow-sm db-status-card">
+                <div class="ins-icon-box text-info"><i class="bi bi-shield-check"></i></div>
+                <div>
+                    <h5 class="fw-bold m-0">DB Status</h5>
+                    <p class="m-0 small opacity-50">Secure Connection</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private DashboardSummaryResponse? summary;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await DashboardService.GetSummary();
+        if (result.IsSuccess) summary = result.Data;
+        else NavigationManager.NavigateTo("/login");
+    }
+
+    private async Task DownloadReport() => await JsRuntime.InvokeVoidAsync("window.print");
+    private int CalculatePercent(int val, int total) => total == 0 ? 0 : (int)((double)val / total * 100);
+}

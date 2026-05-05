@@ -1,0 +1,137 @@
+/* --- Заголовки и Текст --- */
+.header-section h3[b-334b95bn5c] {
+    font-size: 1.5rem; /* Уменьшенный размер основного заголовка */
+    color: #1a1c21;
+    letter-spacing: -0.5px;
+}
+
+.header-section p[b-334b95bn5c] {
+    font-size: 0.85rem; /* Компактный подзаголовок */
+    margin-bottom: 0;
+}
+
+.course-title-compact[b-334b95bn5c] {
+    font-weight: 700;
+    font-size: 1.1rem; /* Уменьшенное название курса */
+    margin-bottom: 4px;
+    color: #1e293b;
+    /* Ограничение текста двумя строками */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 2.8rem;
+}
+
+/* --- Карточка --- */
+.enrollment-card[b-334b95bn5c] {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.enrollment-card:hover[b-334b95bn5c] {
+    border-color: #5932EA;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(89, 50, 234, 0.05) !important;
+}
+
+/* --- Кнопка удаления (Яркая) --- */
+.btn-delete-highlighted[b-334b95bn5c] {
+    width: 34px;
+    height: 34px;
+    background: #fff1f1; /* Светло-красный фон для заметности */
+    color: #ef4444;       /* Ярко-красная иконка */
+    border: 1px solid #fee2e2;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    padding: 0;
+}
+
+.btn-delete-highlighted:hover[b-334b95bn5c] {
+    background: #ef4444; /* Полностью красная при наведении */
+    color: #ffffff;
+    border-color: #ef4444;
+    transform: scale(1.05);
+}
+
+/* --- Прогресс-бар --- */
+.progress-box[b-334b95bn5c] {
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 12px;
+}
+
+.progress[b-334b95bn5c] {
+    background-color: #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* --- Кнопка Continue --- */
+.btn-continue-slim[b-334b95bn5c] {
+    background: #5932EA;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-continue-slim:hover[b-334b95bn5c] {
+    background: #4a29c4;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(89, 50, 234, 0.25);
+}
+
+.btn-continue-slim i[b-334b95bn5c] {
+    font-size: 1.1rem;
+}
+
+/* --- Бейджи статуса --- */
+.status-pill[b-334b95bn5c] {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 8px;
+    text-transform: uppercase;
+}
+
+.status-pill.active[b-334b95bn5c] {
+    background: #f0eeff;
+    color: #5932EA;
+}
+
+.status-pill.completed[b-334b95bn5c] {
+    background: #e6fffa;
+    color: #059669;
+}
+
+/* --- Модальное окно --- */
+.warning-icon[b-334b95bn5c] {
+    font-size: 3rem;
+    color: #ef4444;
+}
+
+.modal.show[b-334b95bn5c] {
+    backdrop-filter: blur(4px);
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* --- Пустое состояние --- */
+.empty-state[b-334b95bn5c] {
+    background: #ffffff;
+    border: 2px dashed #e2e8f0;
+}

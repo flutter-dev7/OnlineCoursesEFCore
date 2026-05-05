@@ -1,0 +1,180 @@
+@page "/admin/students"
+@using Microsoft.AspNetCore.Components.Authorization
+@using OnlineCourses.BlazorApp.Components.Cards
+@using OnlineCourses.BlazorApp.Models.ApiResponse
+@using OnlineCourses.BlazorApp.Models.Students
+@using OnlineCourses.BlazorApp.Services.Students
+@inject AuthenticationStateProvider AuthStateProvider
+@inject StudentService StudentService
+@inject IJSRuntime JsRuntime
+
+<div class="students-page">
+    @* ХЕДЕР *@
+    <div class="page-header">
+        <div class="header-titles">
+            <h2 class="fw-bold">Members Directory</h2>
+            <p class="text-muted">Total students: @filteredStudents?.Count</p>
+        </div>
+        
+        <div class="header-tools">
+            <div class="search-input-wrapper">
+                <i class="bi bi-search"></i>
+                <input type="text" 
+                       placeholder="Filter by name..." 
+                       @bind="SearchTerm" 
+                       @bind:event="oninput" />
+            </div>
+        </div>
+    </div>
+
+    @if (students == null)
+    {
+        <div class="loading-state text-center py-5">
+            <div class="spinner-border text-primary"></div>
+        </div>
+    }
+    else
+    {
+        <div class="students-grid">
+            @if (filteredStudents != null)
+            {
+                foreach (var student in filteredStudents)
+                {
+                    <StudentCard Student="student" OnEdit="StartEdit" OnDelete="HandleDeleteRequest"/>
+                }
+            }
+        </div>
+    }
+</div>
+
+@* МОДАЛКА РЕДАКТИРОВАНИЯ (С ИНПУТАМИ) *@
+@if (isEditing)
+{
+    <div class="custom-modal-overlay">
+        <div class="custom-modal-card animate__animated animate__zoomIn">
+            <div class="modal-header-custom">
+                <h4>Edit Profile</h4>
+                <button class="close-modal-btn active-scale" @onclick="CancelEdit">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+
+            <div class="modal-body-custom">
+                @* ВОТ ОНИ, ТВОИ ИНПУТЫ *@
+                <div class="input-group-custom">
+                    <label>Full Name</label>
+                    <input type="text" @bind="editModel.FullName" placeholder="Enter full name" />
+                </div>
+                <div class="input-group-custom">
+                    <label>Username</label>
+                    <input type="text" @bind="editModel.Username" placeholder="Enter username" />
+                </div>
+                <div class="input-group-custom">
+                    <label>Email Address</label>
+                    <input type="email" @bind="editModel.Email" placeholder="Enter email address" />
+                </div>
+            </div>
+
+            <div class="modal-footer-custom">
+                <button class="btn-dismiss active-scale" @onclick="CancelEdit">Dismiss</button>
+                <button class="btn-save active-scale" @onclick="SaveEdit">Update Profile</button>
+            </div>
+        </div>
+    </div>
+}
+
+@* КОМПАКТНАЯ МОДАЛКА УДАЛЕНИЯ *@
+@if (isDeleting)
+{
+    <div class="custom-modal-overlay">
+        <div class="delete-modal-card tiny-modal animate__animated animate__fadeInUp">
+            <div class="delete-icon-wrapper pulse-red">
+                <i class="bi bi-trash3"></i>
+            </div>
+            
+            <div class="modal-body-custom text-center">
+                <h5 class="fw-bold">Delete Student?</h5>
+                <p class="text-muted small">
+                    You're deleting <b>@studentToDelete?.FullName</b>.<br/> 
+                    This cannot be undone.
+                </p>
+            </div>
+            
+            <div class="modal-footer-custom gap-2">
+                <button class="btn-keep active-scale" @onclick="CancelDelete">Cancel</button>
+                <button class="btn-delete-confirm active-scale" @onclick="ConfirmDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private List<StudentResponse>? students;
+    private string SearchTerm { get; set; } = "";
+
+    private List<StudentResponse> filteredStudents => 
+        students?.Where(s => s.FullName.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase)).ToList() ?? new();
+
+    private bool isEditing = false;
+    private bool isDeleting = false;
+    private StudentResponse? currentStudent;
+    private StudentResponse? studentToDelete;
+    private UpdateStudentRequest editModel = new();
+
+    protected override async Task OnInitializedAsync() => await LoadStudents();
+
+    private async Task LoadStudents()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        ApiResponse<List<StudentResponse>> result;
+
+        if (user.IsInRole("Admin"))
+        {
+            // Вызываем логику админа
+            result = await StudentService.GetUsersForAdmin();
+        }
+        else
+        {
+            // Вызываем логику инструктора
+            result = await StudentService.GetStudentsForInstructor();
+        }
+
+        if (result.IsSuccess) students = result.Data;
+    }
+
+    private void StartEdit(StudentResponse student)
+    {
+        currentStudent = student;
+        editModel = new UpdateStudentRequest { 
+            FullName = student.FullName, 
+            Email = student.Email, 
+            Username = student.Username 
+        };
+        isEditing = true;
+    }
+
+    private async Task SaveEdit()
+    {
+        if (currentStudent == null) return;
+        var result = await StudentService.Update(currentStudent.Id, editModel);
+        if (result.IsSuccess) { isEditing = false; await LoadStudents(); }
+    }
+
+    private void CancelEdit() => isEditing = false;
+
+    private void HandleDeleteRequest(string id)
+    {
+        studentToDelete = students?.FirstOrDefault(s => s.Id == id);
+        if (studentToDelete != null) isDeleting = true;
+    }
+
+    private void CancelDelete() => isDeleting = false;
+
+    private async Task ConfirmDelete()
+    {
+        if (studentToDelete == null) return;
+        var result = await StudentService.Delete(studentToDelete.Id);
+        if (result.IsSuccess) { isDeleting = false; await LoadStudents(); }
+    }
+}

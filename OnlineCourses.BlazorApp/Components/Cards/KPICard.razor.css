@@ -1,0 +1,29 @@
+.kpi-glass-card {
+    background: white;
+    padding: 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: 0.3s ease;
+}
+
+.kpi-glass-card:hover {
+    transform: translateY(-5px);
+}
+
+.glass-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+}
+
+/* ИСПРАВЛЕНО: Убрали :polyglot, используем вложенность */
+.purple .glass-icon { background: rgba(139, 133, 255, 0.1); color: #8B85FF; }
+.green .glass-icon { background: rgba(34, 197, 94, 0.1); color: #22C55E; }
+.yellow .glass-icon { background: rgba(250, 204, 21, 0.1); color: #FACC15; }
+.red .glass-icon { background: rgba(248, 113, 113, 0.1); color: #F87171; }
