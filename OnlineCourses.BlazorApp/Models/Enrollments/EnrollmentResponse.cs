@@ -7,7 +7,7 @@ public class EnrollmentResponse
     public DateTime? CompletedAt { get; set; }
     public int Status { get; set; } 
     public int ProgressPercent { get; set; }
-
+    public Guid? LastLessonId { get; set; } 
     public Guid CourseId { get; set; }
     public string CourseTitle { get; set; } = string.Empty;
     public decimal CoursePrice { get; set; }

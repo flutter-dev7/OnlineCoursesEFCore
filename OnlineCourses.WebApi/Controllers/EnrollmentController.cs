@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using OnlineCourses.Application.DTOs.Enrollments.Request;
 using OnlineCourses.Application.Interfaces.Services;
 using System.Security.Claims;
+using OnlineCourses.Application.DTOs.Lessons.Request;
 
 namespace OnlineCourses.WebApi.Controllers;
 
@@ -71,5 +72,19 @@ public class EnrollmentController : BaseController
         var result = await _service.UpdateProgressAsync(id, request, studentId);
         
         return !result.IsSuccess ? HandleError(result) : Ok(result);
+    }
+    
+    [HttpPatch("{id}/toggle-lesson")]
+    public async Task<IActionResult> ToggleLesson(Guid id, [FromBody] ToggleLessonRequest request)
+    {
+        // Извлекаем ID текущего пользователя из токена
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var result = await _service.ToggleLessonAsync(id, userId, request);
+    
+        if (!result.IsSuccess) return BadRequest(result.Error);
+    
+        return Ok(new { Message = "Progress updated", Success = true });
     }
 }

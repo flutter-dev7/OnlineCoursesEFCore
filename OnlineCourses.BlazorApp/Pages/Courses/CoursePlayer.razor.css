@@ -1,0 +1,773 @@
+/* --- ОСНОВНОЙ ПЛЕЙЕР --- */
+.player-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 65px);
+    overflow: hidden;
+    background: #F4F7FE;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.main-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* --- ЛЕВАЯ ЧАСТЬ --- */
+.video-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: #fff;
+}
+
+.video-fixed-area {
+    flex-shrink: 0;
+    width: 100%;
+    background: #000;
+}
+
+.video-player-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+}
+
+.video-player-container iframe {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+}
+
+.scrollable-info {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 2.5rem; /* Увеличил отступы */
+}
+
+/* --- ЗАГОЛОВОК И КНОПКА --- */
+.lesson-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2.5rem;
+}
+
+.badge-lesson {
+    background: #E0E7FF;
+    color: #4F46E5;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+h1 {
+    font-size: 2rem; /* Сделал заголовок больше */
+    font-weight: 800;
+    color: #1E293B;
+    margin-top: 0.75rem;
+}
+
+/* --- DESCRIPTION (БОЛЬШОЙ И КРАСИВЫЙ) --- */
+.description-card {
+    background: #fff;
+    padding: 2rem; /* Больше пространства внутри */
+    border-radius: 20px;
+    border: 1px solid #E2E8F0;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.description-card h5 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1E293B;
+    margin-bottom: 1.25rem;
+}
+
+.description-card p {
+    font-size: 1.1rem; /* Увеличил шрифт текста */
+    line-height: 1.8; /* Увеличил межстрочный интервал для чтения */
+    color: #475569;
+    white-space: pre-line; /* Чтобы сохранялись переносы строк */
+}
+
+/* --- REVIEWS (ВСЕ ПАРАМЕТРЫ) --- */
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.review-card {
+    background: white;
+    padding: 1.75rem;
+    border-radius: 20px;
+    border: 1px solid #E2E8F0;
+    transition: transform 0.2s;
+}
+
+.rev-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.rev-user-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.rev-avatar {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #4F46E5, #818CF8);
+    color: white;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+.rev-info-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.rev-name {
+    font-weight: 700;
+    color: #1E293B;
+    font-size: 1.05rem;
+}
+
+.rev-date {
+    font-size: 0.8rem;
+    color: #94A3B8;
+}
+
+.rev-stars i {
+    color: #E2E8F0;
+    font-size: 0.9rem;
+    margin-left: 2px;
+}
+
+.rev-stars i.active {
+    color: #F59E0B;
+}
+
+.rev-text {
+    font-size: 1.05rem;
+    color: #334155;
+    line-height: 1.6;
+    margin: 0;
+    padding-top: 0.5rem;
+    border-top: 1px dashed #F1F5F9;
+}
+
+/* --- КНОПКИ И ТАБЫ --- */
+.tabs-navigation {
+    display: flex;
+    gap: 40px;
+    border-bottom: 2px solid #F1F5F9;
+    margin-bottom: 2rem;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 15px 0;
+    font-weight: 700;
+    color: #94A3B8;
+    position: relative;
+    font-size: 1rem;
+}
+
+.tab-btn.active {
+    color: #4F46E5;
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #4F46E5;
+    border-radius: 10px;
+}
+
+/* --- САЙДБАР --- */
+.sidebar-navigation {
+    background: white;
+    border-left: 1px solid #E2E8F0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 2rem;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.progress-track {
+    height: 10px;
+    background: #EDF2F7;
+    border-radius: 20px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #4F46E5;
+}
+
+.lessons-scroll-area {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.lesson-card {
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    border-bottom: 1px solid #F8FAFC;
+}
+
+.lesson-card.active {
+    background: #F5F7FF;
+    border-left: 5px solid #4F46E5;
+}
+
+.lesson-status-icon {
+    width: 36px;
+    height: 36px;
+    background: #F1F5F9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.active .lesson-status-icon {
+    background: #4F46E5;
+    color: white;
+}
+
+/* --- СКРОЛЛБАРЫ --- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+
+/* --- ВИДЕО С КРАСИВЫМ BORDER-RADIUS --- */
+.video-player-container {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    background: #000;
+    /* Твои новые скругления */
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    margin-bottom: 10px;
+}
+
+.video-player-container iframe {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border: none;
+}
+
+/* --- КРАСИВАЯ КНОПКА MARK AS COMPLETED --- */
+.btn-complete {
+    background: #4F46E5; /* Насыщенный индиго */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+}
+
+.btn-complete:hover {
+    background: #4338CA;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
+}
+
+.btn-complete:active {
+    transform: translateY(0);
+}
+
+.btn-complete i {
+    font-size: 1.2rem;
+}
+
+/* Стили для иконки загрузки внутри кнопки */
+.btn-loading {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+/* --- КРАСИВЫЕ ОТЗЫВЫ (REVIEW) --- */
+.review-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.rev-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.rev-user-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.rev-avatar {
+    width: 44px;
+    height: 44px;
+    background: #4F46E5;
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+}
+
+.rev-name {
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.rev-stars i {
+    color: #e2e8f0;
+    font-size: 0.9rem;
+}
+
+.rev-stars i.active {
+    color: #f59e0b;
+}
+
+.rev-text {
+    color: #475569;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* --- ПРАВЫЙ САЙДБАР (SIDEBAR) --- */
+.sidebar-navigation {
+    background: #ffffff;
+    border-left: 1px solid #E2E8F0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.02);
+}
+
+.sidebar-header {
+    flex-shrink: 0;
+    padding: 1.5rem 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px); /* Легкий эффект размытия */
+    border-bottom: 1px solid #F1F5F9;
+    z-index: 10;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.progress-info span:first-child {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #64748B;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.percentage {
+    color: #4F46E5;
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.progress-track {
+    height: 10px;
+    background: #F1F5F9;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4F46E5, #818CF8);
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- СПИСОК УРОКОВ --- */
+.lessons-scroll-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+}
+
+.lesson-card {
+    padding: 1rem 1.5rem;
+    margin: 4px 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    border-radius: 16px; /* Теперь карточки закругленные */
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.lesson-card:hover {
+    background: #F8FAFC;
+    transform: translateX(4px);
+}
+
+/* Активный урок */
+.lesson-card.active {
+    background: #EEF2FF;
+    border: 1px solid #C7D2FE;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.08);
+}
+
+.lesson-status-icon {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    background: #F1F5F9;
+    border-radius: 12px; /* Квадрат со скруглением */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #94A3B8;
+    transition: 0.2s;
+}
+
+.active .lesson-status-icon {
+    background: #4F46E5;
+    color: white;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+}
+
+/* Текст урока */
+.lesson-text {
+    flex-grow: 1;
+}
+
+.lesson-text .title {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1E293B;
+    line-height: 1.3;
+}
+
+.lesson-text .duration {
+    font-size: 0.8rem;
+    color: #94A3B8;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.lesson-text .duration::before {
+    content: '\F4F4'; /* Иконка play в Bootstrap Icons */
+    font-family: 'bootstrap-icons';
+    font-size: 0.7rem;
+}
+
+/* Галочка завершения (если ты её оставишь в HTML) */
+.bi-check-circle-fill.text-success {
+    font-size: 1.2rem;
+    filter: drop-shadow(0 2px 4px rgba(34, 197, 94, 0.2));
+}
+
+/* Кастомный скролл для сайдбара */
+.lessons-scroll-area::-webkit-scrollbar {
+    width: 4px;
+}
+
+.lessons-scroll-area::-webkit-scrollbar-thumb {
+    background: #E2E8F0;
+    border-radius: 10px;
+}
+
+/* --- КРАСИВОЕ ПУСТОЕ СОСТОЯНИЕ (EMPTY STATE) --- */
+.empty-classroom-view {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    background: radial-gradient(circle at top right, #f8faff 0%, #f4f7fe 100%);
+    padding: 2rem;
+}
+
+.empty-glass-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    padding: 4rem 3rem;
+    border-radius: 32px;
+    text-align: center;
+    box-shadow: 0 30px 60px -12px rgba(79, 70, 229, 0.12);
+    max-width: 500px;
+    width: 100%;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.empty-artwork {
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+}
+
+.icon-circle {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: white;
+    margin: 0 auto;
+    transform: rotate(-5deg);
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.3);
+}
+
+.empty-title {
+    font-size: 2rem;
+    font-weight: 850;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+}
+
+.empty-subtitle {
+    color: #64748b;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    font-weight: 400;
+}
+
+/* Кнопка в пустом состоянии */
+.btn-catalog-glow {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+}
+
+.btn-catalog-glow:hover {
+    background: #4338ca;
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px rgba(79, 70, 229, 0.3);
+    color: white;
+}
+
+/* Анимация появления */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* --- ОБНОВЛЕННЫЙ ХЕДЕР УРОКА (ДЛЯ КНОПКИ MARK COMPLETED) --- */
+.lesson-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* Выравнивание по низу заголовка */
+    gap: 20px;
+    border-bottom: 2px solid #F1F5F9;
+    padding-bottom: 1.5rem;
+}
+
+.lesson-meta h1 {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #1E293B;
+    margin: 0.5rem 0 0 0;
+    line-height: 1.2;
+}
+
+/* --- СЕКЦИЯ ОТЗЫВОВ ВНИЗУ --- */
+.reviews-section-wrapper {
+    margin-top: 2rem;
+    padding-bottom: 5rem; /* Чтобы последний отзыв не прилипал к краю */
+}
+
+.reviews-section-wrapper h3 {
+    font-size: 1.5rem;
+    color: #1E293B;
+    margin: 0;
+}
+
+/* Красивый разделитель */
+hr {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, #E2E8F0, rgba(226, 232, 240, 0));
+    margin: 3rem 0;
+}
+
+/* Состояние "Нет отзывов" */
+.empty-reviews {
+    padding: 2rem;
+    background: #F8FAFC;
+    border-radius: 16px;
+    text-align: center;
+    border: 1px dashed #CBD5E1;
+    color: #94A3B8;
+}
+
+/* --- КНОПКА ОТЗЫВА (ТЕПЕРЬ АКЦЕНТНАЯ) --- */
+.btn-add-review {
+    background: #EEF2FF;
+    color: #4F46E5;
+    border: 1px solid #C7D2FE;
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.btn-add-review:hover {
+    background: #4F46E5;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+/* --- АНИМАЦИЯ ВОЛНЫ ДЛЯ АКТИВНОГО УРОКА (В САЙДБАРЕ) --- */
+.wave-animation {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+}
+
+.wave-animation span {
+    width: 3px;
+    background: white;
+    border-radius: 10px;
+    animation: wave 1s infinite alternate;
+}
+
+.wave-animation span:nth-child(2) { animation-delay: 0.2s; }
+.wave-animation span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes wave {
+    from { height: 4px; }
+    to { height: 14px; }
+}
+
+/* Фикс для адаптивности: если экран узкий, кнопка уйдет под заголовок */
+@media (max-width: 768px) {
+    .lesson-header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-complete {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+.custom-modal {
+    border-radius: 24px;
+    border: none;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    padding: 10px;
+}
+
+.rating-selection-center {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    font-size: 2rem;
+    color: #E2E8F0;
+}
+
+.rating-selection-center i.active {
+    color: #F59E0B;
+}
+
+.review-textarea {
+    border-radius: 16px;
+    padding: 15px;
+    border: 1px solid #E2E8F0;
+    resize: none;
+}
+
+.btn-submit-modal {
+    background: #4F46E5;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.btn-cancel-modal {
+    background: #F1F5F9;
+    color: #64748B;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 600;
+    margin-right: 10px;
+}

@@ -1,0 +1,238 @@
+@page "/instructor/courses/{CourseId:guid}/lessons"
+@using OnlineCourses.BlazorApp.Models.Lessons
+@using OnlineCourses.BlazorApp.Services.Lessons
+@inject LessonService LessonService
+@inject NavigationManager Nav
+
+<div class="lessons-page animate__animated animate__fadeIn">
+    @* --- HEADER --- *@
+    <div class="page-header">
+        <div class="header-left">
+            <button class="btn-back-circle shadow-sm" @onclick='() => Nav.NavigateTo("/shared/courses")'>
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            <div class="header-text">
+                <h2 class="fw-bold m-0">Course Curriculum</h2>
+                <p class="text-muted small mb-0">Course ID: @CourseId.ToString().Substring(0, 8)...</p>
+            </div>
+        </div>
+        <button class="btn-add-new active-scale" @onclick="() => OpenEditModal()">
+            <i class="bi bi-plus-lg me-2"></i> Add Lesson
+        </button>
+    </div>
+
+    @* --- CONTENT --- *@
+    @if (lessons == null)
+    {
+        <div class="loader-wrap">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p>Loading curriculum...</p>
+        </div>
+    }
+    else if (!lessons.Any())
+    {
+        <div class="empty-state-container animate__animated animate__fadeIn">
+            <div class="empty-card shadow-sm">
+                <div class="empty-illustration">
+                    <i class="bi bi-book-half"></i>
+                    <div class="plus-badge"><i class="bi bi-plus"></i></div>
+                </div>
+                <h4 class="fw-bold">Your curriculum is empty</h4>
+                <p class="text-muted">Build your course by adding the first lesson. Students are waiting to learn from you!</p>
+                <button class="btn-create-big active-scale" @onclick="() => OpenEditModal()">
+                    <i class="bi bi-magic me-2"></i> Create First Lesson
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="lesson-grid">
+            @foreach (var lesson in lessons.OrderBy(l => l.Order))
+            {
+                <div class="lesson-card shadow-sm">
+                    <div class="lesson-info-block">
+                        <div class="lesson-order">@lesson.Order</div>
+                        <div class="lesson-details">
+                            <h6 class="fw-bold mb-1">@lesson.Title</h6>
+                            @if (!string.IsNullOrEmpty(lesson.VideoUrl))
+                            {
+                                <button class="btn-watch-preview" @onclick="() => WatchVideo(lesson.VideoUrl)">
+                                    <i class="bi bi-play-circle-fill me-1"></i> Preview Video
+                                </button>
+                            }
+                        </div>
+                    </div>
+                    
+                    <div class="lesson-actions">
+                        <button class="btn-action edit shadow-sm" @onclick="() => OpenEditModal(lesson)" title="Edit">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                        <button class="btn-action delete shadow-sm" @onclick="() => AskDelete(lesson)" title="Delete">
+                            <i class="bi bi-trash3-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@* --- MODAL: CREATE / EDIT --- *@
+@if (isEditing)
+{
+    <div class="modal-overlay">
+        <div class="modal-card animate__animated animate__zoomIn shadow-lg">
+            <button class="btn-modal-close" @onclick="CloseModal"><i class="bi bi-x-lg"></i></button>
+            
+            <div class="modal-header-content">
+                <h4 class="fw-bold">@(isNew ? "Create Lesson" : "Edit Lesson")</h4>
+                <div class="accent-line"></div>
+            </div>
+
+            <div class="modal-body-form">
+                <div class="input-unit">
+                    <label>LESSON TITLE</label>
+                    <input type="text" @bind="editModel.Title" placeholder="e.g. Intro to Authentication" />
+                </div>
+                <div class="input-unit">
+                    <label>DESCRIPTION</label>
+                    <textarea @bind="editModel.Description" rows="3" placeholder="Explain what this lesson covers..."></textarea>
+                </div>
+                <div class="row g-3">
+                    <div class="col-8">
+                        <div class="input-unit">
+                            <label>VIDEO URL (YOUTUBE)</label>
+                            <input type="text" @bind="editModel.VideoUrl" placeholder="https://youtube.com/..." />
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="input-unit">
+                            <label>ORDER</label>
+                            <input type="number" @bind="editModel.Order" class="text-center" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer-actions">
+                <button class="btn-modal-dismiss" @onclick="CloseModal">Cancel</button>
+                <button class="btn-modal-confirm" @onclick="Save">Confirm</button>
+            </div>
+        </div>
+    </div>
+}
+
+@* --- MODAL: VIDEO PREVIEW --- *@
+@if (isPreviewing)
+{
+    <div class="modal-overlay video-preview-overlay" @onclick="() => isPreviewing = false">
+        <div class="video-preview-window animate__animated animate__zoomIn" @onclick:stopPropagation>
+            @* Кнопка закрытия поверх видео *@
+            <button class="btn-video-close" @onclick="() => isPreviewing = false">
+                <i class="bi bi-x-lg"></i>
+            </button>
+            
+            <div class="video-ratio-box">
+                <iframe src="@currentVideoUrl" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+    </div>
+}
+
+@* --- MODAL: DELETE --- *@
+@if (isDeleting)
+{
+    <div class="modal-overlay">
+        <div class="delete-confirm-box animate__animated animate__headShake shadow-lg">
+            <div class="delete-icon-circle"><i class="bi bi-trash3"></i></div>
+            <h4 class="fw-bold mt-3">Are you sure?</h4>
+            <p class="text-muted">Do you want to delete <b>@targetLesson?.Title</b>?</p>
+            <div class="delete-buttons-row">
+                <button class="btn-cancel-del" @onclick="() => isDeleting = false">Cancel</button>
+                <button class="btn-confirm-del" @onclick="ConfirmDelete">Delete Lesson</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid CourseId { get; set; }
+    private List<LessonResponse>? lessons;
+    private CreateLessonRequest editModel = new();
+    private LessonResponse? targetLesson;
+    private bool isEditing, isDeleting, isNew, isPreviewing;
+    private string currentVideoUrl = "";
+
+    protected override async Task OnInitializedAsync() => await LoadData();
+
+    private async Task LoadData() {
+        var res = await LessonService.GetByCourseId(CourseId);
+        if (res != null && res.IsSuccess) lessons = res.Data;
+        else lessons = new();
+        StateHasChanged();
+    }
+
+    private void OpenEditModal(LessonResponse? lesson = null) {
+        if (lesson == null) {
+            isNew = true;
+            editModel = new CreateLessonRequest { Order = (lessons?.Count ?? 0) + 1 };
+        } else {
+            isNew = false;
+            targetLesson = lesson;
+            editModel = new CreateLessonRequest { 
+                Title = lesson.Title, Description = lesson.Description, 
+                VideoUrl = lesson.VideoUrl, Order = lesson.Order 
+            };
+        }
+        isEditing = true;
+    }
+
+    private void CloseModal() => isEditing = false;
+
+    private void WatchVideo(string url) {
+        if (string.IsNullOrEmpty(url)) return;
+
+        string videoId = "";
+
+        // 1. Извлекаем ID из обычной ссылки youtube.com/watch?v=ID
+        if (url.Contains("v=")) {
+            var uri = new Uri(url);
+            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            videoId = query["v"];
+        } 
+        // 2. Извлекаем ID из короткой ссылки youtu.be/ID
+        else if (url.Contains("youtu.be/")) {
+            videoId = url.Split('/').Last().Split('?').First();
+        }
+        // 3. Если уже есть ID или встроено
+        else {
+            videoId = url.Split('/').Last();
+        }
+
+        // Формируем правильный URL для iframe
+        currentVideoUrl = $"https://www.youtube.com/embed/{videoId}?autoplay=1";
+        isPreviewing = true;
+    }
+
+    private void AskDelete(LessonResponse lesson) { targetLesson = lesson; isDeleting = true; }
+
+    private async Task ConfirmDelete() {
+        var res = await LessonService.Delete(CourseId, targetLesson!.Id);
+        if (res.IsSuccess) { isDeleting = false; await LoadData(); }
+    }
+
+    private async Task Save() {
+        if (string.IsNullOrWhiteSpace(editModel.Title)) return;
+        bool success = isNew 
+            ? (await LessonService.Create(CourseId, editModel)).IsSuccess 
+            : (await LessonService.Update(CourseId, targetLesson!.Id, new UpdateLessonRequest { 
+                Title = editModel.Title, Description = editModel.Description, 
+                VideoUrl = editModel.VideoUrl, Order = editModel.Order 
+            })).IsSuccess;
+
+        if (success) { isEditing = false; await LoadData(); }
+    }
+}

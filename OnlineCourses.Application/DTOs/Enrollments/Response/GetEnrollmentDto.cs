@@ -17,4 +17,5 @@ public class GetEnrollmentDto
 
     public string StudentId { get; set; } = string.Empty;
     public string StudentName { get; set; } = string.Empty;
+    public Guid? LastLessonId { get; set; }
 }

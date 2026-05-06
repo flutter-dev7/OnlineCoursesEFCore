@@ -1,31 +1,62 @@
+/* ГЛАВНЫЙ КОНТЕЙНЕР */
 .sidebar-inner[b-js48bzz8ek] {
     display: flex;
     flex-direction: column;
     height: 100vh;
-    background: #fff;
+    background: #ffffff;
+    border-right: 1px solid #F1F4F9;
 }
 
-/* ЛОГОТИП */
+/* ЛОГОТИП (Единый стиль для всех ролей) */
 .sidebar-logo[b-js48bzz8ek] {
     display: flex;
     align-items: center;
-    gap: 12px;
     padding: 24px;
+    margin-bottom: 10px;
     border-bottom: 1px solid #F1F4F9;
 }
 
 .logo-icon-wrap[b-js48bzz8ek] {
-    width: 40px; height: 40px;
-    background: #4880FF;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    color: white; font-size: 1.2rem;
-    box-shadow: 0 4px 10px rgba(72, 128, 255, 0.2);
+    width: 42px;
+    height: 42px;
+    background: #5932EA !important; /* Твой фирменный фиолетовый */
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.4rem;
+    margin-right: 12px;
+    box-shadow: 0 4px 12px rgba(89, 50, 234, 0.2); /* Тень в цвет логотипа */
+    transition: transform 0.2s ease;
 }
 
-.logo-name[b-js48bzz8ek] { font-weight: 800; font-size: 1.1rem; color: #202224; }
+.logo-text[b-js48bzz8ek] {
+    display: flex;
+    flex-direction: column;
+}
 
-/* СПИСОК МЕНЮ */
+.logo-name[b-js48bzz8ek] {
+    font-weight: 800;
+    font-size: 1.15rem;
+    color: #202224;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+}
+
+.logo-version[b-js48bzz8ek] {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+/* НАВИГАЦИЯ */
+.sidebar-nav[b-js48bzz8ek] {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
 .nav-list[b-js48bzz8ek] {
     list-style: none;
     padding: 0;
@@ -36,8 +67,9 @@
     font-size: 0.65rem;
     font-weight: 800;
     color: #9A9FA5;
-    margin: 20px 0 10px 10px;
+    margin: 20px 0 10px 25px; /* Увеличил отступ слева */
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .nav-item[b-js48bzz8ek] {
@@ -49,35 +81,39 @@
     border-radius: 12px;
     color: #4B4B4B;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 500;
+    text-decoration: none;
 }
 
 .nav-item i[b-js48bzz8ek] {
-    font-size: 1.1rem;
-    width: 20px;
+    font-size: 1.2rem;
+    width: 24px;
     text-align: center;
+    transition: color 0.2s ease;
 }
 
-/* Hover эффект */
+/* HOVER ЭФФЕКТ */
 .nav-item:hover[b-js48bzz8ek] {
     background: #F1F4F9;
-    color: #4880FF;
+    color: #5932EA;
 }
 
-/* АКТИВНОЕ СОСТОЯНИЕ (Как в DashStack) */
+/* АКТИВНОЕ СОСТОЯНИЕ (Как ты просил) */
 .nav-item.active[b-js48bzz8ek] {
-    background: #4880FF !important;
-    color: white !important;
-    box-shadow: 0 4px 12px rgba(72, 128, 255, 0.35);
+    background: #5932EA !important; /* Фиолетовый активный фон */
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(89, 50, 234, 0.3);
 }
 
-.nav-item.active i[b-js48bzz8ek] { color: white !important; }
+.nav-item.active i[b-js48bzz8ek] {
+    color: #ffffff !important;
+}
 
 /* ФУТЕР И ВЫХОД */
 .sidebar-footer[b-js48bzz8ek] {
     padding: 20px;
-    margin-top: auto; /* Прижимает к низу */
+    border-top: 1px solid #F1F4F9;
 }
 
 .logout-btn[b-js48bzz8ek] {
@@ -87,12 +123,21 @@
     color: #FF4B4B;
     padding: 12px;
     border-radius: 12px;
-    font-weight: 600;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     cursor: pointer;
+    transition: all 0.2s ease;
 }
 
-.logout-btn:hover[b-js48bzz8ek] { background: #FFE5E5; }
+.logout-btn:hover[b-js48bzz8ek] {
+    background: #FF4B4B;
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(255, 75, 75, 0.2);
+}
+
+.logout-btn i[b-js48bzz8ek] {
+    font-size: 1.2rem;
+}

@@ -17,4 +17,5 @@ public class Enrollment
     public Course Course { get; set; } = null!;
     public string StudentId { get; set; } = string.Empty;
     public AppUser Student { get; set; } = null!;
+    public Guid? LastLessonId { get; set; } 
 }

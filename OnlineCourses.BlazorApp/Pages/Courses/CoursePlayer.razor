@@ -1,0 +1,289 @@
+@page "/course/view/{CourseId:guid}"
+@using OnlineCourses.BlazorApp.Models.Lessons
+@using OnlineCourses.BlazorApp.Models.Enrollments
+@using OnlineCourses.BlazorApp.Models.Reviews
+@using OnlineCourses.BlazorApp.Services.Enrollments
+@using OnlineCourses.BlazorApp.Services.Lessons
+@using OnlineCourses.BlazorApp.Services.Reviews
+@inject LessonService LessonService
+@inject EnrollmentService EnrollmentService
+@inject ReviewService ReviewService
+@inject NavigationManager Nav
+@inject IJSRuntime JS
+
+<div class="player-wrapper">
+    @if (isLoading)
+    {
+        <div class="loading-overlay">
+            <div class="spinner-container">
+                <div class="spinner-border text-primary" role="status"></div>
+                <span>Syncing your progress...</span>
+            </div>
+        </div>
+    }
+    else if (lessons == null || !lessons.Any())
+    {
+        <div class="empty-classroom-view">
+            <div class="empty-glass-card">
+                <div class="icon-circle"><i class="bi bi-journal-x"></i></div>
+                <h2 class="empty-title">Classroom is being set up</h2>
+                <p class="empty-subtitle">The instructor hasn't uploaded lessons yet.</p>
+                <button class="btn-catalog-glow" @onclick='() => Nav.NavigateTo("/student/all-courses")'>
+                    <i class="bi bi-compass"></i> <span>Explore Catalog</span>
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="main-layout">
+            @* --- ЛЕВАЯ ЧАСТЬ --- *@
+            <div class="video-content">
+                <div class="video-player-container">
+                    @if (!string.IsNullOrEmpty(currentLesson?.VideoUrl))
+                    {
+                        <iframe src="@FormatVideoUrl(currentLesson.VideoUrl)" 
+                                frameborder="0" allowfullscreen></iframe>
+                    }
+                </div>
+
+                <div class="scrollable-info">
+                    <div class="lesson-details">
+                        <div class="lesson-meta">
+                            <span class="badge-lesson">Module @(lessons.IndexOf(currentLesson!) + 1)</span>
+                            <h1>@currentLesson?.Title</h1>
+                        </div>
+                        
+                        <button class="btn-complete @(isProcessing ? "btn-loading" : "")" 
+                                @onclick="HandleToggleLesson" 
+                                disabled="@isProcessing">
+                            @if (isProcessing) 
+                            { 
+                                <span class="spinner-border spinner-border-sm me-2"></span> 
+                            }
+                            else 
+                            { 
+                                <i class="bi bi-check-circle-fill"></i> 
+                            }
+                            <span>Mark as Completed</span>
+                        </button>
+                    </div>
+
+                    @* ВКЛАДКИ (Теперь отзывы скрыты под вкладкой) *@
+                    <div class="tabs-navigation">
+                        <button class="tab-btn @(activeTab == "desc" ? "active" : "")" @onclick='() => activeTab = "desc"'>
+                            Description
+                        </button>
+                        <button class="tab-btn @(activeTab == "reviews" ? "active" : "")" @onclick='() => activeTab = "reviews"'>
+                            Reviews (@courseReviews?.Count)
+                        </button>
+                    </div>
+
+                    <div class="tab-body">
+                        @if (activeTab == "desc")
+                        {
+                            <div class="description-card">
+                                <h5>About this lesson</h5>
+                                <p>@currentLesson?.Description</p>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="reviews-section">
+                                <button class="btn-add-review mb-4" @onclick="OpenReviewModal">
+                                    <i class="bi bi-pencil-square"></i> Write a Review
+                                </button>
+
+                                <div class="reviews-list">
+                                    @if (courseReviews == null || !courseReviews.Any())
+                                    {
+                                        <div class="empty-reviews text-muted">No reviews yet.</div>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var rev in courseReviews.OrderByDescending(x => x.CreatedAt))
+                                        {
+                                            <div class="review-card shadow-sm">
+                                                <div class="rev-header">
+                                                    <div class="rev-user-box">
+                                                        <div class="rev-avatar">@rev.StudentName[0]</div>
+                                                        <div class="rev-info-text">
+                                                            <span class="rev-name">@rev.StudentName</span>
+                                                            <span class="rev-date">@rev.CreatedAt.ToString("dd MMM yyyy")</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="rev-stars">
+                                                        @for (int i = 1; i <= 5; i++) {
+                                                            <i class="bi bi-star-fill @(i <= rev.Rating ? "active" : "")"></i>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <p class="rev-text">@rev.Comment</p>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @* --- САЙДБАР --- *@
+            <aside class="sidebar-navigation">
+                <div class="sidebar-header">
+                    <div class="progress-info">
+                        <span class="fw-bold">Your Progress</span>
+                        @* ВЕРНУЛ НАСТОЯЩИЕ ДАННЫЕ ИЗ БАЗЫ *@
+                        <span class="percentage">@enrollment?.ProgressPercent%</span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: @(enrollment?.ProgressPercent)%"></div>
+                    </div>
+                </div>
+
+                <div class="lessons-scroll-area">
+                    @foreach (var lesson in lessons)
+                    {
+                        var isActive = lesson.Id == currentLesson?.Id;
+                        <div class="lesson-card @(isActive ? "active" : "")" @onclick="() => SelectLesson(lesson)">
+                            <div class="lesson-status-icon">
+                                @if (isActive) {
+                                    <div class="wave-animation"><span></span><span></span><span></span></div>
+                                } else {
+                                    <span class="lesson-index">@lesson.Order</span>
+                                }
+                            </div>
+                            <div class="lesson-text">
+                                <h6 class="title">@lesson.Title</h6>
+                                <span class="duration">Video Lesson</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </aside>
+        </div>
+    }
+</div>
+
+@* --- МОДАЛЬНОЕ ОКНО ДЛЯ ОТЗЫВА --- *@
+@if (showReviewModal)
+{
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal fade show d-block" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content custom-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Leave a Review</h5>
+                    <button type="button" class="btn-close" @onclick="CloseReviewModal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="rating-selection-center mb-4">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            int starIndex = i;
+                            <i class="bi @(newReview.Rating >= starIndex ? "bi-star-fill active" : "bi-star")" 
+                               @onclick="() => newReview.Rating = starIndex"></i>
+                        }
+                    </div>
+                    <textarea class="form-control review-textarea" 
+                              placeholder="Write your feedback here..." 
+                              @bind="newReview.Comment" rows="4"></textarea>
+                </div>
+                <div class="modal-footer border-0">
+                    <button class="btn-cancel-modal" @onclick="CloseReviewModal">Cancel</button>
+                    <button class="btn-submit-modal" @onclick="SubmitReview" disabled="@isSubmitting">
+                        @if (isSubmitting) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                        Send Review
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public Guid CourseId { get; set; }
+    private List<LessonResponse>? lessons;
+    private LessonResponse? currentLesson;
+    private EnrollmentResponse? enrollment;
+    private List<GetReviewDto>? courseReviews = new();
+    private bool isLoading = true;
+    private bool isProcessing = false;
+    private string activeTab = "desc";
+    
+    // Переменные для модалки
+    private bool showReviewModal = false;
+    private bool isSubmitting = false;
+    private CreateReviewDto newReview = new CreateReviewDto { Rating = 5 };
+
+    protected override async Task OnInitializedAsync() => await LoadInitialData();
+
+    private async Task LoadInitialData()
+    {
+        isLoading = true;
+        var lessonsResult = await LessonService.GetByCourseId(CourseId);
+        var enrollmentsResult = await EnrollmentService.GetMy();
+        var reviewsResult = await ReviewService.GetByCourseId(CourseId);
+
+        if (lessonsResult.IsSuccess && enrollmentsResult.IsSuccess)
+        {
+            lessons = lessonsResult.Data.OrderBy(l => l.Order).ToList();
+            enrollment = enrollmentsResult.Data.FirstOrDefault(e => e.CourseId == CourseId);
+            courseReviews = reviewsResult.Data ?? new();
+
+            if (enrollment?.LastLessonId != null && enrollment.LastLessonId != Guid.Empty)
+                currentLesson = lessons.FirstOrDefault(l => l.Id == enrollment.LastLessonId) ?? lessons.First();
+            else
+                currentLesson = lessons.FirstOrDefault();
+        }
+        isLoading = false;
+    }
+
+    private void OpenReviewModal() => showReviewModal = true;
+    private void CloseReviewModal() => showReviewModal = false;
+
+    private async Task SubmitReview()
+    {
+        if (string.IsNullOrWhiteSpace(newReview.Comment)) return;
+        isSubmitting = true;
+
+        var result = await ReviewService.Create(CourseId, newReview);
+        if (result.IsSuccess)
+        {
+            newReview = new CreateReviewDto { Rating = 5 };
+            showReviewModal = false;
+            var refresh = await ReviewService.GetByCourseId(CourseId);
+            courseReviews = refresh.Data ?? new();
+        }
+        isSubmitting = false;
+    }
+
+    private async Task HandleToggleLesson()
+    {
+        if (enrollment == null || currentLesson == null || isProcessing) return;
+        isProcessing = true;
+        var request = new ToggleLessonRequest { LessonId = currentLesson.Id, IsCompleted = true };
+        var result = await EnrollmentService.ToggleLessonAsync(enrollment.Id, request);
+
+        if (result.IsSuccess)
+        {
+            var refresh = await EnrollmentService.GetMy();
+            enrollment = refresh.Data?.FirstOrDefault(e => e.CourseId == CourseId);
+            var currentIndex = lessons!.IndexOf(currentLesson);
+            if (currentIndex < lessons.Count - 1) currentLesson = lessons[currentIndex + 1];
+            StateHasChanged();
+        }
+        isProcessing = false;
+    }
+
+    private void SelectLesson(LessonResponse lesson) { currentLesson = lesson; StateHasChanged(); }
+
+    private string FormatVideoUrl(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return "";
+        string videoId = url.Contains("v=") ? url.Split("v=")[1].Split("&")[0] : 
+                         url.Contains("youtu.be/") ? url.Split("be/")[1].Split("?")[0] : url.Split('/').Last();
+        return $"https://www.youtube.com/embed/{videoId}?rel=0&autoplay=1";
+    }
+}

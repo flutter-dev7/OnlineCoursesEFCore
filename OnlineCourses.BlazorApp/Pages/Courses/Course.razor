@@ -7,6 +7,7 @@
 @using OnlineCourses.BlazorApp.Enums
 @inject CourseService CourseService
 @inject CategoryService CategoryService
+@inject NavigationManager Nav
 
 <div class="courses-page animate__animated animate__fadeIn">
     <div class="page-header">
@@ -33,7 +34,8 @@
                     Course="course" 
                     OnEdit="OpenModal" 
                     OnDelete="AskDelete" 
-                    OnTogglePublish="HandleTogglePublish" />
+                    OnTogglePublish="HandleTogglePublish"
+                    OnManageLessons='() => Nav.NavigateTo($"/instructor/courses/{course.Id}/lessons")' />
             }
         </div>
     }
@@ -115,89 +117,117 @@
     private CourseResponse? targetCourse;
     private bool isEditing, isDeleting, isNew;
 
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync()
+    {
         await LoadData();
         var catRes = await CategoryService.GetAll();
         if (catRes?.IsSuccess == true) categories = catRes.Data;
     }
 
-    private async Task LoadData() {
+    private async Task LoadData()
+    {
         var res = await CourseService.GetAll();
-        if (res?.IsSuccess == true) {
+        if (res?.IsSuccess == true)
+        {
             courses = res.Data;
             StateHasChanged();
         }
     }
 
-    private void OpenModal(CourseResponse? course = null) {
-        if (course == null) {
+    private void OpenModal(CourseResponse? course = null)
+    {
+        if (course == null)
+        {
             isNew = true;
             targetCourse = null;
             editModel = new CourseRequest { Level = 0, Description = "" };
-        } else {
+        }
+        else
+        {
             isNew = false;
             targetCourse = course;
-            editModel = new CourseRequest { 
-                Title = course.Title, 
-                Price = course.Price, 
-                Level = (int)course.Level, 
+            editModel = new CourseRequest
+            {
+                Title = course.Title,
+                Price = course.Price,
+                Level = (int)course.Level,
                 CategoryId = categories?.FirstOrDefault(c => c.Name == course.CategoryName)?.Id ?? Guid.Empty,
                 Description = course.Description ?? ""
             };
         }
+
         isEditing = true;
     }
 
     private void CloseModal() => isEditing = false;
 
-    private async Task Save() {
+    private async Task Save()
+    {
         if (string.IsNullOrWhiteSpace(editModel.Title)) return;
 
-        if (isNew) {
+        if (isNew)
+        {
             // Логика создания
             var res = await CourseService.Create(editModel);
-            if (res?.IsSuccess == true) {
+            if (res?.IsSuccess == true)
+            {
                 isEditing = false;
-                await LoadData(); 
+                await LoadData();
             }
-        } else {
+        }
+        else
+        {
             // Логика обновления (теперь типы не конфликтуют)
             var res = await CourseService.Update(targetCourse!.Id, editModel);
-            if (res?.IsSuccess == true) {
+            if (res?.IsSuccess == true)
+            {
                 isEditing = false;
-            
+
                 // Находим курс в списке и обновляем его данными из DTO
                 var index = courses!.FindIndex(x => x.Id == targetCourse.Id);
-                if (index != -1) {
+                if (index != -1)
+                {
                     courses[index].Title = res.Data.Title;
                     courses[index].Price = res.Data.Price;
                     courses[index].Level = res.Data.Level;
                     courses[index].CategoryId = res.Data.CategoryId;
                 }
+
                 StateHasChanged();
-            } else {
+            }
+            else
+            {
                 // Если здесь возникнет ошибка 500, ты увидишь её в консоли
-                Console.WriteLine($"Error: {res?.Error}"); 
+                Console.WriteLine($"Error: {res?.Error}");
             }
         }
     }
 
-    private async Task HandleTogglePublish(CourseResponse course) {
+    private async Task HandleTogglePublish(CourseResponse course)
+    {
         var res = await CourseService.TogglePublish(course.Id);
-        if (res?.IsSuccess == true) {
+        if (res?.IsSuccess == true)
+        {
             course.IsPublished = res.Data;
             StateHasChanged();
         }
     }
 
-    private void AskDelete(CourseResponse course) { targetCourse = course; isDeleting = true; }
+    private void AskDelete(CourseResponse course)
+    {
+        targetCourse = course;
+        isDeleting = true;
+    }
 
-    private async Task ConfirmDelete() {
+    private async Task ConfirmDelete()
+    {
         if (targetCourse == null) return;
         var res = await CourseService.Delete(targetCourse.Id);
-        if (res?.IsSuccess == true) {
+        if (res?.IsSuccess == true)
+        {
             courses?.RemoveAll(x => x.Id == targetCourse.Id);
             isDeleting = false;
         }
     }
+
 }

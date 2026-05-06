@@ -7,16 +7,15 @@ using OnlineCourses.Infrastructure.Configurations;
 
 namespace OnlineCourses.Infrastructure.Data;
 
-public class AppDbContext : IdentityDbContext<AppUser>
+public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<AppUser>(options)
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
-
     public DbSet<Course> Courses { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Lesson> Lessons { get; set; }
     public DbSet<Enrollment> Enrollments { get; set; }
     public DbSet<Review> Reviews { get; set; }
     public DbSet<VerificationCode> VerificationCodes { get; set; }
+    public DbSet<LessonProgress> LessonProgresses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -28,5 +27,6 @@ public class AppDbContext : IdentityDbContext<AppUser>
         builder.ApplyConfiguration(new LessonConfiguration());
         builder.ApplyConfiguration(new ReviewConfiguration());
         builder.ApplyConfiguration(new VerificationCodeConfiguration());
+        builder.ApplyConfiguration(new LessonProgressConfiguration());
     }
 }

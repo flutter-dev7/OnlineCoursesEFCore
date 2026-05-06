@@ -1,0 +1,90 @@
+/* Общие настройки */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Баннер */
+.welcome-banner {
+    background: linear-gradient(135deg, #5932EA 0%, #7d5fff 100%);
+    border-radius: 28px;
+    padding: 45px;
+    position: relative;
+    overflow: hidden;
+}
+
+.banner-illustration {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 9rem;
+    color: rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+}
+
+/* Ссылка View All */
+.btn-view-all {
+    text-decoration: none;
+    color: #5932EA;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.btn-view-all:hover {
+    color: #4a29c4;
+    padding-right: 5px;
+}
+
+/* Modern Continue Learning Card */
+.modern-progress-card {
+    background: #1e293b; /* Темный фон для контраста */
+    border-radius: 24px;
+    border: none;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.modern-progress-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(89, 50, 234, 0.2) !important;
+}
+
+.card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(225deg, rgba(89, 50, 234, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
+    z-index: 1;
+}
+
+.category-tag {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 4px 12px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.course-name {
+    height: 3em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.custom-progress {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.custom-progress .progress-bar {
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}

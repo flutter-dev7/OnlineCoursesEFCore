@@ -4,17 +4,44 @@
 
 <div class="sidebar-inner">
     <div class="sidebar-logo">
-        <div class="logo-icon-wrap">
-            <i class="bi bi-mortarboard-fill"></i>
-        </div>
-        <div class="logo-text">
-            <span class="logo-name">OnlineCourses</span>
-            <span class="logo-version">v.01</span>
-        </div>
+        <AuthorizeView>
+            <Authorized>
+                <div class="logo-icon-wrap project-bg">
+                    @if (context.User.IsInRole("Admin"))
+                    {
+                        <i class="bi bi-shield-lock-fill"></i>
+                    }
+                    else if (context.User.IsInRole("Instructor"))
+                    {
+                        <i class="bi bi-person-workspace"></i>
+                    }
+                    else
+                    {
+                        <i class="bi bi-mortarboard-fill"></i>
+                    }
+                </div>
+                <div class="logo-text">
+                    <span class="logo-name">OnlineCourses</span>
+                    <span class="logo-version">
+                        @if (context.User.IsInRole("Admin")) { <span>Admin Access</span> }
+                        else if (context.User.IsInRole("Instructor")) { <span>Instructor Pro</span> }
+                        else { <span>Student Portal</span> }
+                    </span>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="logo-icon-wrap project-bg">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-name">OnlineCourses</span>
+                    <span class="logo-version">v.01</span>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
     </div>
 
     <nav class="sidebar-nav">
-        
         @* --- СЕКЦИЯ АДМИНИСТРАТОРА --- *@
         <AuthorizeView Roles="Admin">
             <Authorized>
@@ -37,7 +64,6 @@
             <Authorized>
                 <div class="nav-section-label">INSTRUCTOR PANEL</div>
                 <ul class="nav-list">
-                    @* Инструктор видит студентов как "My Students" *@
                     <li class="nav-item @GetActiveClass("admin/students")" @onclick='() => GoTo("admin/students")'>
                         <i class="bi bi-people-fill"></i>
                         <span>My Students</span>
@@ -55,7 +81,6 @@
                         <i class="bi bi-journal-bookmark-fill"></i>
                         <span>Courses</span>
                     </li>
-                    @* Добавлен пункт Categories согласно запросу *@
                     <li class="nav-item @GetActiveClass("shared/categories")" @onclick='() => GoTo("shared/categories")'>
                         <i class="bi bi-tags-fill"></i>
                         <span>Categories</span>
@@ -77,44 +102,72 @@
                         <i class="bi bi-house-door-fill"></i>
                         <span>Home Page</span>
                     </li>
-            
                     <li class="nav-item @GetActiveClass("student/all-courses")" @onclick='() => GoTo("student/all-courses")'>
                         <i class="bi bi-search"></i>
                         <span>All Courses</span>
                     </li>
-
-                    @* --- ВОТ СЮДА ДОБАВЛЯЕМ MY ENROLLMENTS --- *@
                     <li class="nav-item @GetActiveClass("my-enrollments")" @onclick='() => GoTo("my-enrollments")'>
                         <i class="bi bi-journal-bookmark-fill"></i>
-                        <span>My Courses</span> @* Назвал "My Courses", так студенту понятнее, чем "Enrollments" *@
+                        <span>My Courses</span>
                     </li>
                 </ul>
             </Authorized>
         </AuthorizeView>
-
     </nav>
 
     <div class="sidebar-footer">
-        <button class="logout-btn" @onclick="HandleLogout">
+        @* Изменил HandleLogout на ShowLogoutModal *@
+        <button class="logout-btn" @onclick="ShowLogoutModal">
             <i class="bi bi-box-arrow-left"></i>
             <span>Logout</span>
         </button>
     </div>
 </div>
 
+@* --- МОДАЛКА ВЫХОДА --- *@
+@if (_isLogoutModalVisible)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 9999;">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle" style="width: 60px; height: 60px; font-size: 1.8rem;">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </div>
+                    </div>
+                    <h5 class="fw-bold">Logging Out?</h5>
+                    <p class="text-muted small mb-4">Are you sure you want to end your session?</p>
+                    <div class="d-flex gap-2 justify-content-center">
+                        <button type="button" class="btn btn-light btn-sm px-4 rounded-pill fw-bold" @onclick="CloseLogoutModal">Stay</button>
+                        <button type="button" class="btn btn-danger btn-sm px-4 rounded-pill fw-bold" @onclick="ConfirmLogout">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 @code {
+    private bool _isLogoutModalVisible = false;
+
+    private void ShowLogoutModal() => _isLogoutModalVisible = true;
+    
+    private void CloseLogoutModal() => _isLogoutModalVisible = false;
+
+    private async Task ConfirmLogout()
+    {
+        _isLogoutModalVisible = false;
+        await AuthService.Logout();
+        Nav.NavigateTo("/login");
+    }
+
     private void GoTo(string url) => Nav.NavigateTo(url);
 
     private string GetActiveClass(string page) 
     {
         var relativePath = Nav.ToBaseRelativePath(Nav.Uri);
         return relativePath.ToLower().StartsWith(page.ToLower()) ? "active" : "";
-    }
-
-    private async Task HandleLogout()
-    {
-        await AuthService.Logout();
-        Nav.NavigateTo("/login");
     }
 
     protected override void OnInitialized() => Nav.LocationChanged += (s, e) => StateHasChanged();

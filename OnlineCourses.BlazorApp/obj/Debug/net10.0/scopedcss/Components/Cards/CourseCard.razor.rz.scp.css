@@ -1,161 +1,222 @@
-.course-card-wrapper[b-zefswxfoak] {
-    height: 100%;
-    perspective: 1000px;
-}
-
+/* --- ГЛАВНЫЙ КОНТЕЙНЕР КАРТОЧКИ --- */
 .course-card[b-zefswxfoak] {
     background: #ffffff;
-    border-radius: 30px;
-    padding: 26px;
+    border-radius: 20px;
     border: 1px solid #f1f5f9;
-    position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
-    min-height: 340px;
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    min-height: 310px; /* Компактная высота */
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    overflow: hidden;
 }
 
-/* Эффект приподнимания карточки */
+/* Эффект при наведении на всю карточку */
 .course-card:hover[b-zefswxfoak] {
-    transform: translateY(-10px);
-    border-color: #5932EA;
-    box-shadow: 0 25px 50px -12px rgba(89, 50, 234, 0.12) !important;
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -15px rgba(89, 50, 234, 0.2);
+    border-color: rgba(89, 50, 234, 0.3);
 }
 
+/* --- ЭФФЕКТ DRAFT (Для неопубликованных) --- */
 .course-card.is-draft[b-zefswxfoak] {
-    background: #fcfdfe;
-    border-style: dashed;
+    background-color: #f8fafc;
+    background-image: repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 10px,
+            rgba(241, 245, 249, 1) 10px,
+            rgba(241, 245, 249, 1) 20px
+    );
+    border: 1px dashed #cbd5e1;
 }
 
-/* Панель кнопок управления */
-.card-actions-overlay[b-zefswxfoak] {
+/* --- ПАНЕЛЬ КНОПОК (Справа) --- */
+.card-actions-column[b-zefswxfoak] {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 12px;
+    right: 12px;
     display: flex;
+    flex-direction: column;
     gap: 8px;
     opacity: 0;
-    transform: translateX(10px);
-    transition: all 0.3s ease;
+    transform: translateX(15px) scale(0.9);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     z-index: 10;
 }
 
-.course-card:hover .card-actions-overlay[b-zefswxfoak] {
+/* Появление кнопок при наведении */
+.course-card:hover .card-actions-column[b-zefswxfoak] {
     opacity: 1;
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
 }
 
-.btn-action[b-zefswxfoak] {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+/* Базовый стиль всех кнопок */
+.action-btn[b-zefswxfoak] {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
     border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1rem;
-    transition: 0.2s;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
-.btn-action.edit[b-zefswxfoak] { background: #f0eeff; color: #5932EA; }
-.btn-action.delete[b-zefswxfoak] { background: #fff1f1; color: #ef4444; }
-.btn-action.publish[b-zefswxfoak] { background: #f8fafc; color: #94a3b8; }
-.btn-action.publish.active[b-zefswxfoak] { background: #e6fffa; color: #38b2ac; }
-
-.btn-action:hover[b-zefswxfoak] { transform: scale(1.1); filter: brightness(0.95); }
-.btn-action:active[b-zefswxfoak] { transform: scale(0.9); }
-
-/* Контентная часть */
-.badge-container[b-zefswxfoak] { display: flex; gap: 10px; margin-bottom: 16px; }
-
-.badge-level[b-zefswxfoak] {
-    padding: 6px 14px;
-    border-radius: 12px;
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+/* 1. Кнопка LESSONS (Премиальный фиолетовый) */
+.action-btn.lessons[b-zefswxfoak] {
+    background: linear-gradient(135deg, #5932EA, #7e5bef);
+    color: white;
+    box-shadow: 0 4px 15px rgba(89, 50, 234, 0.3);
+}
+.action-btn.lessons:hover[b-zefswxfoak] {
+    transform: scale(1.15) rotate(8deg);
+    background: linear-gradient(135deg, #4a28c7, #5932EA);
+    box-shadow: 0 6px 20px rgba(89, 50, 234, 0.5);
 }
 
-.badge-level.beginner[b-zefswxfoak] { background: #e6fffa; color: #00a18e; }
-.badge-level.intermediate[b-zefswxfoak] { background: #fffaf0; color: #d97706; }
-.badge-level.advanced[b-zefswxfoak] { background: #fff5f5; color: #e11d48; }
+/* 2. Кнопка REVIEW/EYE (Приятный аквамарин) */
+.action-btn.publish[b-zefswxfoak] {
+    background: #e0fcf2;
+    color: #059669;
+}
+.action-btn.publish.active[b-zefswxfoak] {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+.action-btn.publish:hover[b-zefswxfoak] {
+    background: #10b981;
+    color: white;
+    transform: scale(1.15) rotate(-8deg);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
 
-.badge-status-draft[b-zefswxfoak] {
-    background: #f1f5f9;
+/* 3. Кнопка EDIT */
+.action-btn.edit[b-zefswxfoak] {
+    background: white;
     color: #64748b;
-    padding: 6px 12px;
-    border-radius: 12px;
-    font-size: 0.65rem;
-    font-weight: 700;
+}
+.action-btn.edit:hover[b-zefswxfoak] {
+    color: #5932EA;
+    background: #f8fafc;
+    transform: scale(1.1);
 }
 
+/* 4. Кнопка DELETE (Опасная) */
+.action-btn.delete[b-zefswxfoak] {
+    background: white;
+    color: #64748b;
+}
+.action-btn.delete:hover[b-zefswxfoak] {
+    background: #fee2e2;
+    color: #ef4444;
+    transform: scale(1.15) rotate(-8deg);
+}
+
+/* --- ТЕКСТОВЫЙ КОНТЕНТ --- */
+.card-body[b-zefswxfoak] {
+    padding: 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Фиксированные высоты для симметрии в ряду */
 .course-title[b-zefswxfoak] {
-    font-weight: 800;
-    color: #1a1c21;
-    font-size: 1.35rem;
-    margin-bottom: 10px;
-    line-height: 1.2;
-}
-
-.course-desc[b-zefswxfoak] {
-    font-size: 0.9rem;
-    color: #64748b;
-    line-height: 1.6;
-    margin-bottom: 20px;
-    /* Ограничение в 2 строки для красоты */
+    font-weight: 850;
+    font-size: 1.2rem;
+    color: #1e293b;
+    margin-bottom: 6px;
+    height: 3rem; /* 2 строки */
+    line-height: 1.3;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    min-height: 2.8rem;
 }
 
-.meta-info[b-zefswxfoak] {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: auto;
+.course-description[b-zefswxfoak] {
+    font-size: 0.85rem;
+    color: #64748b;
+    height: 2.4rem; /* 2 строки */
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 12px;
 }
 
-.meta-item[b-zefswxfoak] {
+/* --- ИНСТРУКТОР --- */
+.instructor-row[b-zefswxfoak] {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #94a3b8;
-    font-size: 0.85rem;
-    font-weight: 500;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
 }
 
-.meta-item i[b-zefswxfoak] { font-size: 1.1rem; color: #cbd5e1; }
+.avatar-box[b-zefswxfoak] {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background: #5932EA;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+}
 
-/* Футер: Цена и Рейтинг */
-.card-footer-stats[b-zefswxfoak] {
-    margin-top: 25px;
-    padding-top: 20px;
-    border-top: 1px solid #f8faff;
+.instructor-text .label[b-zefswxfoak] { display: block; font-size: 0.55rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; }
+.instructor-text .name[b-zefswxfoak] { font-size: 0.8rem; color: #1e293b; font-weight: 700; }
+
+.flex-spacer[b-zefswxfoak] { flex: 1; }
+
+/* --- ФУТЕР (Цена и Статистика) --- */
+.card-footer-premium[b-zefswxfoak] {
+    padding: 12px 18px;
+    background: #fcfdfe;
+    border-top: 1px solid #f1f5f9;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.price-container[b-zefswxfoak] { color: #5932EA; font-weight: 900; }
-.price-container .currency[b-zefswxfoak] { font-size: 1rem; margin-right: 2px; }
-.price-container .amount[b-zefswxfoak] { font-size: 1.6rem; }
-
-.rating-container[b-zefswxfoak] {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: #fffdf0;
-    padding: 6px 12px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: #4b5563;
+.price-box[b-zefswxfoak] {
+    color: #5932EA;
+    font-weight: 850;
+    font-size: 1.3rem;
 }
 
-.rating-container i[b-zefswxfoak] { color: #fbbf24; }
+.stats-box[b-zefswxfoak] {
+    display: flex;
+    gap: 6px;
+}
+
+.stat-pill[b-zefswxfoak] {
+    background: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* --- БЕЙДЖИ УРОВНЯ --- */
+.badge-row[b-zefswxfoak] { display: flex; gap: 5px; margin-bottom: 10px; }
+.badge-tag[b-zefswxfoak] { padding: 3px 10px; border-radius: 6px; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; }
+.level-beginner[b-zefswxfoak] { background: #e0f2fe; color: #0369a1; }
+.level-intermediate[b-zefswxfoak] { background: #fef3c7; color: #b45309; }
+.draft-tag[b-zefswxfoak] { background: #1e293b; color: white; }

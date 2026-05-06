@@ -32,13 +32,34 @@
                 <AuthorizeView>
                     <Authorized>
                         <div class="topbar-user">
-                            <div class="user-texts d-none d-md-flex">
+                            <div class="user-texts d-none d-md-flex text-end">
                                 <span class="user-fullname">@context.User.Identity?.Name</span>
-                                <span class="user-role-tag">Admin Access</span>
+                
+                                @* Динамическое отображение роли *@
+                                <span class="user-role-tag">
+                                    @if (context.User.IsInRole("Admin"))
+                                    {
+                                        <span>Admin Access</span>
+                                    }
+                                    else if (context.User.IsInRole("Instructor"))
+                                    {
+                                        <span>Instructor Pro</span>
+                                    }
+                                    else if (context.User.IsInRole("Student"))
+                                    {
+                                        <span>Student Portal</span>
+                                    }
+                                    else
+                                    {
+                                        <span>User</span>
+                                    }
+                                </span>
                             </div>
-                            <div class="user-avatar-wrapper shadow-sm">
+            
+                            @* Аватар с первой буквой имени *@
+                            <div class="user-avatar-wrapper shadow-sm ms-3">
                                 <div class="user-avatar">
-                                    @(context.User.Identity?.Name?[..1].ToUpper() ?? "A")
+                                    @(context.User.Identity?.Name?[..1].ToUpper() ?? "U")
                                 </div>
                             </div>
                         </div>

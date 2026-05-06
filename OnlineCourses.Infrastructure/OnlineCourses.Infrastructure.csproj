@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <Folder Include="BackgroundJobs\" />
-    <Folder Include="Configurations\" />
     <Folder Include="Data\" />
     <Folder Include="Repositories\" />
     <Folder Include="Seeds\" />

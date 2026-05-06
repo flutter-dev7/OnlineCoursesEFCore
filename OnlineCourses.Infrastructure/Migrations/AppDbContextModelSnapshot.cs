@@ -237,6 +237,9 @@ namespace OnlineCourses.Infrastructure.Migrations
                     b.Property<DateTime>("EnrolledAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("LastLessonId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("ProgressPercent")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
@@ -295,6 +298,35 @@ namespace OnlineCourses.Infrastructure.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("Lessons");
+                });
+
+            modelBuilder.Entity("OnlineCourses.Domain.Entities.LessonProgress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CompletedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("LessonId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("StudentId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex("StudentId", "LessonId")
+                        .IsUnique();
+
+                    b.ToTable("LessonProgresses");
                 });
 
             modelBuilder.Entity("OnlineCourses.Domain.Entities.Review", b =>
@@ -529,6 +561,17 @@ namespace OnlineCourses.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("OnlineCourses.Domain.Entities.LessonProgress", b =>
+                {
+                    b.HasOne("OnlineCourses.Domain.Entities.Lesson", "Lesson")
+                        .WithMany()
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
                 });
 
             modelBuilder.Entity("OnlineCourses.Domain.Entities.Review", b =>

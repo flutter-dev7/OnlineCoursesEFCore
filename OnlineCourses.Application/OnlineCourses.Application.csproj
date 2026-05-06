@@ -28,8 +28,6 @@
     <Folder Include="DTOs\Enrollments\Request\" />
     <Folder Include="DTOs\Enrollments\Response\" />
     <Folder Include="DTOs\Lessons\" />
-    <Folder Include="DTOs\Lessons\Request\" />
-    <Folder Include="DTOs\Lessons\Response\" />
     <Folder Include="DTOs\Reviews\" />
     <Folder Include="DTOs\Reviews\Request\" />
     <Folder Include="DTOs\Reviews\Response\" />

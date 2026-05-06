@@ -1,0 +1,113 @@
+@page "/student/home"
+@using OnlineCourses.BlazorApp.Models.Enrollments
+@using OnlineCourses.BlazorApp.Services.Enrollments
+@using Microsoft.AspNetCore.Components.Authorization
+@using OnlineCourses.BlazorApp.Components.Cards
+@inject EnrollmentService EnrollmentService
+@inject NavigationManager Nav
+
+<div class="dashboard-container py-4">
+    @* 1. Приветственный баннер *@
+    <div class="welcome-banner mb-4 shadow-sm">
+        <div class="banner-content">
+            <AuthorizeView>
+                <h2 class="fw-bold text-white">Welcome back, @context.User.Identity?.Name! 👋</h2>
+            </AuthorizeView>
+            <p class="text-white-50">It's a great day to learn something new. You have @(enrollments?.Count(e => e.ProgressPercent < 100) ?? 0) active courses.</p>
+            <button class="btn btn-light btn-sm rounded-pill px-4 mt-2 fw-bold" @onclick='() => Nav.NavigateTo("/student/all-courses")'>
+                Explore Catalog
+            </button>
+        </div>
+        <div class="banner-illustration d-none d-md-block">
+            <i class="bi bi-rocket-takeoff-fill"></i>
+        </div>
+    </div>
+
+    @* 2. Твои KPI карточки *@
+    <div class="row g-3 mb-5">
+        <div class="col-md-3">
+            <KPICard Title="Enrolled" Value="@((enrollments?.Count ?? 0).ToString())" Icon="bi-book" ColorClass="purple" />
+        </div>
+        <div class="col-md-3">
+            <KPICard Title="Finished" Value="@(enrollments?.Count(e => e.ProgressPercent == 100).ToString() ?? "0")" Icon="bi-check-circle" ColorClass="green" />
+        </div>
+        <div class="col-md-3">
+            <KPICard Title="Current Progress" Value="@(GetAverageProgress() + "%")" Icon="bi-bar-chart-line" ColorClass="yellow" />
+        </div>
+        <div class="col-md-3">
+            <KPICard Title="Day Streak" Value="5" Icon="bi-fire" ColorClass="red" />
+        </div>
+    </div>
+
+    @* 3. Секция Continue Learning *@
+    <div class="section-header d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold m-0 section-title">Continue Learning</h4>
+        <a href="/my-enrollments" class="btn-view-all">View All <i class="bi bi-arrow-right"></i></a>
+    </div>
+
+    @if (isLoading)
+    {
+        <div class="d-flex justify-content-center py-5">
+            <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+        </div>
+    }
+    else if (enrollments == null || !enrollments.Any())
+    {
+        <div class="empty-dashboard p-5 text-center rounded-4 shadow-sm bg-white">
+            <i class="bi bi-journal-x fs-1 text-muted mb-3 d-block"></i>
+            <p class="text-muted">You haven't started any courses yet.</p>
+            <button class="btn btn-primary rounded-pill px-4" @onclick='() => Nav.NavigateTo("/student/all-courses")'>Start Journey</button>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var item in enrollments.Where(e => e.ProgressPercent < 100).Take(3))
+            {
+                <div class="col-md-4">
+                    <div class="modern-progress-card h-100 shadow-sm" @onclick='() => Nav.NavigateTo($"/course/view/{item.CourseId}")'>
+                        <div class="card-overlay"></div>
+                        <div class="card-body p-4 position-relative">
+                            <span class="category-tag mb-2">Active Course</span>
+                            <h5 class="fw-bold text-white mb-3 course-name">@item.CourseTitle</h5>
+                            
+                            <div class="progress-container mb-3">
+                                <div class="d-flex justify-content-between text-white-50 small mb-2">
+                                    <span>Progress</span>
+                                    <span class="fw-bold">@item.ProgressPercent%</span>
+                                </div>
+                                <div class="progress custom-progress">
+                                    <div class="progress-bar bg-white" style="width: @item.ProgressPercent%"></div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center text-white-50 mt-3">
+                                <i class="bi bi-play-circle-fill me-2 fs-4 text-white"></i>
+                                <span class="small fw-bold text-white">Resume Lesson</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<EnrollmentResponse>? enrollments;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        var result = await EnrollmentService.GetMy();
+        if (result.IsSuccess) enrollments = result.Data;
+        isLoading = false;
+    }
+
+    private string GetAverageProgress()
+    {
+        if (enrollments == null || !enrollments.Any()) return "0";
+        return ((int)enrollments.Average(e => e.ProgressPercent)).ToString();
+    }
+}

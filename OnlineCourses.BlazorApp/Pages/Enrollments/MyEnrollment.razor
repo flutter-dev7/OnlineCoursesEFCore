@@ -25,7 +25,7 @@
             <i class="bi bi-rocket-takeoff fs-1 text-muted mb-3 d-block"></i>
             <h5 class="fw-bold">Ready to start?</h5>
             <p class="text-muted small">You haven't enrolled in any courses yet.</p>
-            <a href="/courses" class="btn btn-primary btn-sm px-4 rounded-pill">Explore Courses</a>
+            <a href="/student/all-courses" class="btn btn-primary btn-sm px-4 rounded-pill">Explore Courses</a>
         </div>
     }
     else
@@ -150,10 +150,28 @@
     private async Task HandleDelete()
     {
         isDeleteModalVisible = false;
+    
+        // 1. Сначала делаем запрос на удаление
         var result = await EnrollmentService.Delete(selectedId);
+    
         if (result.IsSuccess)
         {
+            // 2. Важный момент: удаляем элемент из локального списка сразу
+            // Это гарантирует, что карточка исчезнет, даже если LoadEnrollments() задержится
+            if (enrollments != null)
+            {
+                var itemToRemove = enrollments.FirstOrDefault(e => e.Id == selectedId);
+                if (itemToRemove != null)
+                {
+                    enrollments.Remove(itemToRemove);
+                }
+            }
+
+            // 3. Обновляем данные с сервера для синхронизации
             await LoadEnrollments();
+        
+            // 4. Принудительно уведомляем Blazor об изменениях
+            StateHasChanged();
         }
     }
 }

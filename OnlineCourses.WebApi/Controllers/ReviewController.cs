@@ -51,7 +51,6 @@ public class ReviewController : BaseController
     }
 
     [HttpDelete("{id:guid}")]
-    [Authorize(Roles = "Student,Admin")]
     public async Task<IActionResult> DeleteAsync(Guid courseId, Guid id)
     {
         var studentId = User.FindFirstValue(ClaimTypes.NameIdentifier)!;

@@ -1,0 +1,83 @@
+@page "/student/all-courses"
+@using OnlineCourses.BlazorApp.Components.Cards
+@using OnlineCourses.BlazorApp.Models.Courses
+@using OnlineCourses.BlazorApp.Models.Enrollments
+@using OnlineCourses.BlazorApp.Services.Courses
+@using OnlineCourses.BlazorApp.Services.Enrollments
+@inject CourseService CourseService
+@inject EnrollmentService EnrollmentService
+@inject NavigationManager Nav
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold m-0">Explore Catalog</h3>
+            <p class="text-muted small">@courses?.Count available courses for you</p>
+        </div>
+    </div>
+
+    @if (courses == null)
+    {
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status"></div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var course in courses)
+            {
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <StudentCourseCard 
+                        Course="course" 
+                        IsEnrolled="@myEnrollmentIds.Contains(course.Id)"
+                        IsLoading="@(enrollingId == course.Id)"
+                        OnEnroll="() => HandleEnroll(course.Id)"
+                        OnView='() => Nav.NavigateTo("/my-enrollments")' />
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<CourseResponse>? courses;
+    private HashSet<Guid> myEnrollmentIds = new();
+    private Guid? enrollingId;
+
+    protected override async Task OnInitializedAsync() => await LoadData();
+
+    private async Task LoadData()
+    {
+        var coursesResult = await CourseService.GetAll();
+        var myEnrollmentsResult = await EnrollmentService.GetMy();
+        
+        if (coursesResult.IsSuccess)
+        {
+            // ФИКС: Оставляем только те курсы, у которых IsPublished == true
+            if (coursesResult.Data != null)
+                courses = coursesResult.Data
+                    .Where(c => c.IsPublished)
+                    .ToList();
+        }
+
+        if (myEnrollmentsResult.IsSuccess)
+            if (myEnrollmentsResult.Data != null)
+                myEnrollmentIds = myEnrollmentsResult.Data.Select(e => e.CourseId).ToHashSet();
+    }
+
+    private async Task HandleEnroll(Guid courseId)
+    {
+        enrollingId = courseId;
+        var result = await EnrollmentService.Create(new CreateEnrollmentRequest { CourseId = courseId });
+        
+        if (result.IsSuccess)
+        {
+            myEnrollmentIds.Add(courseId);
+            StateHasChanged();
+            await Task.Delay(500);
+            Nav.NavigateTo("/my-enrollments");
+        }
+        enrollingId = null;
+    }
+}

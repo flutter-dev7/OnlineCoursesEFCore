@@ -1,0 +1,80 @@
+.course-slim-card {
+    background: #ffffff;
+    border-radius: 18px;
+    border: 1px solid #f1f5f9;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: all 0.25s ease;
+    overflow: hidden;
+}
+
+.course-slim-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(89, 50, 234, 0.12) !important;
+    border-color: #5932EA;
+}
+
+.card-visual-sm {
+    height: 110px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.badge-mini {
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    color: white; padding: 3px 10px;
+    border-radius: 8px; font-size: 0.65rem; font-weight: 700;
+}
+
+.level-tag {
+    position: absolute; bottom: 10px; right: 10px;
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff; padding: 2px 8px;
+    border-radius: 6px; font-size: 0.6rem;
+}
+
+.floating-icon-sm {
+    font-size: 2.8rem; color: white; opacity: 0.3;
+}
+
+.instructor-tag { font-size: 0.75rem; color: #5932EA; font-weight: 700; }
+
+.rating-mini { font-size: 0.8rem; font-weight: 800; color: #ffa000; }
+
+.course-title-slim {
+    font-size: 1rem; font-weight: 700; color: #1e293b;
+    margin-bottom: 6px; display: -webkit-box;
+    -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+.course-desc-slim {
+    font-size: 0.8rem; color: #64748b; line-height: 1.4;
+    margin-bottom: 12px; display: -webkit-box;
+    -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; min-height: 2.8em;
+}
+
+.course-info-row { font-size: 0.7rem; color: #94a3b8; font-weight: 500; }
+
+.price-sm { font-size: 1.3rem; font-weight: 800; color: #1e293b; }
+
+.btn-enroll-slim {
+    background: #5932EA !important; color: white !important;
+    border-radius: 12px !important; padding: 10px !important;
+    font-size: 0.85rem !important; font-weight: 700 !important;
+    border: none !important; transition: 0.2s;
+}
+
+.btn-enroll-slim:hover { background: #4a29c4 !important; }
+
+.btn-go-learning {
+    background: #f8fafc !important; color: #5932EA !important;
+    border: 1px solid #e2e8f0 !important; border-radius: 12px !important;
+    padding: 10px !important; font-size: 0.85rem !important; font-weight: 700 !important;
+}

@@ -32,4 +32,9 @@ public class EnrollmentService(ApiService api)
     {
         return await api.PatchAsync<EnrollmentResponse>($"{Url}/{id}/progress", model);
     }
+    
+    public async Task<ApiResponse<bool>> ToggleLessonAsync(Guid enrollmentId, ToggleLessonRequest request)
+    {
+        return await api.PatchAsync<bool>($"{Url}/{enrollmentId}/toggle-lesson", request);
+    }
 }

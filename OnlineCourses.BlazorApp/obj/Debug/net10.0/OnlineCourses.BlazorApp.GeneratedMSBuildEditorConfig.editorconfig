@@ -72,6 +72,10 @@ build_metadata.AdditionalFiles.CssScope = b-nhbc681668
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDYXJkc1xTdHVkZW50Q2FyZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-y11igk3ew0
 
+[C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.BlazorApp/Components/Cards/StudentCourseCard.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xDYXJkc1xTdHVkZW50Q291cnNlQ2FyZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-0e0twkdjri
+
 [C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.BlazorApp/Components/Inputs/AppInput.razor]
 build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xJbnB1dHNcQXBwSW5wdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-jmus9dmli0
@@ -104,6 +108,14 @@ build_metadata.AdditionalFiles.CssScope = b-kozjrehkwk
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlc1xDb3Vyc2UucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = b-sh4s5i9qjm
 
+[C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.BlazorApp/Pages/Courses/CoursePlayer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlc1xDb3Vyc2VQbGF5ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-cfcddrxkjg
+
+[C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.BlazorApp/Pages/Courses/StudentCourse.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlc1xTdHVkZW50Q291cnNlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-vhd1sywcx1
+
 [C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.BlazorApp/Pages/Dashboard/Dashboard.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkXERhc2hib2FyZC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-ug3cfqtxxs
@@ -116,6 +128,14 @@ build_metadata.AdditionalFiles.CssScope = b-nn8z48vpeq
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRW5yb2xsbWVudHNcTXlFbnJvbGxtZW50LnJhem9y
 build_metadata.AdditionalFiles.CssScope = b-334b95bn5c
 
+[C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.BlazorApp/Pages/Lessons/Lesson.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVzc29uc1xMZXNzb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-65kd1f4ry8
+
 [C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.BlazorApp/Pages/Students/Student.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudHNcU3R1ZGVudC5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = b-imvdumebco
+
+[C:/Users/Ismoil/OneDrive/Desktop/Programming/.Net/month2/week2/OnlineCourses/OnlineCourses.BlazorApp/Pages/Students/StudentHome.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3R1ZGVudHNcU3R1ZGVudEhvbWUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-xqa4hq5jgj

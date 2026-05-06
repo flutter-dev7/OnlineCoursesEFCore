@@ -1,0 +1,214 @@
+.lessons-page { padding: 40px; background-color: #f8fafc; min-height: 100vh; }
+
+/* Header */
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; }
+.header-left { display: flex; align-items: center; gap: 20px; }
+.btn-back-circle {
+    width: 44px; height: 44px; border-radius: 50%; border: none; background: white;
+    color: #5932EA; display: flex; align-items: center; justify-content: center; transition: 0.3s;
+}
+.btn-back-circle:hover { background: #5932EA; color: white; transform: translateX(-3px); }
+.btn-add-new {
+    background: #5932EA; color: white; border: none; padding: 12px 28px;
+    border-radius: 14px; font-weight: 700; transition: 0.3s; box-shadow: 0 4px 15px rgba(89, 50, 234, 0.2);
+}
+.btn-add-new:hover { background: #4a29c4; transform: translateY(-2px); }
+
+/* Lesson Cards */
+.lesson-grid { display: flex; flex-direction: column; gap: 16px; }
+.lesson-card {
+    background: white; border-radius: 20px; padding: 20px 25px;
+    display: flex; justify-content: space-between; align-items: center; transition: 0.3s;
+}
+.lesson-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(0,0,0,0.05)!important; }
+.lesson-info-block { display: flex; align-items: center; gap: 24px; }
+.lesson-order {
+    width: 42px; height: 42px; background: #f0eeff; color: #5932EA;
+    border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800;
+}
+.btn-watch-preview {
+    border: none; background: #f0fdf4; color: #16a34a; font-size: 0.75rem;
+    font-weight: 700; padding: 6px 14px; border-radius: 10px; transition: 0.2s;
+}
+.btn-watch-preview:hover { background: #dcfce7; }
+
+/* Actions */
+.lesson-actions { display: flex; gap: 12px; }
+.btn-action {
+    width: 42px; height: 42px; border-radius: 12px; border: none;
+    display: flex; align-items: center; justify-content: center; transition: 0.2s;
+}
+.btn-action.edit { background: #f8fafc; color: #64748b; }
+.btn-action.edit:hover { background: #f0eeff; color: #5932EA; }
+.btn-action.delete { background: #fff1f2; color: #e11d48; }
+.btn-action.delete:hover { background: #fee2e2; }
+
+/* Modals General */
+.modal-overlay {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 1000;
+}
+.modal-card { background: white; width: 100%; max-width: 550px; border-radius: 28px; padding: 35px; position: relative; }
+.accent-line { width: 40px; height: 4px; background: #5932EA; border-radius: 10px; margin-top: 8px; }
+
+/* Close Button (X) */
+.btn-modal-close {
+    position: absolute; top: 25px; right: 25px; width: 40px; height: 40px;
+    border-radius: 12px; border: none; background: #f1f5f9; color: #64748b;
+    display: flex; align-items: center; justify-content: center; transition: 0.3s;
+}
+.btn-modal-close:hover { background: #fee2e2; color: #ef4444; transform: rotate(90deg); }
+
+/* Form Inputs */
+.input-unit { margin-bottom: 20px; }
+.input-unit label { display: block; font-size: 0.7rem; font-weight: 800; color: #94a3b8; margin-bottom: 8px; letter-spacing: 0.5px; }
+.input-unit input, .input-unit textarea {
+    width: 100%; border: 2px solid #f1f5f9; border-radius: 14px; padding: 12px 18px; outline: none; transition: 0.2s;
+}
+.input-unit input:focus, .input-unit textarea:focus { border-color: #5932EA; }
+
+/* Modal Footer */
+.modal-footer-actions { display: flex; gap: 12px; margin-top: 15px; }
+.btn-modal-confirm { flex: 2; background: #5932EA; color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 700; transition: 0.2s; }
+.btn-modal-dismiss { flex: 1; background: #f1f5f9; color: #64748b; border: none; padding: 14px; border-radius: 14px; font-weight: 700; }
+.btn-modal-confirm:hover { background: #4a29c4; }
+
+/* Video Preview Player */
+.video-modal-box { width: 90%; max-width: 1000px; background: #000; border-radius: 30px; position: relative; overflow: hidden; }
+.iframe-container { position: relative; padding-bottom: 56.25%; height: 0; }
+.iframe-container iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
+.btn-modal-close.glass { background: rgba(255,255,255,0.15); color: white; backdrop-filter: blur(10px); z-index: 10; }
+
+/* Delete Modal Specific */
+.delete-confirm-box { background: white; border-radius: 30px; padding: 40px; width: 380px; text-align: center; }
+.delete-icon-circle {
+    width: 70px; height: 70px; background: #fff1f2; color: #e11d48;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; font-size: 2rem;
+}
+.delete-buttons-row { display: flex; gap: 10px; margin-top: 25px; }
+.btn-confirm-del { flex: 1; background: #e11d48; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; }
+.btn-cancel-del { flex: 1; background: #f8fafc; color: #64748b; border: none; padding: 12px; border-radius: 12px; font-weight: 700; }
+
+/* Красивое состояние пустой страницы */
+.empty-state-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    min-height: 400px;
+}
+
+.empty-card {
+    background: white;
+    padding: 50px 40px;
+    border-radius: 30px;
+    text-align: center;
+    max-width: 450px;
+    width: 100%;
+    border: 1px solid #f1f5f9;
+}
+
+.empty-illustration {
+    position: relative;
+    font-size: 4rem;
+    color: #e2e8f0;
+    margin-bottom: 25px;
+    display: inline-block;
+}
+
+.plus-badge {
+    position: absolute;
+    bottom: 5px;
+    right: -5px;
+    background: #5932EA;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid white;
+}
+
+.btn-create-big {
+    background: #5932EA;
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 16px;
+    font-weight: 700;
+    margin-top: 20px;
+    transition: 0.3s;
+    box-shadow: 0 10px 20px rgba(89, 50, 234, 0.15);
+}
+
+.btn-create-big:hover {
+    background: #4a29c4;
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px rgba(89, 50, 234, 0.25);
+}
+
+/* Фикс для лоадера, чтобы он не прыгал */
+.loader-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+}
+
+/* Оверлей для видео темнее для фокуса */
+.video-preview-overlay {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+}
+
+.video-preview-window {
+    width: 90%;
+    max-width: 1000px;
+    position: relative;
+    border-radius: 24px;
+    overflow: visible; /* Чтобы кнопка могла чуть выходить за края */
+}
+
+.video-ratio-box {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    background: #000;
+}
+
+.video-ratio-box iframe {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border: none;
+}
+
+/* Красивая кнопка закрытия для видео */
+.btn-video-close {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 45px;
+    height: 45px;
+    background: #ef4444;
+    color: white;
+    border: 4px solid #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.btn-video-close:hover {
+    transform: scale(1.1) rotate(90deg);
+    background: #dc2626;
+}
