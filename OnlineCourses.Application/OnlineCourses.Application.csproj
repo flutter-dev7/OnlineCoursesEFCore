@@ -36,8 +36,6 @@
     <Folder Include="DTOs\Students\Response\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Interfaces\Repositories\" />
-    <Folder Include="Interfaces\Services\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

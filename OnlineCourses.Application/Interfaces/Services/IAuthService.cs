@@ -9,9 +9,9 @@ public interface IAuthService
 {
     Task<Result<LoginResponseDto>> LoginAsync(LoginDto loginDto);
     Task<Result<RegisterResponseDto>> RegisterAsync(RegisterDto registerDto);
-    Task<Result<bool>> ChangePasswordAsync(string id, ChangePasswordDto changePasswordDto);
+    /*Task<Result<bool>> ChangePasswordAsync(string id, ChangePasswordDto changePasswordDto);
     Task<Result<bool>> SendEmailAsync(SendEmailDto request);
     Task<Result<bool>> VerifyCodeAsync(VerifyCodeDto request);
     Task<Result<bool>> ResetPasswordAsync(ResetPasswordDto request);
-    Task<Result<bool>> AssisgnRoleAsync(string userId, string role);
+    Task<Result<bool>> AssisgnRoleAsync(string userId, string role);*/
 }

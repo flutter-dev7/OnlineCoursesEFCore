@@ -1,5 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Nav
 
 <div class="app-shell">
     <aside class="sidebar">
@@ -22,6 +23,13 @@
             </div>
 
             <div class="topbar-right">
+                @* --- КРАСИВАЯ КНОПКА SETTINGS --- *@
+                <div class="topbar-icon-btn settings-btn me-2" @onclick="HandleSettings" title="System Settings">
+                    <div class="icon-wrapper">
+                        <i class="bi bi-gear-fill"></i>
+                    </div>
+                </div>
+
                 <div class="topbar-icon-btn notif-btn">
                     <i class="bi bi-bell"></i>
                     <span class="notif-badge">6</span>
@@ -35,28 +43,14 @@
                             <div class="user-texts d-none d-md-flex text-end">
                                 <span class="user-fullname">@context.User.Identity?.Name</span>
                 
-                                @* Динамическое отображение роли *@
                                 <span class="user-role-tag">
-                                    @if (context.User.IsInRole("Admin"))
-                                    {
-                                        <span>Admin Access</span>
-                                    }
-                                    else if (context.User.IsInRole("Instructor"))
-                                    {
-                                        <span>Instructor Pro</span>
-                                    }
-                                    else if (context.User.IsInRole("Student"))
-                                    {
-                                        <span>Student Portal</span>
-                                    }
-                                    else
-                                    {
-                                        <span>User</span>
-                                    }
+                                    @if (context.User.IsInRole("Admin")) { <span>Admin Access</span> }
+                                    else if (context.User.IsInRole("Instructor")) { <span>Instructor Pro</span> }
+                                    else if (context.User.IsInRole("Student")) { <span>Student Portal</span> }
+                                    else { <span>User</span> }
                                 </span>
                             </div>
             
-                            @* Аватар с первой буквой имени *@
                             <div class="user-avatar-wrapper shadow-sm ms-3">
                                 <div class="user-avatar">
                                     @(context.User.Identity?.Name?[..1].ToUpper() ?? "U")
@@ -76,4 +70,5 @@
 
 @code {
     private void HandleQuickSearch() => Console.WriteLine("Command Palette Triggered");
+    private void HandleSettings() => Nav.NavigateTo("/profile/settings");
 }

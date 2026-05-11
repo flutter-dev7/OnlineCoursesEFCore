@@ -5,7 +5,7 @@ var e=!1;const t=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,
   "mainAssemblyName": "OnlineCourses.BlazorApp",
   "applicationEnvironment": "Development",
   "resources": {
-    "hash": "sha256-2SDrYsIZIfaSKB2u6WnZpq37W8ioTYLKdsLI9O0U5hw=",
+    "hash": "sha256-X8Xaqp+w6Ilf1XoxpL0RLlAiAS9wcSRQTRr2ZGDl6e8=",
     "jsModuleNative": [
       {
         "name": "dotnet.native.cs8mcre4gh.js"
@@ -1104,35 +1104,35 @@ var e=!1;const t=async()=>WebAssembly.validate(new Uint8Array([0,97,115,109,1,0,
       },
       {
         "virtualPath": "OnlineCourses.Application.wasm",
-        "name": "OnlineCourses.Application.ppqqfwc81x.wasm",
-        "integrity": "sha256-Q0cMjKKV0lPApDGIBRmAk6Y89GzAKgxeXqi9wWY5BNQ="
+        "name": "OnlineCourses.Application.ph5iemy20g.wasm",
+        "integrity": "sha256-s41FXDs7lEO/4d91tk0VsuV4DdIpJvyag75QYE4Yp2U="
       },
       {
         "virtualPath": "OnlineCourses.Domain.wasm",
-        "name": "OnlineCourses.Domain.pb8xuinl6q.wasm",
-        "integrity": "sha256-Zb5beggW//ZPbMTb/CSc96lAybacmZQNRoeBw+XetSI="
+        "name": "OnlineCourses.Domain.jfsiygkwh6.wasm",
+        "integrity": "sha256-b0Kt2W0PGBA7/Q3QO1ZzG8pWroAQQup2N+yllSsg784="
       },
       {
         "virtualPath": "OnlineCourses.BlazorApp.wasm",
-        "name": "OnlineCourses.BlazorApp.52plendbzc.wasm",
-        "integrity": "sha256-43Nhr1yj1KHaIqoQLNEkitLcWXcvG1lXTVQrdJOQdbM="
+        "name": "OnlineCourses.BlazorApp.gp0r0drvet.wasm",
+        "integrity": "sha256-rP//RHcCP/XMS2iImtMATk6EhSvScVNvULtQa0sq54U="
       }
     ],
     "pdb": [
       {
         "virtualPath": "OnlineCourses.Application.pdb",
-        "name": "OnlineCourses.Application.5146mnr0aa.pdb",
-        "integrity": "sha256-6ZsVKA0T3Dd3oM+vvn5CypwmZ7+y7M6ramxuNZjW70M="
+        "name": "OnlineCourses.Application.pw5s3pqa9b.pdb",
+        "integrity": "sha256-6ROGZmO1c/NLUHWkVQtQTVT5fNfeh/j0G7bbVq7v6hM="
       },
       {
         "virtualPath": "OnlineCourses.Domain.pdb",
-        "name": "OnlineCourses.Domain.da06l2zyg3.pdb",
-        "integrity": "sha256-9XODuHSJ220XGtyEsBjtU2ZAVy/M2cvmXLT5aHz8KZ8="
+        "name": "OnlineCourses.Domain.4o30bqyga3.pdb",
+        "integrity": "sha256-lMXYibe8hJwGwSw+Lb3dBmIEWnXg3XGxn6vjokcOg1o="
       },
       {
         "virtualPath": "OnlineCourses.BlazorApp.pdb",
-        "name": "OnlineCourses.BlazorApp.o2e3t17m1k.pdb",
-        "integrity": "sha256-AMXXJR7Qvl6kD6XVjt09jIbad84YVXArHRak5oFEI8M="
+        "name": "OnlineCourses.BlazorApp.wrdhifkry1.pdb",
+        "integrity": "sha256-BLJCEEiE1HesPcD82EoErRbYQULoCoGD0CJEIxnjHHc="
       }
     ],
     "libraryInitializers": [

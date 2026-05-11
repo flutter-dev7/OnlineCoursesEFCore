@@ -76,7 +76,8 @@ builder.Services.AddCors(options =>
     {
         policy
             .WithOrigins(
-               "http://localhost:5204"
+               "http://localhost:5204",
+               "http://localhost:62925"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -95,6 +96,10 @@ builder.Services.AddHangfireServer();
 builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
+builder.Services.AddScoped<IEmailTemplateService, EmailTemplateService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IVerificationService, VerificationService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
@@ -146,6 +151,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+/*
+app.Urls.Add("http://0.0.0.0:5062");
+*/
 
 using (var scope = app.Services.CreateScope())
 {

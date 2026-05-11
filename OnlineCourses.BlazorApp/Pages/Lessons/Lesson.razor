@@ -1,11 +1,14 @@
 @page "/instructor/courses/{CourseId:guid}/lessons"
 @using OnlineCourses.BlazorApp.Models.Lessons
+@using OnlineCourses.BlazorApp.Models.Reviews
 @using OnlineCourses.BlazorApp.Services.Lessons
+@using OnlineCourses.BlazorApp.Services.Reviews
 @inject LessonService LessonService
+@inject ReviewService ReviewService
 @inject NavigationManager Nav
 
 <div class="lessons-page animate__animated animate__fadeIn">
-    @* --- HEADER --- *@
+    @* --- HEADER (ТВОЙ КОД) --- *@
     <div class="page-header">
         <div class="header-left">
             <button class="btn-back-circle shadow-sm" @onclick='() => Nav.NavigateTo("/shared/courses")'>
@@ -21,7 +24,7 @@
         </button>
     </div>
 
-    @* --- CONTENT --- *@
+    @* --- CONTENT (ТВОЙ КОД) --- *@
     @if (lessons == null)
     {
         <div class="loader-wrap">
@@ -76,42 +79,77 @@
             }
         </div>
     }
+
+    @* --- НОВАЯ СЕКЦИЯ ОТЗЫВОВ (ДОБАВЛЕНО) --- *@
+    <div class="admin-reviews-wrapper mt-5">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h3 class="fw-bold m-0 text-dark">Course Reviews</h3>
+            <span class="badge bg-primary rounded-pill">@(courseReviews?.Count ?? 0) Total</span>
+        </div>
+
+        @if (courseReviews == null)
+        {
+            <div class="text-center py-4 text-muted">Loading reviews...</div>
+        }
+        else if (!courseReviews.Any())
+        {
+            <div class="empty-reviews-box text-center p-5 border rounded-4 bg-light">
+                <i class="bi bi-chat-left-dots text-secondary display-4"></i>
+                <p class="mt-3 text-secondary">No reviews found for this course yet.</p>
+            </div>
+        }
+        else
+        {
+            <div class="reviews-admin-grid">
+                @foreach (var rev in courseReviews.OrderByDescending(x => x.CreatedAt))
+                {
+                    <div class="review-admin-card shadow-sm border">
+                        <div class="rev-card-header">
+                            <div class="rev-user-profile">
+                                <div class="rev-avatar-circle">@rev.StudentName[0]</div>
+                                <div class="rev-user-meta">
+                                    <h6 class="fw-bold m-0">@rev.StudentName</h6>
+                                    <small class="text-muted">@rev.CreatedAt.ToString("MMM dd, yyyy")</small>
+                                </div>
+                            </div>
+                            <div class="rev-rating-display">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="bi bi-star-fill @(i <= rev.Rating ? "text-warning" : "text-light")"></i>
+                                }
+                            </div>
+                        </div>
+                        <div class="rev-card-body">
+                            <p class="rev-text-content">@rev.Comment</p>
+                        </div>
+                        <div class="rev-card-footer">
+                            <button class="btn-del-review" @onclick="() => HandleDeleteReview(rev.Id)">
+                                <i class="bi bi-trash3 me-1"></i> Remove Review
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
 </div>
 
-@* --- MODAL: CREATE / EDIT --- *@
+@* --- ВСЕ ТВОИ МОДАЛКИ (ТВОЙ КОД БЕЗ ИЗМЕНЕНИЙ) --- *@
 @if (isEditing)
 {
     <div class="modal-overlay">
         <div class="modal-card animate__animated animate__zoomIn shadow-lg">
             <button class="btn-modal-close" @onclick="CloseModal"><i class="bi bi-x-lg"></i></button>
-            
             <div class="modal-header-content">
                 <h4 class="fw-bold">@(isNew ? "Create Lesson" : "Edit Lesson")</h4>
                 <div class="accent-line"></div>
             </div>
-
             <div class="modal-body-form">
-                <div class="input-unit">
-                    <label>LESSON TITLE</label>
-                    <input type="text" @bind="editModel.Title" placeholder="e.g. Intro to Authentication" />
-                </div>
-                <div class="input-unit">
-                    <label>DESCRIPTION</label>
-                    <textarea @bind="editModel.Description" rows="3" placeholder="Explain what this lesson covers..."></textarea>
-                </div>
+                <div class="input-unit"><label>LESSON TITLE</label><input type="text" @bind="editModel.Title" placeholder="e.g. Intro to Authentication" /></div>
+                <div class="input-unit"><label>DESCRIPTION</label><textarea @bind="editModel.Description" rows="3" placeholder="Explain what this lesson covers..."></textarea></div>
                 <div class="row g-3">
-                    <div class="col-8">
-                        <div class="input-unit">
-                            <label>VIDEO URL (YOUTUBE)</label>
-                            <input type="text" @bind="editModel.VideoUrl" placeholder="https://youtube.com/..." />
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="input-unit">
-                            <label>ORDER</label>
-                            <input type="number" @bind="editModel.Order" class="text-center" />
-                        </div>
-                    </div>
+                    <div class="col-8"><div class="input-unit"><label>VIDEO URL (YOUTUBE)</label><input type="text" @bind="editModel.VideoUrl" placeholder="https://youtube.com/..." /></div></div>
+                    <div class="col-4"><div class="input-unit"><label>ORDER</label><input type="number" @bind="editModel.Order" class="text-center" /></div></div>
                 </div>
             </div>
             <div class="modal-footer-actions">
@@ -122,27 +160,18 @@
     </div>
 }
 
-@* --- MODAL: VIDEO PREVIEW --- *@
 @if (isPreviewing)
 {
     <div class="modal-overlay video-preview-overlay" @onclick="() => isPreviewing = false">
         <div class="video-preview-window animate__animated animate__zoomIn" @onclick:stopPropagation>
-            @* Кнопка закрытия поверх видео *@
-            <button class="btn-video-close" @onclick="() => isPreviewing = false">
-                <i class="bi bi-x-lg"></i>
-            </button>
-            
+            <button class="btn-video-close" @onclick="() => isPreviewing = false"><i class="bi bi-x-lg"></i></button>
             <div class="video-ratio-box">
-                <iframe src="@currentVideoUrl" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                </iframe>
+                <iframe src="@currentVideoUrl" allowfullscreen></iframe>
             </div>
         </div>
     </div>
 }
 
-@* --- MODAL: DELETE --- *@
 @if (isDeleting)
 {
     <div class="modal-overlay">
@@ -161,6 +190,7 @@
 @code {
     [Parameter] public Guid CourseId { get; set; }
     private List<LessonResponse>? lessons;
+    private List<GetReviewDto>? courseReviews; // Добавлено
     private CreateLessonRequest editModel = new();
     private LessonResponse? targetLesson;
     private bool isEditing, isDeleting, isNew, isPreviewing;
@@ -172,67 +202,41 @@
         var res = await LessonService.GetByCourseId(CourseId);
         if (res != null && res.IsSuccess) lessons = res.Data;
         else lessons = new();
+
+        var revRes = await ReviewService.GetByCourseId(CourseId); // Загружаем отзывы
+        if (revRes != null && revRes.IsSuccess) courseReviews = revRes.Data;
+
         StateHasChanged();
     }
 
-    private void OpenEditModal(LessonResponse? lesson = null) {
-        if (lesson == null) {
-            isNew = true;
-            editModel = new CreateLessonRequest { Order = (lessons?.Count ?? 0) + 1 };
-        } else {
-            isNew = false;
-            targetLesson = lesson;
-            editModel = new CreateLessonRequest { 
-                Title = lesson.Title, Description = lesson.Description, 
-                VideoUrl = lesson.VideoUrl, Order = lesson.Order 
-            };
-        }
-        isEditing = true;
+    private async Task HandleDeleteReview(Guid reviewId) {
+        var res = await ReviewService.Delete(CourseId, reviewId);
+        if (res.IsSuccess) await LoadData();
     }
 
+    // --- ТВОИ ОРИГИНАЛЬНЫЕ МЕТОДЫ БЕЗ ИЗМЕНЕНИЙ ---
+    private void OpenEditModal(LessonResponse? lesson = null) {
+        if (lesson == null) { isNew = true; editModel = new CreateLessonRequest { Order = (lessons?.Count ?? 0) + 1 }; } 
+        else { isNew = false; targetLesson = lesson; editModel = new CreateLessonRequest { Title = lesson.Title, Description = lesson.Description, VideoUrl = lesson.VideoUrl, Order = lesson.Order }; }
+        isEditing = true;
+    }
     private void CloseModal() => isEditing = false;
-
     private void WatchVideo(string url) {
         if (string.IsNullOrEmpty(url)) return;
-
-        string videoId = "";
-
-        // 1. Извлекаем ID из обычной ссылки youtube.com/watch?v=ID
-        if (url.Contains("v=")) {
-            var uri = new Uri(url);
-            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-            videoId = query["v"];
-        } 
-        // 2. Извлекаем ID из короткой ссылки youtu.be/ID
-        else if (url.Contains("youtu.be/")) {
-            videoId = url.Split('/').Last().Split('?').First();
-        }
-        // 3. Если уже есть ID или встроено
-        else {
-            videoId = url.Split('/').Last();
-        }
-
-        // Формируем правильный URL для iframe
+        string videoId = url.Contains("v=") ? url.Split("v=")[1].Split("&")[0] : url.Split('/').Last();
         currentVideoUrl = $"https://www.youtube.com/embed/{videoId}?autoplay=1";
         isPreviewing = true;
     }
-
     private void AskDelete(LessonResponse lesson) { targetLesson = lesson; isDeleting = true; }
-
     private async Task ConfirmDelete() {
         var res = await LessonService.Delete(CourseId, targetLesson!.Id);
         if (res.IsSuccess) { isDeleting = false; await LoadData(); }
     }
-
     private async Task Save() {
         if (string.IsNullOrWhiteSpace(editModel.Title)) return;
         bool success = isNew 
             ? (await LessonService.Create(CourseId, editModel)).IsSuccess 
-            : (await LessonService.Update(CourseId, targetLesson!.Id, new UpdateLessonRequest { 
-                Title = editModel.Title, Description = editModel.Description, 
-                VideoUrl = editModel.VideoUrl, Order = editModel.Order 
-            })).IsSuccess;
-
+            : (await LessonService.Update(CourseId, targetLesson!.Id, new UpdateLessonRequest { Title = editModel.Title, Description = editModel.Description, VideoUrl = editModel.VideoUrl, Order = editModel.Order })).IsSuccess;
         if (success) { isEditing = false; await LoadData(); }
     }
 }

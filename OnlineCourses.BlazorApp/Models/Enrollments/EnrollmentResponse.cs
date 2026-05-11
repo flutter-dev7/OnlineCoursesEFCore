@@ -14,4 +14,6 @@ public class EnrollmentResponse
 
     public string StudentId { get; set; } = string.Empty;
     public string StudentName { get; set; } = string.Empty;
+    
+    public List<Guid> CompletedLessons { get; set; } = new();
 }

@@ -107,4 +107,20 @@ public class ApiService(HttpClient httpClient, TokenService tokenService)
             return new ApiResponse<bool> { IsSuccess = false, Error = ex.Message };
         }
     }
+    
+    public async Task<ApiResponse<T>> PutMultipartAsync<T>(string endpoint, MultipartFormDataContent content)
+    {
+        await AddAuthHeaderAsync();
+        try
+        {
+            // Здесь мы используем обычный SendAsync, а не PutAsJsonAsync
+            var response = await httpClient.PutAsync(endpoint, content);
+            return await response.Content.ReadFromJsonAsync<ApiResponse<T>>()
+                   ?? new ApiResponse<T> { IsSuccess = false, Error = "Empty response" };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<T> { IsSuccess = false, Error = ex.Message };
+        }
+    }
 }

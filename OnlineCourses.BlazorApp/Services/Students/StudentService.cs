@@ -89,7 +89,7 @@ public class StudentService(ApiService api)
     {
         try
         {
-            return await api.PostAsync<bool>($"{Url}/change-avatar/{id}", file);
+            return await api.PutMultipartAsync<bool>($"{Url}/change-avatar/{id}", file);
         }
         catch (Exception ex)
         {

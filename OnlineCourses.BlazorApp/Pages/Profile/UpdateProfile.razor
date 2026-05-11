@@ -1,0 +1,267 @@
+@page "/profile/settings"
+@using OnlineCourses.BlazorApp.Models.Students
+@using OnlineCourses.BlazorApp.Models.Auth
+@using OnlineCourses.BlazorApp.Services.Students
+@using OnlineCourses.BlazorApp.Services.Auth
+@using Microsoft.AspNetCore.Components.Authorization
+
+@* Убедись, что этот путь ведет к папке, где лежит ActivityItem.razor *@
+@using OnlineCourses.BlazorApp.Components.Cards
+@using OnlineCourses.BlazorApp.Components.Inputs
+
+@inject StudentService StudentService
+@inject AuthService AuthService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Nav
+
+<div class="settings-page-container animate__animated animate__fadeIn">
+    <div class="settings-card shadow-sm">
+        
+        <div class="settings-header text-center">
+            <h3 class="fw-bold m-0">Account Settings</h3>
+            <p class="text-muted small">Update your personal information and profile picture</p>
+        </div>
+
+        @if (isLoading)
+        {
+            <div class="loader-container text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+            </div>
+        }
+        else
+        {
+            <div class="settings-content">
+                @* --- AVATAR SECTION --- *@
+                <div class="avatar-section">
+                    <div class="avatar-container">
+                        @if (!string.IsNullOrEmpty(studentData?.ImageUrl))
+                        {
+                            <img src="@($"{BaseUrl.TrimEnd('/')}/{studentData.ImageUrl.TrimStart('/')}?t={DateTime.Now.Ticks}")" 
+                                 class="profile-img" alt="Avatar" />
+                        }
+                        else
+                        {
+                            <div class="avatar-initials">@(studentData?.FullName?[..1].ToUpper() ?? "U")</div>
+                        }
+                        <label for="fileInput" class="upload-badge shadow-sm">
+                            <i class="bi bi-camera-fill"></i>
+                        </label>
+                        <InputFile id="fileInput" OnChange="HandleFileSelected" style="display:none;" accept="image/*" />
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(studentData?.ImageUrl))
+                    {
+                        <button type="button" class="btn-remove-photo" @onclick="HandleDeleteAvatar">
+                            <i class="bi bi-trash3-fill me-1"></i> Remove Photo
+                        </button>
+                    }
+                </div>
+
+                @* --- FORM SECTION --- *@
+                <div class="settings-form">
+                    <div class="custom-input-box">
+                        <label>Full Name</label>
+                        <input type="text" @bind="updateModel.FullName" class="form-control-main" />
+                    </div>
+
+                    <div class="custom-input-box">
+                        <label>Username</label>
+                        <input type="text" @bind="updateModel.Username" class="form-control-main" />
+                    </div>
+
+                    <div class="custom-input-box">
+                        <label>Email Address</label>
+                        <input type="email" @bind="updateModel.Email" class="form-control-main" />
+                    </div>
+
+                    @* --- КНОПКА СМЕНЫ ПАРОЛЯ --- *@
+                    <div class="security-section mt-4 border-top pt-4">
+                        <div class="password-card d-flex align-items-center justify-content-between" @onclick="OpenModal">
+                            <div class="d-flex align-items-center">
+                                <div class="icon-circle me-3">
+                                    <i class="bi bi-shield-lock-fill"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold m-0">Password & Security</h6>
+                                    <p class="text-muted small m-0">Update your secret key</p>
+                                </div>
+                            </div>
+                            <i class="bi bi-chevron-right text-muted"></i>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger py-2 small mt-3">@errorMessage</div>
+                    }
+
+                    <div class="action-buttons mt-4">
+                        <button type="button" class="btn-secondary-custom" @onclick='() => Nav.NavigateTo("/")'>Cancel</button>
+                        <button type="button" class="btn-primary-custom" @onclick="HandleUpdateProfile" disabled="@isProcessing">
+                            @if (isProcessing) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@if (showModal)
+{
+    <div class="modal-backdrop fade show"></div>
+    <div class="modal fade show d-block" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content profile-modal-content">
+                
+                @* Кнопка закрытия в углу *@
+                <button type="button" class="modal-close-btn" @onclick="CloseModal">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+                
+                <div class="modal-body p-4">
+                    <h4 class="fw-bold mb-4">Change Password</h4>
+
+                    <EditForm Model="passModel" OnValidSubmit="HandleChangePassword">
+                        <DataAnnotationsValidator />
+
+                        @* Используем твой AppInput *@
+                        <AppInput Label="Current Password" 
+                                  Type="password" 
+                                  Placeholder="••••••••" 
+                                  @bind-Value="passModel.CurrentPassword" 
+                                  For="@(() => passModel.CurrentPassword)" />
+
+                        <AppInput Label="New Password" 
+                                  Type="password" 
+                                  Placeholder="Min. 6 characters" 
+                                  @bind-Value="passModel.NewPassword" 
+                                  For="@(() => passModel.NewPassword)" />
+
+                        <AppInput Label="Confirm New Password" 
+                                  Type="password" 
+                                  Placeholder="Repeat new password" 
+                                  @bind-Value="passModel.ConfirmNewPassword" 
+                                  For="@(() => passModel.ConfirmNewPassword)" />
+
+                        @if (!string.IsNullOrEmpty(passError))
+                        {
+                            <div class="alert alert-danger border-0 small py-2 mt-2" style="border-radius: 12px;">
+                                <i class="bi bi-exclamation-circle me-2"></i> @passError
+                            </div>
+                        }
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn-save-password w-100" disabled="@isPassProcessing">
+                                @if (isPassProcessing) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                                Update Secret Key
+                            </button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private StudentResponse? studentData;
+    private UpdateStudentRequest updateModel = new();
+    private ChangePasswordRequest passModel = new();
+    
+    private bool isLoading = true;
+    private bool isProcessing = false;
+    private bool isPassProcessing = false;
+    private bool showModal = false;
+    
+    private string? errorMessage;
+    private string? passError;
+    private string? userId;
+
+    private const string BaseUrl = "http://localhost:5062"; 
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        userId = user.FindFirst(c => c.Type == "sub")?.Value 
+                 ?? user.FindFirst(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            Nav.NavigateTo("/login");
+            return;
+        }
+
+        await LoadProfile();
+    }
+
+    private async Task LoadProfile()
+    {
+        isLoading = true;
+        var res = await StudentService.GetById(userId!);
+        if (res.IsSuccess && res.Data != null)
+        {
+            studentData = res.Data;
+            updateModel = new UpdateStudentRequest
+            {
+                FullName = studentData.FullName,
+                Email = studentData.Email,
+                Username = studentData.Username
+            };
+        }
+        isLoading = false;
+        StateHasChanged();
+    }
+
+    private void OpenModal() { passModel = new(); passError = null; showModal = true; }
+    private void CloseModal() => showModal = false;
+
+    private async Task HandleChangePassword()
+    {
+        isPassProcessing = true;
+        passError = null;
+        
+        var res = await AuthService.ChangePassword(passModel);
+        if (res.IsSuccess)
+        {
+            CloseModal();
+        }
+        else
+        {
+            passError = res.Error;
+        }
+        isPassProcessing = false;
+    }
+
+    private async Task HandleUpdateProfile()
+    {
+        isProcessing = true;
+        errorMessage = null;
+        var res = await StudentService.Update(userId!, updateModel);
+        if (res.IsSuccess) await LoadProfile();
+        else errorMessage = res.Error;
+        isProcessing = false;
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file == null) return;
+        
+        using var content = new MultipartFormDataContent();
+        var fileContent = new StreamContent(file.OpenReadStream(5120000));
+        content.Add(fileContent, "file", file.Name);
+
+        var res = await StudentService.UploadAvatar(userId!, content);
+        if (res.IsSuccess) await LoadProfile();
+    }
+
+    private async Task HandleDeleteAvatar()
+    {
+        var res = await StudentService.DeleteAvatar(userId!);
+        if (res.IsSuccess) await LoadProfile();
+    }
+}

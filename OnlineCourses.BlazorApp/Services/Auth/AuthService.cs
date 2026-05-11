@@ -34,6 +34,12 @@ public class AuthService(ApiService api, TokenService tokenService, Authenticati
         return result!;
     }
     
+    public async Task<ApiResponse<bool>> ChangePassword(ChangePasswordRequest request)
+    {
+        var result = await api.PutAsync<bool>("api/auth/change-password", request);
+        return result!;
+    }
+    
     public async Task<ApiResponse<bool>?> SendResetCode(SendEmailRequest model)
     {
         var result = await api.PostAsync<bool>("api/auth/send-email", model);

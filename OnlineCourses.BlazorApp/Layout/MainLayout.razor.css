@@ -189,3 +189,32 @@
     padding: 30px;
     background: #F8F9FE;
 }
+
+/* Стиль для кнопки настроек */
+.settings-btn {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05); /* Легкий фон */
+    color: #64748b; /* Спокойный серый цвет */
+}
+
+.settings-btn:hover {
+    background: #f1f5f9; /* Светлый фон при наведении */
+    color: #4f46e5; /* Твой основной фиолетовый/синий цвет */
+    transform: rotate(45deg); /* Элегантный поворот шестеренки */
+}
+
+.settings-btn i {
+    font-size: 1.25rem;
+}
+
+/* Если хочешь, чтобы она пульсировала или выделялась, можно добавить тень при наведении */
+.settings-btn:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}

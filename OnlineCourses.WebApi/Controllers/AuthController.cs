@@ -1,4 +1,3 @@
-using System;
 using System.Security.Claims;
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
@@ -11,75 +10,101 @@ namespace OnlineCourses.WebApi.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [ApiVersion("1.0")]
-public class AuthController : BaseController
+public class AuthController(
+    IAuthService authService,
+    IPasswordService passwordService,
+    IVerificationService verificationService,
+    IRoleService roleService)
+    : BaseController
 {
-    private readonly IAuthService _service;
-
-    public AuthController(IAuthService service)
-    {
-        _service = service;
-    }
-
     [HttpPost("login")]
     public async Task<IActionResult> LoginAsync(LoginDto loginDto)
     {
-        var result = await _service.LoginAsync(loginDto);
+        var result = await authService.LoginAsync(loginDto);
 
-        return !result.IsSuccess ? HandleError(result) : Ok(result);
+        return !result.IsSuccess
+            ? HandleError(result)
+            : Ok(result);
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> RegisterAsync(RegisterDto registerDto)
     {
-        var register = await _service.RegisterAsync(registerDto);
+        var result = await authService.RegisterAsync(registerDto);
 
-        return !register.IsSuccess ? HandleError(register) : Created("", register);
+        return !result.IsSuccess
+            ? HandleError(result)
+            : Created("", result);
     }
-    
+
     [HttpPut("change-password")]
     [Authorize]
-    public async Task<IActionResult> ChangePasswordAsync(ChangePasswordDto changePasswordDto)
+    public async Task<IActionResult> ChangePasswordAsync(
+        ChangePasswordDto changePasswordDto)
     {
-        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = User
+            .FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        if(userId == null)
+        if (userId == null)
             return Unauthorized();
 
-        var register = await _service.ChangePasswordAsync(userId, changePasswordDto);
+        var result = await passwordService
+            .ChangePasswordAsync(
+                userId,
+                changePasswordDto);
 
-        return !register.IsSuccess ? HandleError(register) : Ok(register);
+        return !result.IsSuccess
+            ? HandleError(result)
+            : Ok(result);
     }
 
     [HttpPost("send-email")]
-    public async Task<IActionResult> SendEmailAsync(SendEmailDto sendEmailDto)
+    public async Task<IActionResult> SendEmailAsync(
+        SendEmailDto sendEmailDto)
     {
-        var res = await _service.SendEmailAsync(sendEmailDto);
+        var result = await verificationService
+            .SendCodeAsync(sendEmailDto);
 
-        return !res.IsSuccess ? HandleError(res) : Ok(res);
+        return !result.IsSuccess
+            ? HandleError(result)
+            : Ok(result);
     }
 
     [HttpPost("verify-code")]
-    public async Task<IActionResult> VerifyCodeAsync(VerifyCodeDto verifyCodeDto)
+    public async Task<IActionResult> VerifyCodeAsync(
+        VerifyCodeDto verifyCodeDto)
     {
-        var res = await _service.VerifyCodeAsync(verifyCodeDto);
+        var result = await verificationService
+            .VerifyCodeAsync(verifyCodeDto);
 
-        return !res.IsSuccess ? HandleError(res) : Ok(res);
+        return !result.IsSuccess
+            ? HandleError(result)
+            : Ok(result);
     }
 
     [HttpPost("reset-password")]
-    public async Task<IActionResult> ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
+    public async Task<IActionResult> ResetPasswordAsync(
+        ResetPasswordDto resetPasswordDto)
     {
-        var res = await _service.ResetPasswordAsync(resetPasswordDto);
+        var result = await passwordService
+            .ResetPasswordAsync(resetPasswordDto);
 
-        return !res.IsSuccess ? HandleError(res) : Ok(res);
+        return !result.IsSuccess
+            ? HandleError(result)
+            : Ok(result);
     }
 
     [HttpPost("assign-role/{id}")]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> AssignRoleAsync(string id, string role)
+    public async Task<IActionResult> AssignRoleAsync(
+        string id,
+        [FromQuery] string role)
     {
-        var res = await _service.AssisgnRoleAsync(id, role);
+        var result = await roleService
+            .AssignRoleAsync(id, role);
 
-        return !res.IsSuccess ? HandleError(res) : Ok(res);
+        return !result.IsSuccess
+            ? HandleError(result)
+            : Ok(result);
     }
 }

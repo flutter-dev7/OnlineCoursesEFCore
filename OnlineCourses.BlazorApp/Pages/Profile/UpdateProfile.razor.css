@@ -1,0 +1,485 @@
+/* Основной контейнер страницы */
+.settings-page-container {
+    display: flex;
+    justify-content: center;
+    padding: 30px 15px;
+    background-color: transparent;
+}
+
+/* Карточка настроек */
+.settings-card {
+    background: white;
+    border-radius: 28px;
+    width: 100%;
+    max-width: 500px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.settings-header {
+    margin-bottom: 30px;
+}
+
+/* --- СЕКЦИЯ АВАТАРА --- */
+.avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.avatar-container {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    margin-bottom: 15px;
+}
+
+.profile-img, .avatar-initials {
+    width: 100%;
+    height: 100%;
+    border-radius: 38px; /* Стиль Squircle */
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #4f46e5;
+    color: white;
+    font-size: 3.5rem;
+    font-weight: bold;
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
+}
+
+.upload-badge {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    background: white;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #4f46e5;
+    border: 3px solid white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+
+.upload-badge:hover {
+    transform: scale(1.1);
+}
+
+.btn-remove-photo {
+    background: #fff1f2;
+    color: #e11d48;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-remove-photo:hover {
+    background: #ffe4e6;
+}
+
+/* --- ПОЛЯ ВВОДА --- */
+.custom-input-box {
+    margin-bottom: 20px;
+}
+
+.custom-input-box label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.form-control-main {
+    width: 100%;
+    padding: 14px 18px;
+    background: #f8fafc;
+    border: 2px solid #f1f5f9;
+    border-radius: 16px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.form-control-main:focus {
+    border-color: #4f46e5;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.05);
+}
+
+/* --- СЕКЦИЯ БЕЗОПАСНОСТИ (Кнопка-карточка) --- */
+.password-card {
+    padding: 18px;
+    border: 2px solid #f1f5f9;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.password-card:hover {
+    border-color: #4f46e5;
+    background: #f8faff;
+    transform: translateY(-2px);
+}
+
+.icon-circle {
+    width: 48px;
+    height: 48px;
+    background: #eef2ff;
+    color: #4f46e5;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+/* --- МОДАЛЬНОЕ ОКНО --- */
+.custom-modal {
+    border-radius: 30px !important;
+    overflow: hidden;
+}
+
+.modal-backdrop {
+    background-color: rgba(15, 23, 42, 0.6) !important;
+    backdrop-filter: blur(5px); /* Размытие заднего фона */
+}
+
+.btn-close-custom {
+    background: #f1f5f9;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.btn-close-custom:hover {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+/* --- КНОПКИ ДЕЙСТВИЯ --- */
+.action-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-primary-custom {
+    flex: 2;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 18px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover:not(:disabled) {
+    background: #4338ca;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+
+.btn-secondary-custom {
+    flex: 1;
+    background: #f1f5f9;
+    color: #64748b;
+    border: none;
+    padding: 15px;
+    border-radius: 18px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-secondary-custom:hover {
+    background: #e2e8f0;
+}
+
+/* Сообщения об ошибках */
+.alert-danger-custom {
+    background: #fff1f2;
+    color: #be123c;
+    border: 1px solid #fda4af;
+    padding: 12px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    margin-top: 10px;
+}
+
+.loader-container {
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+}
+
+/* Стиль самого инпута */
+.form-control-custom {
+    width: 100%;
+    padding: 14px 18px;
+    background-color: #f8fafc;
+    border: 2px solid #f1f5f9;
+    border-radius: 16px;
+    font-size: 0.95rem;
+    color: #1e293b;
+    outline: none;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Эффект при клике */
+.form-control-custom:focus {
+    background-color: #ffffff;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* Иконки внутри инпута */
+.input-wrapper i {
+    font-size: 1.1rem;
+    color: #94a3b8 !important;
+}
+
+/* Плейсхолдер */
+.form-control-custom::placeholder {
+    color: #cbd5e1;
+}
+
+/* Кнопка */
+.btn-primary-custom {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+}
+
+/* Контент модалки */
+.custom-modal-content {
+    background: #ffffff;
+    border-radius: 32px;
+    padding: 35px;
+    border: none;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+/* Кнопка закрытия в углу */
+.btn-close-absolute {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    background: #f1f5f9;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.btn-close-absolute:hover {
+    background: #fee2e2;
+    color: #ef4444;
+    transform: rotate(90deg);
+}
+
+.modal-title-bold {
+    font-weight: 800;
+    font-size: 1.6rem;
+    color: #1e293b;
+    margin-bottom: 25px;
+}
+
+/* Группа инпута */
+.modern-input-group {
+    margin-bottom: 20px;
+}
+
+.modern-input-group label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Обертка с иконкой */
+.input-with-icon {
+    position: relative;
+}
+
+.icon-left {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 1.2rem;
+    pointer-events: none;
+}
+
+/* САМ ИНПУТ (Исправляем вид со скриншота) */
+.form-control-modern {
+    width: 100%;
+    padding: 16px 16px 16px 52px; /* Большой отступ слева под иконку */
+    background: #f8fafc;
+    border: 2px solid #f1f5f9;
+    border-radius: 16px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #1e293b;
+    transition: all 0.3s ease;
+}
+
+.form-control-modern:focus {
+    background: #ffffff;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    outline: none;
+}
+
+/* Кнопка */
+.btn-update-full {
+    width: 100%;
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-update-full:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+}
+
+/* Ошибки */
+.validation-msg {
+    font-size: 0.75rem;
+    color: #ef4444;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.error-bubble {
+    background: #fef2f2;
+    color: #b91c1c;
+    padding: 12px;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    border: 1px solid #fee2e2;
+}
+
+/* Контейнер модалки */
+.profile-modal-content {
+    border-radius: 32px;
+    border: none;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Кнопка закрытия справа сверху */
+.modal-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    border: none;
+    background: #f1f5f9;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 10;
+}
+
+.modal-close-btn:hover {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+/* Стилизация твоего AppInput внутри модалки */
+::deep .input-container {
+    margin-bottom: 18px;
+}
+
+::deep .label-text {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: block;
+}
+
+::deep .input-field {
+    width: 100%;
+    padding: 14px 18px;
+    background: #f8fafc;
+    border: 2px solid #f1f5f9;
+    border-radius: 16px;
+    transition: 0.3s;
+}
+
+::deep .input-field:focus {
+    background: #ffffff;
+    border-color: #4f46e5;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* Большая синяя кнопка */
+.btn-save-password {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 18px;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: 0.3s;
+}
+
+.btn-save-password:hover {
+    background: #4338ca;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+}
+
+.btn-save-password:disabled {
+    opacity: 0.7;
+    transform: none;
+}
